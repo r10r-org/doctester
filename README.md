@@ -1,6 +1,8 @@
 Doctester
 =========
 
+[![Build Status](https://buildhive.cloudbees.com/job/raphaelbauer/job/doctester/badge/icon)](https://buildhive.cloudbees.com/job/raphaelbauer/job/doctester/)
+
 A doctest library for Java. Heavily inspired by both the excellent pyhton's doctests 
 and the marvelous devbliss.doctest libraries.
 
