@@ -376,5 +376,12 @@ public class RenderMachineImpl implements RenderMachine {
         MatcherAssert.assertThat(reason, actual, matcher);
 
     }
+
+
+    @Override
+    public void sayRaw(String rawHtml) {
+        htmlDocument.add(rawHtml);
+        
+    }
     
 }

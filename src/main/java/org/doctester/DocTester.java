@@ -82,12 +82,19 @@ public abstract class DocTester implements TestBrowser, RenderMachineCommands {
     // ////////////////////////////////////////////////////////////////////////
     // Say methods to print stuff into html
     // ////////////////////////////////////////////////////////////////////////
+    @Override
     public final void say(String textAsParagraph) {
         renderMachine.say(textAsParagraph);
     }
-
+    
+    @Override
     public final void sayNextSection(String textAsH1) {
         renderMachine.sayNextSection(textAsH1);
+    }
+    
+    @Override
+    public final void sayRaw(String rawHtml) {
+        renderMachine.sayRaw(rawHtml);
     }
     
     @Override
@@ -116,30 +123,37 @@ public abstract class DocTester implements TestBrowser, RenderMachineCommands {
     /**
      * @return all cookies saved by this TestBrowser.
      */
+    @Override
     public final List<Cookie> getCookies() {
         return testBrowser.getCookies();
     }
     
+    @Override
     public final List<Cookie> sayAndGetCookies() {
         return testBrowser.getCookies();
     }
 
+    @Override
     public final Cookie getCookieWithName(String name) {
         return testBrowser.getCookieWithName(name);
     }
     
+    @Override
     public final Cookie sayAndGetCookieWithName(String name) {
         return testBrowser.getCookieWithName(name);
     }
 
+    @Override
     public final void clearCookies() {
         testBrowser.clearCookies();
     }
 
+    @Override
     public final Response makeRequest(Request httpRequest) {
         return testBrowser.makeRequest(httpRequest);
     }
     
+    @Override
     public final Response sayAndMakeRequest(Request httpRequest) {
         return renderMachine.sayAndMakeRequest(httpRequest);
     }
