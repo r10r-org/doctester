@@ -25,7 +25,9 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,6 +37,8 @@ import com.google.common.collect.Maps;
 
 public class TestBrowserImpl implements TestBrowser {
 
+	static final String HANDLE_REDIRECTS = "http.protocol.handle-redirects";
+	
     private DefaultHttpClient httpClient;
 
     public TestBrowserImpl() {
@@ -89,39 +93,42 @@ public class TestBrowserImpl implements TestBrowser {
         return httpResponse;
 
     }
+    
 
-    private Response makeGetOrDeleteRequest(Request httpRequest) {
+    private Response makeGetOrDeleteRequest(Request request) {
 
         org.apache.http.HttpResponse response;
 
         try {
             
-            HttpUriRequest getRequest = null;
+            HttpUriRequest apacheHttpRequest = null;
             
 
             httpClient.getParams().setParameter(
                     CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
-            if ("GET".equalsIgnoreCase(httpRequest.httpRequestType)) {
+            if ("GET".equalsIgnoreCase(request.httpRequestType)) {
                 
-                getRequest = new HttpGet(httpRequest.url.toUri());
+                apacheHttpRequest = new HttpGet(request.url.toUri());
                 
-            } else if ("DELETE".equalsIgnoreCase(httpRequest.httpRequestType)){
+            } else if ("DELETE".equalsIgnoreCase(request.httpRequestType)){
                 
-                getRequest = new HttpDelete(httpRequest.url.toUri());
+                apacheHttpRequest = new HttpDelete(request.url.toUri());
             }
 
-            if (httpRequest.headers != null) {
+            if (request.headers != null) {
 
                 // add all headers
-                for (Entry<String, String> header : httpRequest.headers
+                for (Entry<String, String> header : request.headers
                         .entrySet()) {
-                    getRequest.addHeader(header.getKey(), header.getValue());
+                    apacheHttpRequest.addHeader(header.getKey(), header.getValue());
                 }
 
             }
+            
+            setHandleRedirect(apacheHttpRequest, request.followRedirects);
 
-            response = httpClient.execute(getRequest);
+            response = httpClient.execute(apacheHttpRequest);
             
 
         } catch (Exception e) {
@@ -145,15 +152,15 @@ public class TestBrowserImpl implements TestBrowser {
                     CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
             
-            HttpEntityEnclosingRequestBase request;
+            HttpEntityEnclosingRequestBase apacheHttpRequest;
             
             if ("POST".equalsIgnoreCase(httpRequest.httpRequestType)) {
                 
-                request =  new HttpPost(httpRequest.url.toUri());
+                apacheHttpRequest =  new HttpPost(httpRequest.url.toUri());
                 
             } else {
                 
-                request =  new HttpPut(httpRequest.url.toUri());
+                apacheHttpRequest =  new HttpPut(httpRequest.url.toUri());
             }
             
 
@@ -161,7 +168,7 @@ public class TestBrowserImpl implements TestBrowser {
                 // add all headers
                 for (Entry<String, String> header : httpRequest.headers
                         .entrySet()) {
-                    request.addHeader(header.getKey(), header.getValue());
+                    apacheHttpRequest.addHeader(header.getKey(), header.getValue());
                 }
             }
 
@@ -180,7 +187,7 @@ public class TestBrowserImpl implements TestBrowser {
                 
                 // encode form parameters and add
                 UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formparams);
-                request.setEntity(entity);
+                apacheHttpRequest.setEntity(entity);
 
             }
 
@@ -206,7 +213,7 @@ public class TestBrowserImpl implements TestBrowser {
 
                 // post.setEntity(entity);
 
-                request.setEntity(entity);
+                apacheHttpRequest.setEntity(entity);
 
             }
             
@@ -219,30 +226,32 @@ public class TestBrowserImpl implements TestBrowser {
                 if (httpRequest.headers.containsKey(HttpConstants.APPLICATION_JSON)) {
                     
                     String string = new ObjectMapper().writeValueAsString(httpRequest.payload);
-                    request.setEntity(new StringEntity(string, "utf-8"));
+                    apacheHttpRequest.setEntity(new StringEntity(string, "utf-8"));
                     
                 } else if (httpRequest.headers.containsKey(HttpConstants.APPLICATION_XML)) {
                     
                     String string = new XmlMapper().writeValueAsString(httpRequest.payload);
-                    request.setEntity(new StringEntity(string, "utf-8"));
+                    apacheHttpRequest.setEntity(new StringEntity(string, "utf-8"));
                     
                 } else if (httpRequest.payload instanceof String) {
                         
                     StringEntity entity = new StringEntity((String) httpRequest.payload, "utf-8");
-                    request.setEntity(entity);
+                    apacheHttpRequest.setEntity(entity);
                             
                 } else {
                     
                     StringEntity entity = new StringEntity(httpRequest.payload.toString(), "utf-8");
-                    request.setEntity(entity);
+                    apacheHttpRequest.setEntity(entity);
                     
                 }
                 
-            }            
+            }   
+            
+            setHandleRedirect(apacheHttpRequest, httpRequest.followRedirects);
 
             // Here we go!
-            response = httpClient.execute(request);
-            request.releaseConnection();
+            response = httpClient.execute(apacheHttpRequest);
+            apacheHttpRequest.releaseConnection();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -285,4 +294,17 @@ public class TestBrowserImpl implements TestBrowser {
         return doctestJHttpResponse;
 
     }
+    
+    /**
+     * Tells ApacheHttpClient whether to follow redirects.
+     * See also: http://stackoverflow.com/questions/1519392/how-to-prevent-apache-http-client-from-following-a-redirect
+     */
+    private void setHandleRedirect(HttpUriRequest httpUriRequest, boolean handleRedirect) {
+    	
+        HttpParams params = new BasicHttpParams();
+        params.setParameter(HANDLE_REDIRECTS, handleRedirect);
+        httpUriRequest.setParams(params);
+    	
+    }
+
 }

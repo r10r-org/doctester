@@ -21,11 +21,14 @@ public class Request {
     
     public Object payload;
     
-    private Request(){
+    public boolean followRedirects;
+    
+    private Request() {
         
         filesToUpload = Maps.newHashMap();
         headers = Maps.newHashMap();
         formParameters = Maps.newHashMap();
+        followRedirects = true;
         
     }
     
@@ -118,6 +121,11 @@ public class Request {
 
     public Request payload(Object payload) {
         this.payload = payload;
+        return this;
+    }
+    
+    public Request followRedirects(boolean followRedirects) {
+    	this.followRedirects = followRedirects;
         return this;
     }
 

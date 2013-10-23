@@ -20,7 +20,7 @@ public class Url {
         try {
             url.uriBuilder = new URIBuilder(host);
         } catch (URISyntaxException e) {
-            // TODO Auto-generated catch block
+
             e.printStackTrace();
         }
         
