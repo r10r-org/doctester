@@ -1,112 +1,130 @@
 package org.doctester.testbrowser;
 
-import java.io.IOException;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
+/**
+ * 
+ * The response from a call done with the TestBrowser.
+ * 
+ * @author Raphael A. Bauer
+ *
+ */
 public class Response {
+	
+	private static Logger logger = LoggerFactory.getLogger(Response.class);	
 
     public Map<String, String> headers;
     
     public int httpStatus;
     
-    public String body;
+    public String payload;
     
     
-    public Response(Map<String, String> headers, int httpStatus, String body) {
+    public Response(Map<String, String> headers, int httpStatus, String payload) {
        
         this.headers = headers;
         this.httpStatus = httpStatus;
-        this.body = body;
+        this.payload = payload;
         
     }
 
-    String bodyAsString() {
+    /**
+     * 
+     * @return The payload of this response as String. Just the raw String.
+     *  
+     */
+    public String payloadAsString() {
 
-        return body;
+        return payload;
 
     }
 
-    public <T> T bodyAsXml(Class<T> clazz) {
+    /**
+     * The payload of this request de-serialized into the specified class type.
+     * The payload must be Xml.
+     * 
+     * @param clazz The class type that should be used to de-serialze the payload.
+     * @return An instance of clazz filled with data from the payload.
+     */
+    public <T> T payloadAsXml(Class<T> clazz) {
 
         try {
-            new XmlMapper().readValue(body, clazz);
-        } catch (JsonParseException e) {
+            new XmlMapper().readValue(payload, clazz);
+            
+        } catch (Exception e) {
 
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
+        	logger.error("Something went wrong parsing the payload of this response into Xml", e);
 
-            e.printStackTrace();
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
+        } 
 
         return null;
     }
 
-    public <T> T bodyAsXml(TypeReference<T> typeReference) {
+    /**
+     * The payload of this request de-serialized into the specified TypeReference.
+     * The payload must be Xml.
+     * 
+     * @param typeReference The TypeReference that should be used to de-serialze the payload.
+     * @return An instance of clazz filled with data from the payload.
+     */
+    public <T> T payloadAsXml(TypeReference<T> typeReference) {
         
     	T parsedBody = null;
     	
     	try {
-    		parsedBody = new XmlMapper().readValue(body, typeReference);
+    		parsedBody = new XmlMapper().readValue(payload, typeReference);
 
-        } catch (JsonParseException e) {
+        } catch (Exception e) {
 
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-
-            e.printStackTrace();
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
+        	logger.error("Something went wrong parsing the payload of this response into Xml", e);
+        } 
 
         return parsedBody;
     }
 
-    public <T> T bodyAsJson(Class<T> clazz) {
+    /**
+     * The payload of this request de-serialized into the specified class type.
+     * The payload must be Json.
+     * 
+     * @param clazz The class type that should be used to de-serialze the payload.
+     * @return An instance of clazz filled with data from the payload.
+     */
+    public <T> T payloadAsJson(Class<T> clazz) {
 
     	T parsedBody = null;
     	
         try {
-        	parsedBody = new ObjectMapper().readValue(body, clazz);
-        } catch (JsonParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        	parsedBody = new ObjectMapper().readValue(payload, clazz);
+        } catch (Exception e) {
+        	logger.error("Something went wrong parsing the payload of this response into Json", e);
+        } 
         
         return parsedBody;
         
 
     }
 
+    /**
+     * The payload of this request de-serialized into the specified TypeReference.
+     * The payload must be Json.
+     * 
+     * @param typeReference The TypeReference that should be used to de-serialze the payload.
+     * @return An instance of clazz filled with data from the payload.
+     */
     public <T> T payloadAsJson(TypeReference<T> typeReference) {
 
         try {
-            new ObjectMapper().readValue(body, typeReference);
-        } catch (JsonParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+            new ObjectMapper().readValue(payload, typeReference);
+        } catch (Exception e) {
+        	logger.error("Something went wrong parsing the payload of this response into Json", e);
+        } 
         
         return null;
     }
