@@ -22,7 +22,7 @@ public class Url {
 	
 	private static Logger logger = LoggerFactory.getLogger(Url.class);	
     
-    URIBuilder uriBuilder;
+    private URIBuilder uriBuilder;
     
     private Url() {
     }

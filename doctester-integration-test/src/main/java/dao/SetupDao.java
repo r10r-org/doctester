@@ -23,6 +23,7 @@ public class SetupDao {
         
         EntityManager entityManager = entityManagerProvider.get();
         
+        
         Query q = entityManager.createQuery("SELECT x FROM User x");
         List<User> users = (List<User>) q.getResultList();        
         

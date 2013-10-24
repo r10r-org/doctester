@@ -99,7 +99,9 @@ public class TestBrowserImpl implements TestBrowser {
 
     private Response makeGetOrDeleteRequest(Request request) {
 
-        org.apache.http.HttpResponse response;
+    	Response response = null;
+    	
+        org.apache.http.HttpResponse apacheHttpClientResponse;
 
         try {
             
@@ -130,7 +132,10 @@ public class TestBrowserImpl implements TestBrowser {
             
             setHandleRedirect(apacheHttpRequest, request.followRedirects);
 
-            response = httpClient.execute(apacheHttpRequest);
+            apacheHttpClientResponse = httpClient.execute(apacheHttpRequest);
+            
+            
+            response = convertFromApacheHttpResponseToDocTestJHttpResponse(apacheHttpClientResponse);
             
             
             if (apacheHttpRequest instanceof HttpGet) {
@@ -145,16 +150,17 @@ public class TestBrowserImpl implements TestBrowser {
             throw new RuntimeException(e);
         }
 
-        Response httpResponse = convertFromApacheHttpResponseToDocTestJHttpResponse(response);
+        
 
-        return httpResponse;
+        return response;
     }
 
 
 
     private Response makePostOrPutRequest(Request httpRequest) {
 
-        org.apache.http.HttpResponse response = null;
+        org.apache.http.HttpResponse apacheHttpClientResponse = null;
+        Response response = null;
 
         try {
 
@@ -268,7 +274,9 @@ public class TestBrowserImpl implements TestBrowser {
             setHandleRedirect(apacheHttpRequest, httpRequest.followRedirects);
 
             // Here we go!
-            response = httpClient.execute(apacheHttpRequest);
+            apacheHttpClientResponse = httpClient.execute(apacheHttpRequest);
+            response = convertFromApacheHttpResponseToDocTestJHttpResponse(apacheHttpClientResponse);
+            
             apacheHttpRequest.releaseConnection();
 
         } catch (Exception e) {
@@ -276,8 +284,8 @@ public class TestBrowserImpl implements TestBrowser {
             throw new RuntimeException(e);
         }
 
-        Response httpResponse = convertFromApacheHttpResponseToDocTestJHttpResponse(response);
-        return httpResponse;
+        
+        return response;
 
     }
   

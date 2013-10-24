@@ -19,15 +19,17 @@ package controllers;
 import static org.junit.Assert.assertTrue;
 import ninja.NinjaTest;
 
+import org.doctester.testbrowser.Request;
+import org.doctester.testbrowser.Response;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ApplicationControllerTest extends NinjaTest {
+public class ApplicationControllerTest extends NinjaApiDoctester {
     
     @Before
     public void setup() {
-        
-        ninjaTestBrowser.makeRequest(getServerAddress() + "setup");
+
+        makeRequest(Request.GET().url(testServerUrl().path("setup")));
         
     }
 
@@ -35,12 +37,12 @@ public class ApplicationControllerTest extends NinjaTest {
     public void testThatHomepageWorks() {
 
         // /redirect will send a location: redirect in the headers
-        String result = ninjaTestBrowser.makeRequest(getServerAddress() + "/");
+        Response result = makeRequest(Request.GET().url(testServerUrl().path("/")));
 
         // If the redirect has worked we must see the following text
         // from the index screen:
-        assertTrue(result.contains("Hello to the blog example!"));
-        assertTrue(result.contains("My second post"));
+        assertTrue(result.payload.contains("Hello to the blog example!"));
+        assertTrue(result.payload.contains("My second post"));
 
     }
 

@@ -4,24 +4,24 @@ import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaTestServer;
 
 import org.doctester.DocTester;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 
 public abstract class NinjaApiDoctester extends DocTester {
 	
-	public static NinjaTestServer ninjaTestServer;
+	public NinjaTestServer ninjaTestServer;
 
     public NinjaApiDoctester() {
     }
 
-    @BeforeClass
-    public static void startServerInTestMode() {
+    @Before
+    public void startServerInTestMode() {
         System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
         ninjaTestServer = new NinjaTestServer();
     }
 
-    @AfterClass
-    public static void shutdownServer() {
+    @After
+    public void shutdownServer() {
     	System.clearProperty(NinjaConstant.MODE_KEY_NAME);
         ninjaTestServer.shutdown();
     }

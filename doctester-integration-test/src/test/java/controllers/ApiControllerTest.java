@@ -26,13 +26,12 @@ import java.util.Map;
 
 import models.ArticleDto;
 import models.ArticlesDto;
-import ninja.NinjaTest;
 
+import org.doctester.testbrowser.Request;
+import org.doctester.testbrowser.Response;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -41,12 +40,12 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
-public class ApiControllerTest extends NinjaTest {
+public class ApiControllerTest extends NinjaApiDoctester {
     
     @Before
     public void setup() {
-        
-        ninjaTestBrowser.makeRequest(getServerAddress() + "setup");
+    	
+    	makeRequest(Request.GET().url(testServerUrl().path("setup")));
         
     }
 
@@ -56,12 +55,17 @@ public class ApiControllerTest extends NinjaTest {
         // /////////////////////////////////////////////////////////////////////
         // Test initial data:
         // /////////////////////////////////////////////////////////////////////
-        String response = ninjaTestBrowser.makeJsonRequest(getServerAddress()
-                + "api/bob@gmail.com/articles.json");
-        System.out.println("response: " + response);
+    	Response response 
+    		= makeRequest(
+    				Request
+    				.GET()
+    				.contentTypeApplicationJson()
+    				.url(
+    						testServerUrl().path("api/bob@gmail.com/articles.json")));
+
 
         ArticlesDto articlesDto = getGsonWithLongToDateParsing().fromJson(
-                response, ArticlesDto.class);
+                response.payload, ArticlesDto.class);
 
         assertEquals(3, articlesDto.articles.size());
 
@@ -72,25 +76,36 @@ public class ApiControllerTest extends NinjaTest {
         articleDto.content = "contentcontent";
         articleDto.title = "new title new title";
 
-        response = ninjaTestBrowser.postJson(getServerAddress()
-                + "api/bob@gmail.com/article.json", articleDto);
+        response = makeRequest(
+        		Request
+        		.POST()
+        		.url(testServerUrl().path("api/bob@gmail.com/article.json"))
+        		.payload(articleDto));
 
-        assertTrue(response.contains("Error. Forbidden."));
+
+        assertTrue(response.payload.contains("Error. Forbidden."));
 
         doLogin();
 
-        response = ninjaTestBrowser.postJson(getServerAddress()
-                + "api/bob@gmail.com/article.json", articleDto);
+        response = makeRequest(
+        		Request
+        		.POST()
+        		.contentTypeApplicationJson()
+        		.url(testServerUrl().path("api/bob@gmail.com/article.json"))
+        		.payload(articleDto));
 
-        assertFalse(response.contains("Error. Forbidden."));
+        assertFalse(response.payload.contains("Error. Forbidden."));
 
         // /////////////////////////////////////////////////////////////////////
         // Fetch articles again => assert we got a new one ...
         // /////////////////////////////////////////////////////////////////////
-        response = ninjaTestBrowser.makeJsonRequest(getServerAddress()
-                + "api/bob@gmail.com/articles.json");
+        response = makeRequest(
+        		Request
+        		.GET()
+        		.url(testServerUrl().path("api/bob@gmail.com/articles.json")));
+        
 
-        articlesDto = getGsonWithLongToDateParsing().fromJson(response, ArticlesDto.class);
+        articlesDto = getGsonWithLongToDateParsing().fromJson(response.payload, ArticlesDto.class);
         // one new result:
         assertEquals(4, articlesDto.articles.size());
 
@@ -102,17 +117,14 @@ public class ApiControllerTest extends NinjaTest {
         // /////////////////////////////////////////////////////////////////////
         // Test initial data:
         // /////////////////////////////////////////////////////////////////////
-        String response = ninjaTestBrowser.makeXmlRequest(getServerAddress()
-                + "api/bob@gmail.com/articles.xml");
-        System.out.println("response xml: " + response);
-        
-        JacksonXmlModule module = new JacksonXmlModule();
-        // and then configure, for example:
-        module.setDefaultUseWrapper(false);
-        XmlMapper xmlMapper = new XmlMapper(module);
-        
+    	Response response = makeRequest(
+    			Request
+    			.GET()
+    			.contentTypeApplicationXml()
+    			.url(
+    					testServerUrl().path("api/bob@gmail.com/articles.xml")));
 
-        ArticlesDto articlesDto = xmlMapper.readValue(response, ArticlesDto.class);
+        ArticlesDto articlesDto = response.payloadAsXml(ArticlesDto.class);
 
         assertEquals(3, articlesDto.articles.size());
 
@@ -123,25 +135,39 @@ public class ApiControllerTest extends NinjaTest {
         articleDto.content = "contentcontent";
         articleDto.title = "new title new title";
 
-        response = ninjaTestBrowser.postXml(getServerAddress()
-                + "api/bob@gmail.com/article.xml", articleDto);
+        
+    	response = makeRequest(
+    			Request
+    			.POST()
+    			.contentTypeApplicationXml()
+    			.url(
+    					testServerUrl().path("api/bob@gmail.com/article.xml"))
+    			.payload(articleDto));
 
-        assertTrue(response.contains("Error. Forbidden."));
+        assertTrue(response.payload.contains("Error. Forbidden."));
 
         doLogin();
 
-        response = ninjaTestBrowser.postXml(getServerAddress()
-                + "api/bob@gmail.com/article.xml", articleDto);
+    	response = makeRequest(
+    			Request
+    			.POST()
+    			.contentTypeApplicationXml()
+    			.url(
+    					testServerUrl().path("api/bob@gmail.com/article.xml"))
+    			.payload(articleDto));
 
-        assertFalse(response.contains("Error. Forbidden."));
+        assertFalse(response.payload.contains("Error. Forbidden."));
 
         // /////////////////////////////////////////////////////////////////////
         // Fetch articles again => assert we got a new one ...
         // /////////////////////////////////////////////////////////////////////
-        response = ninjaTestBrowser.makeXmlRequest(getServerAddress()
-                + "api/bob@gmail.com/articles.xml");
+    	response = makeRequest(
+    			Request
+    			.GET()
+    			.url(
+    					testServerUrl().path("api/bob@gmail.com/articles.xml")));
 
-        articlesDto = xmlMapper.readValue(response, ArticlesDto.class);
+        articlesDto = response.payloadAsXml(ArticlesDto.class);
         // one new result:
         assertEquals(4, articlesDto.articles.size());
 
@@ -164,16 +190,19 @@ public class ApiControllerTest extends NinjaTest {
         return gson;
     }
 
-    private void doLogin() {
-
-        Map<String, String> headers = Maps.newHashMap();
+    private void doLogin() throws Exception {
 
         Map<String, String> formParameters = Maps.newHashMap();
         formParameters.put("username", "bob@gmail.com");
         formParameters.put("password", "secret");
-
-        ninjaTestBrowser.makePostRequestWithFormParameters(getServerAddress()
-                + "login", headers, formParameters);
+        
+        makeRequest(
+        		Request
+        		.POST()
+        		.url(
+        				testServerUrl()
+        				.path("login"))
+        		.formParameters(formParameters));
 
     }
 

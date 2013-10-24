@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
@@ -18,17 +19,34 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
  */
 public class Response {
 	
-	private static Logger logger = LoggerFactory.getLogger(Response.class);	
+	private final static Logger logger = LoggerFactory.getLogger(Response.class);	
 
-    public Map<String, String> headers;
+    public final Map<String, String> headers;
     
-    public int httpStatus;
+    public final int httpStatus;
     
-    public String payload;
+    public final String payload;
+    
+    
+    private final XmlMapper xmlMapper;
+    
+    private final ObjectMapper objectMapper;
     
     
     public Response(Map<String, String> headers, int httpStatus, String payload) {
+    	
+    	// configure the JacksonXml mapper in a cleaner way...
+        JacksonXmlModule module = new JacksonXmlModule();
+        // Check out: https://github.com/FasterXML/jackson-dataformat-xml
+        // setDefaultUseWrapper produces more similar output to
+        // the Json output. You can change that with annotations in your
+        // models.
+        module.setDefaultUseWrapper(false);
+        this.xmlMapper = new XmlMapper(module); 
        
+        this.objectMapper = new ObjectMapper();
+        
+        
         this.headers = headers;
         this.httpStatus = httpStatus;
         this.payload = payload;
@@ -55,8 +73,10 @@ public class Response {
      */
     public <T> T payloadAsXml(Class<T> clazz) {
 
+    	T parsedBody = null;
+    	
         try {
-            new XmlMapper().readValue(payload, clazz);
+            parsedBody = xmlMapper.readValue(payload, clazz);
             
         } catch (Exception e) {
 
@@ -64,7 +84,7 @@ public class Response {
 
         } 
 
-        return null;
+        return parsedBody;
     }
 
     /**
@@ -79,7 +99,7 @@ public class Response {
     	T parsedBody = null;
     	
     	try {
-    		parsedBody = new XmlMapper().readValue(payload, typeReference);
+    		parsedBody = xmlMapper.readValue(payload, typeReference);
 
         } catch (Exception e) {
 
@@ -101,7 +121,7 @@ public class Response {
     	T parsedBody = null;
     	
         try {
-        	parsedBody = new ObjectMapper().readValue(payload, clazz);
+        	parsedBody = objectMapper.readValue(payload, clazz);
         } catch (Exception e) {
         	logger.error("Something went wrong parsing the payload of this response into Json", e);
         } 
@@ -120,13 +140,15 @@ public class Response {
      */
     public <T> T payloadAsJson(TypeReference<T> typeReference) {
 
+    	T parsedBody = null;
+    	
         try {
-            new ObjectMapper().readValue(payload, typeReference);
+            parsedBody = objectMapper.readValue(payload, typeReference);
         } catch (Exception e) {
         	logger.error("Something went wrong parsing the payload of this response into Json", e);
         } 
         
-        return null;
+        return parsedBody;
     }
 
 }

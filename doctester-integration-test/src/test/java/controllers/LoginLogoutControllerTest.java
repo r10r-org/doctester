@@ -18,67 +18,76 @@ package controllers;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.Map;
-
-import ninja.NinjaTest;
-
+import org.doctester.testbrowser.Request;
+import org.doctester.testbrowser.Response;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.collect.Maps;
-
-public class LoginLogoutControllerTest extends NinjaTest {
+public class LoginLogoutControllerTest extends NinjaApiDoctester {
     
     @Before
     public void setup() {
         
-        ninjaTestBrowser.makeRequest(getServerAddress() + "setup");
+        makeRequest(Request.GET().url(testServerUrl().path("setup")));
         
     }
 
     @Test
     public void testLogingLogout() {
 
-        Map<String, String> headers = Maps.newHashMap();
-
         // /////////////////////////////////////////////////////////////////////
         // Test posting of article does not work without login
         // /////////////////////////////////////////////////////////////////////
-        String response = ninjaTestBrowser.makeRequest(getServerAddress()
-                + "article/new", headers);
+        Response response = makeRequest(
+        		Request
+        		.GET()
+        		.url(
+        				testServerUrl().path("article/new")));
+
         System.out.println(response);
-        assertTrue(response.contains("Error. Forbidden."));
+        assertTrue(response.payload.contains("Error. Forbidden."));
 
         // /////////////////////////////////////////////////////////////////////
         // Login
         // /////////////////////////////////////////////////////////////////////
-        Map<String, String> formParameters = Maps.newHashMap();
-        formParameters.put("username", "bob@gmail.com");
-        formParameters.put("password", "secret");
-
-        ninjaTestBrowser.makePostRequestWithFormParameters(getServerAddress()
-                + "login", headers, formParameters);
+        response = makeRequest(
+        		Request
+        		.POST()
+        		.url(
+        				testServerUrl().path("login"))
+        		.addFormParameter("username", "bob@gmail.com")
+        		.addFormParameter("password", "secret"));
 
         // /////////////////////////////////////////////////////////////////////
         // Test posting of article works when are logged in
         // /////////////////////////////////////////////////////////////////////
-        response = ninjaTestBrowser.makeRequest(getServerAddress()
-                + "article/new", headers);
+        response = makeRequest(
+        		Request
+        		.GET()
+        		.url(
+        				testServerUrl().path("article/new")));
         
-        assertTrue(response.contains("New article"));
+        assertTrue(response.payload.contains("New article"));
 
         // /////////////////////////////////////////////////////////////////////
         // Logout
         // /////////////////////////////////////////////////////////////////////
-        ninjaTestBrowser.makeRequest(getServerAddress() + "logout", headers);
+        response = makeRequest(
+        		Request
+        		.GET()
+        		.url(
+        				testServerUrl().path("logout")));
 
         // /////////////////////////////////////////////////////////////////////
         // Assert that posting of article does not work any more...
         // /////////////////////////////////////////////////////////////////////
-        response = ninjaTestBrowser.makeRequest(getServerAddress()
-                + "article/new", headers);
-        System.out.println(response);
-        assertTrue(response.contains("Error. Forbidden."));
+        response = makeRequest(
+        		Request
+        		.GET()
+        		.url(
+        				testServerUrl().path("article/new")));
+        
+        assertTrue(response.payload.contains("Error. Forbidden."));
 
     }
 
