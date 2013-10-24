@@ -89,7 +89,7 @@ public class ArticleDao {
         if (user == null) {
             return false;
         }
-        
+        System.out.println("article is : " + articleDto);
         Article article = new Article(user, articleDto.title, articleDto.content);
         entityManager.persist(article);
         

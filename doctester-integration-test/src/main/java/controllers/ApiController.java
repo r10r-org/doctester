@@ -54,7 +54,9 @@ public class ApiController {
     @FilterWith(SecureFilter.class)
     public Result postArticleJson(@LoggedInUser String username,
                                   ArticleDto articleDto) {
-
+    	System.out.println("userbname is: " + username);
+    	System.out.println("article is2: " + articleDto);
+    	
         boolean succeeded = articleDao.postArticle(username, articleDto);
 
         if (!succeeded) {

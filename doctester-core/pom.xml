@@ -102,9 +102,15 @@
             <groupId>junit</groupId>
             <!-- junit-dep has all dependencies declared, rather than bundled (bundled 
                 causes massive classpath headaches) -->
-            <artifactId>junit</artifactId>
+            <artifactId>junit-dep</artifactId>
             <version>4.11</version>
         </dependency>
+        <dependency>
+    		<groupId>org.hamcrest</groupId>
+    		<artifactId>hamcrest-library</artifactId>
+    		<version>1.2.1</version>
+    	</dependency>
+    	
            
         <!--HttpCient is used to mainly test low level Json Apis -->
         <dependency>

@@ -305,8 +305,11 @@ public class RenderMachineImpl implements RenderMachine {
         
         htmlDocument.addAll(getHtmlFormattedHeaders(response.headers));
         
-        htmlDocument.add("<dt>Content</dt><dd><div class=\"http-response-body\">" + HtmlEscapers.htmlEscaper().escape(response.body) + "</div></dd>");
-
+        if (response.body == null) {
+        	htmlDocument.add("<dt>Content</dt><dd>No Body content.</dd>");
+        } else {
+        	htmlDocument.add("<dt>Content</dt><dd><div class=\"http-response-body\">" + HtmlEscapers.htmlEscaper().escape(response.body) + "</div></dd>");
+        }
         
         
         htmlDocument.add("</dl>");

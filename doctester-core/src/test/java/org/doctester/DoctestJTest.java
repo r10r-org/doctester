@@ -19,12 +19,12 @@ public class DoctestJTest extends DocTester {
                     .GET()
                     .url(testServerUrl().path("search").addQueryParameter("q", "raphael bauer")));
         
-        sayAndMakeRequest(Request.GET().applicationJson().url(Url.host("http://ip.jsontest.com/")));
+        sayAndMakeRequest(Request.GET().contentTypeApplicationJson().url(Url.host("http://ip.jsontest.com/")));
         
         sayNextSection("another fun heading is there...");
         say("and a very long text...!");
         
-        sayAndMakeRequest(Request.GET().applicationJson().url(Url.host("http://ip.jsontest.com/")));
+        sayAndMakeRequest(Request.GET().contentTypeApplicationJson().url(Url.host("http://ip.jsontest.com/")));
         
         say("<code>This is code!</code>");
         say("and another description!"); 

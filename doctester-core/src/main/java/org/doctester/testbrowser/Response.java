@@ -51,8 +51,11 @@ public class Response {
     }
 
     public <T> T bodyAsXml(TypeReference<T> typeReference) {
-        try {
-            new XmlMapper().readValue(body, typeReference);
+        
+    	T parsedBody = null;
+    	
+    	try {
+    		parsedBody = new XmlMapper().readValue(body, typeReference);
 
         } catch (JsonParseException e) {
 
@@ -65,13 +68,15 @@ public class Response {
             e.printStackTrace();
         }
 
-        return null;
+        return parsedBody;
     }
 
     public <T> T bodyAsJson(Class<T> clazz) {
 
+    	T parsedBody = null;
+    	
         try {
-            new ObjectMapper().readValue(body, clazz);
+        	parsedBody = new ObjectMapper().readValue(body, clazz);
         } catch (JsonParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -83,12 +88,12 @@ public class Response {
             e.printStackTrace();
         }
         
-        return null;
+        return parsedBody;
         
 
     }
 
-    public <T> T bodyAsJson(TypeReference<T> typeReference) {
+    public <T> T payloadAsJson(TypeReference<T> typeReference) {
 
         try {
             new ObjectMapper().readValue(body, typeReference);

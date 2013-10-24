@@ -1,7 +1,6 @@
 package org.doctester.testbrowser;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,7 +9,6 @@ import javax.management.RuntimeErrorException;
 
 import org.apache.http.Header;
 import org.apache.http.HttpVersion;
-import org.apache.http.ParseException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -29,6 +27,8 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -36,6 +36,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class TestBrowserImpl implements TestBrowser {
+	
+	private static Logger logger = LoggerFactory.getLogger(TestBrowserImpl.class);	
 
 	static final String HANDLE_REDIRECTS = "http.protocol.handle-redirects";
 	
@@ -72,15 +74,15 @@ public class TestBrowserImpl implements TestBrowser {
         
         Response httpResponse;
         
-        if ("GET".equalsIgnoreCase(httpRequest.httpRequestType)
-                || "DELETE".equalsIgnoreCase(httpRequest.httpRequestType)) {
+        if (HttpConstants.GET.equalsIgnoreCase(httpRequest.httpRequestType)
+                || HttpConstants.DELETE.equalsIgnoreCase(httpRequest.httpRequestType)) {
             
             httpResponse = makeGetOrDeleteRequest(httpRequest);
 
         }
 
-        else if ("POST".equalsIgnoreCase(httpRequest.httpRequestType)
-                || "PUT".equalsIgnoreCase(httpRequest.httpRequestType)) {
+        else if (HttpConstants.POST.equalsIgnoreCase(httpRequest.httpRequestType)
+                || HttpConstants.PUT.equalsIgnoreCase(httpRequest.httpRequestType)) {
             
             httpResponse = makePostOrPutRequest(httpRequest);
 
@@ -107,11 +109,11 @@ public class TestBrowserImpl implements TestBrowser {
             httpClient.getParams().setParameter(
                     CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
-            if ("GET".equalsIgnoreCase(request.httpRequestType)) {
+            if (HttpConstants.GET.equalsIgnoreCase(request.httpRequestType)) {
                 
                 apacheHttpRequest = new HttpGet(request.url.toUri());
                 
-            } else if ("DELETE".equalsIgnoreCase(request.httpRequestType)){
+            } else if (HttpConstants.DELETE.equalsIgnoreCase(request.httpRequestType)){
                 
                 apacheHttpRequest = new HttpDelete(request.url.toUri());
             }
@@ -130,8 +132,16 @@ public class TestBrowserImpl implements TestBrowser {
 
             response = httpClient.execute(apacheHttpRequest);
             
+            
+            if (apacheHttpRequest instanceof HttpGet) {
+            	((HttpGet) apacheHttpRequest).releaseConnection();
+            } else if (apacheHttpRequest instanceof HttpDelete) {
+            	((HttpDelete) apacheHttpRequest).releaseConnection();
+            }
+            
 
         } catch (Exception e) {
+        	logger.error("Fatal problem creating GET or DELETE request in TestBrowser", e);
             throw new RuntimeException(e);
         }
 
@@ -154,7 +164,7 @@ public class TestBrowserImpl implements TestBrowser {
             
             HttpEntityEnclosingRequestBase apacheHttpRequest;
             
-            if ("POST".equalsIgnoreCase(httpRequest.httpRequestType)) {
+            if (HttpConstants.POST.equalsIgnoreCase(httpRequest.httpRequestType)) {
                 
                 apacheHttpRequest =  new HttpPost(httpRequest.url.toUri());
                 
@@ -175,9 +185,10 @@ public class TestBrowserImpl implements TestBrowser {
             ///////////////////////////////////////////////////////////////////
             // Either add form parameters...
             ///////////////////////////////////////////////////////////////////
-            List<BasicNameValuePair> formparams = Lists.newArrayList();
+           
             if (httpRequest.formParameters != null) {
-
+            	
+            	List<BasicNameValuePair> formparams = Lists.newArrayList();
                 for (Entry<String, String> parameter : httpRequest.formParameters
                         .entrySet()) {
 
@@ -209,10 +220,6 @@ public class TestBrowserImpl implements TestBrowser {
 
                 }
                 
-                
-
-                // post.setEntity(entity);
-
                 apacheHttpRequest.setEntity(entity);
 
             }
@@ -223,14 +230,25 @@ public class TestBrowserImpl implements TestBrowser {
             ///////////////////////////////////////////////////////////////////
             if (httpRequest.payload != null) {
                 
-                if (httpRequest.headers.containsKey(HttpConstants.APPLICATION_JSON)) {
+                if (httpRequest.headers.containsKey(HttpConstants.HEADER_CONTENT_TYPE)
+                		&& httpRequest.headers.containsValue(HttpConstants.APPLICATION_JSON)) {
+                	
                     
                     String string = new ObjectMapper().writeValueAsString(httpRequest.payload);
-                    apacheHttpRequest.setEntity(new StringEntity(string, "utf-8"));
                     
-                } else if (httpRequest.headers.containsKey(HttpConstants.APPLICATION_XML)) {
+                    StringEntity entity = new StringEntity(string, "utf-8");
+                    entity.setContentType("application/json; charset=utf-8");
+                    
+                    apacheHttpRequest.setEntity(entity);
+                    
+                } else if (httpRequest.headers.containsKey(HttpConstants.HEADER_CONTENT_TYPE)
+                		&& httpRequest.headers.containsValue(HttpConstants.APPLICATION_XML)) {
                     
                     String string = new XmlMapper().writeValueAsString(httpRequest.payload);
+                    
+                    StringEntity entity = new StringEntity(string, "utf-8");
+                    entity.setContentType(HttpConstants.APPLICATION_XML);                   
+                    
                     apacheHttpRequest.setEntity(new StringEntity(string, "utf-8"));
                     
                 } else if (httpRequest.payload instanceof String) {
@@ -254,6 +272,7 @@ public class TestBrowserImpl implements TestBrowser {
             apacheHttpRequest.releaseConnection();
 
         } catch (Exception e) {
+        	logger.error("Fatal problem creating POST or PUT request in TestBrowser", e);
             throw new RuntimeException(e);
         }
 
@@ -282,11 +301,9 @@ public class TestBrowserImpl implements TestBrowser {
 
             body = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
 
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {
+        	logger.error("Error while converting ApacheHttpClient response body to a String we can use", e);
+        } 
 
         org.doctester.testbrowser.Response doctestJHttpResponse = new org.doctester.testbrowser.Response(
                 headers, httpStatus, body);
