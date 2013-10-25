@@ -68,7 +68,6 @@ public class ApiControllerDocTest extends NinjaApiDoctester {
         Response response = sayAndMakeRequest(
                 Request
                     .GET().url(testServerUrl().path((GET_ARTICLES_URL.replace("{username}", USER)))));
-        System.out.println("body:" + response.payload);
         
         ArticlesDto articlesDto = response.payloadAsJson(ArticlesDto.class);
 
@@ -164,5 +163,12 @@ public class ApiControllerDocTest extends NinjaApiDoctester {
         		.formParameters(formParameters));
 
     }
+
+	@Override
+	public String getName() {
+		return ApiControllerDocTest.class.getSimpleName();
+	}
+		
+		
 
 }

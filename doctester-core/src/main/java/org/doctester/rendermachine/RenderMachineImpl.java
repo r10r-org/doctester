@@ -45,7 +45,7 @@ import com.google.common.io.Files;
 
 public class RenderMachineImpl implements RenderMachine {
     
-    String BASE_DIR = "target/site";
+    String BASE_DIR = "target/site/doctester";
     
     List<String> htmlDocument;
     
