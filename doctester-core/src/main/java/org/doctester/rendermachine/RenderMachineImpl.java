@@ -40,93 +40,176 @@ import com.google.common.collect.Lists;
 import com.google.common.html.HtmlEscapers;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
+import java.io.FileFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
 public class RenderMachineImpl implements RenderMachine {
+  
+    private final static Logger logger = LoggerFactory.getLogger(RenderMachineImpl.class);
+
+    private final String BASE_DIR = "target/site/doctester";
     
-    String BASE_DIR = "target/site/doctester";
+    private final String INDEX_FILE_WITHOUT_SUFFIX = "index";
     
     List<String> htmlDocument;
     
-    List<String> headerTitle = Lists.newArrayList();
-    List<String> headerId = Lists.newArrayList();
+    List<String> headerTitle;
+    List<String> headerId;
 
     private TestBrowser testBrowser = null;
     
     private String fileName = null;
     
     public RenderMachineImpl() {
-        
+        headerTitle = Lists.newArrayList();
+        headerId = Lists.newArrayList();
         htmlDocument = Lists.newArrayList();
         
     }
     
-    
-    private void prepareCss() {
+     @Override
+    public void say(String textAsParagraph) {
         
-        copyFromJar("META-INF/resources/webjars/bootstrap/3.0.0/css");
-        
-    }
-    
-    private void prepareJQuery() {
-        
-        copyFromJar("META-INF/resources/webjars/jquery/1.9.0");
+        htmlDocument.add("<p>");
+        htmlDocument.add(textAsParagraph);
+        htmlDocument.add("</p>");
         
     }
     
-    
-    public void copyFromJar(String path) {
+    @Override
+    public void sayNextSection(String textAsH1) {
         
-        try {
+        headerTitle.add(textAsH1);
+        
+        String h1WithId = "<h1 id=\"%s\">";
+        String textAsH1Id = convertTextToId(textAsH1);
+        
+        htmlDocument.add(String.format(h1WithId, textAsH1Id));
+        htmlDocument.add(textAsH1);
+        htmlDocument.add("</h1>");
+        
+    }
+    
+    public String convertTextToId(String textAsH1) {
+        
+        String textAsH1Converted = textAsH1.toLowerCase();
+        textAsH1Converted = textAsH1Converted.replaceAll("\\W", "");
+        
+        return textAsH1Converted;
+        
+    }
+    
+    @Override
+    public List<Cookie> sayAndGetCookies() {
+        List<Cookie> cookies = testBrowser.getCookies();
+        
+        htmlDocument.add("<p>");
+        
+        for (Cookie cookie: cookies) {
             
-            URL url = this.getClass().getClassLoader().getResource(path);
+            htmlDocument.add("<b>Cookies</b><br/>");
+            printCookie(cookie);
 
-            System.out.println("url" + url.getFile());
-            //if (en.hasMoreElements()) {
-              //  URL url = en.nextElement();
-                JarURLConnection urlcon = (JarURLConnection) (url.openConnection());
-                try (JarFile jar = urlcon.getJarFile();) {
-                    Enumeration<JarEntry> entries = jar.entries();
-                    while (entries.hasMoreElements()) {
-                        JarEntry jarEntry = entries.nextElement();
-                                
-                        System.out.println(jarEntry.getName());
-                        
-                        if (jarEntry.isDirectory()) {
-                            
-                            new File(BASE_DIR + File.separator + jarEntry.getName()).mkdirs();
-                            
-                        } else {
-                            
-
-                            ByteStreams.copy(
-                                    jar.getInputStream(jarEntry), 
-                                    new FileOutputStream(new File(BASE_DIR + File.separator + jarEntry.getName())));
-                            
-                        }
-                        
-                    }
-                }
-
-            
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         
+        htmlDocument.add("</p>");
+        
+        return cookies;
+    }
+
+    @Override
+    public Cookie sayAndGetCookieWithName(String name) {
+        
+        Cookie cookie = testBrowser.getCookieWithName(name);
+        htmlDocument.add("<b>Cookie</b><br/>");
+        printCookie(cookie);
+        
+        return cookie;
+
     }
     
+    
+    @Override
+    public Response sayAndMakeRequest(Request httpRequest) {
+        
+        Response httpResponse = testBrowser.makeRequest(httpRequest); 
+        
+        printHttpRequestAndHttpResponse(httpRequest, httpResponse);
+        
+        return httpResponse;
+        
+    }
+    
+        @Override
+    public <T> void sayAndAssertThat(String message, 
+                               T actual,
+                               Matcher<? super T> matcher) {
+        
+        sayAndAssertThat(message, "", actual, matcher);
+
+    }
+       
+    @Override
+    public <T> void sayAndAssertThat(String message, 
+                               String reason,
+                               T actual,
+                               Matcher<? super T> matcher) {
+        
+        htmlDocument.add("<div class=\"alert alert-success\">");
+        htmlDocument.add(message);
+        htmlDocument.add("</div>");
+
+        MatcherAssert.assertThat(reason, actual, matcher);
+
+    }
+
+
+    @Override
+    public void sayRaw(String rawHtml) {
+        htmlDocument.add(rawHtml);
+        
+    }
+ 
+    
+    @Override
     public void setTestBrowser(TestBrowser testBrowser) {
         this.testBrowser = testBrowser;
     }
+
+        
+    private void printCookie(Cookie cookie) {
+        
+        htmlDocument.add("Name: " + cookie.getName() + "<br/>");
+        htmlDocument.add("Path: " + cookie.getPath() + "<br/>");
+        htmlDocument.add("Domain: " + cookie.getDomain() + "<br/>");
+        htmlDocument.add("Value: " + cookie.getValue() + "<br/>");
+        
+    }
     
     
+    @Override
     public void finishAndWriteOut() {
         
-        prepareCss();
+        unzipCssFromJarIntoBaseDirectory();      
+        unzipJQueryFromJarIntoBaseDirectory();
         
-        prepareJQuery();
+        doCreateHtmlPageforThisDoctest();  
+        doCreateIndexPage();
         
+    }
+    
+    @Override
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+        
+    }
+    
+    
+    private void doCreateHtmlPageforThisDoctest() {
+    
         List<String> finalHtmlDocument = Lists.newArrayList();
         
 
@@ -166,122 +249,116 @@ public class RenderMachineImpl implements RenderMachine {
         }
         
         
-        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_RIGHT_CONTENT_BEGIN);
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_RIGHT_CONTENT_END);
         finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_CONTAINER_END);
         finalHtmlDocument.add(RenderMachineHtml.BODY_END); 
         finalHtmlDocument.add(RenderMachineHtml.HTML_END); 
         
    
-        doWriteOut(finalHtmlDocument);
-        
+        writeOutListOfHtmlStringsIntoFile(finalHtmlDocument, fileName);
+    
     }
     
-    private void doWriteOut(List<String> finalHtmlDocument) {
+    
+    private void doCreateIndexPage() {
+        
+        File [] files = collectAllDoctestsToCreateIndexFile(BASE_DIR);
+      
+        
+        List<String> finalHtmlDocument = Lists.newArrayList();
+        
+
+        finalHtmlDocument.add(RenderMachineHtml.HTML_BEGIN);
+        finalHtmlDocument.add(String.format(RenderMachineHtml.HTML_HEAD, INDEX_FILE_WITHOUT_SUFFIX));
+        finalHtmlDocument.add(RenderMachineHtml.BODY_BEGIN);
+        
+        String headerFormattedWithTitle = String.format(
+                RenderMachineHtml.BOOTSTRAP_HEADER,
+                INDEX_FILE_WITHOUT_SUFFIX);
+        
+        finalHtmlDocument.add(headerFormattedWithTitle);
+        
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_CONTAINER_BEGIN);
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_LEFT_NAVBAR_EMPTY);                
+        
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_RIGHT_CONTENT_BEGIN);
+        
+        
+        for (File file : files) {
+        
+            String link = String.format("<a href=\"%s\">%s</a>", file.getName(), file.getName());
+            
+            finalHtmlDocument.add(link);
+            finalHtmlDocument.add(RenderMachineHtml.HTML_NEWLINE);
+        }
+        
+        
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_RIGHT_CONTENT_END);
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_CONTAINER_END);
+        finalHtmlDocument.add(RenderMachineHtml.BODY_END); 
+        finalHtmlDocument.add(RenderMachineHtml.HTML_END); 
+        
+   
+        writeOutListOfHtmlStringsIntoFile(finalHtmlDocument, INDEX_FILE_WITHOUT_SUFFIX);
+    
+    
+    }
+    
+    
+    private File [] collectAllDoctestsToCreateIndexFile(String baseDirectoryForCollectingDoctesterHtmlFiles) {
+    
+            File [] files = new File(baseDirectoryForCollectingDoctesterHtmlFiles).listFiles(new FileFilter() {
+
+            @Override
+            public boolean accept(File pathname) {
+               
+                if (!pathname.getName().endsWith(".html")) {
+                    return false;
+                } else if (pathname.getName().equals(INDEX_FILE_WITHOUT_SUFFIX + ".html")) {
+                   return false; 
+                } else {
+                    return true;
+                }
+                
+            }
+        });
+        
+        
+        return files;
+    
+    
+    }
+    
+    
+    private void writeOutListOfHtmlStringsIntoFile(
+            List<String> finalHtmlDocument, 
+            String fileNameWithoutSuffix) {
         
         String completeHtmlOutput = Joiner.on("\n").join(finalHtmlDocument);
         
         try {
             
-            Files.write(completeHtmlOutput, new File(BASE_DIR + File.separator + fileName + ".html"), Charsets.UTF_8);
+            Files.write(
+                    completeHtmlOutput, 
+                    new File(
+                            BASE_DIR 
+                                    + File.separator 
+                                    + fileNameWithoutSuffix + ".html"), 
+                    Charsets.UTF_8);
             
         } catch (IOException e) {
             
-            e.printStackTrace();
+            logger.error("An error ocurred while writing out html to file", e);
             
         }
         
     }
-    
-    
-    public void say(String textAsParagraph) {
-        
-        htmlDocument.add("<p>");
-        htmlDocument.add(textAsParagraph);
-        htmlDocument.add("</p>");
-        
-    }
-    
-    public void sayNextSection(String textAsH1) {
-        
-        headerTitle.add(textAsH1);
-        
-        String h1WithId = "<h1 id=\"%s\">";
-        String textAsH1Id = convertTextToId(textAsH1);
-        
-        htmlDocument.add(String.format(h1WithId, textAsH1Id));
-        htmlDocument.add(textAsH1);
-        htmlDocument.add("</h1>");
-        
-    }
-    
-    public String convertTextToId(String textAsH1) {
-        
-        String textAsH1Converted = textAsH1.toLowerCase();
-        textAsH1Converted = textAsH1Converted.replaceAll("\\W", "");
-        
-        return textAsH1Converted;
-        
-    }
-
-    public List<Cookie> sayAndGetCookies() {
-        List<Cookie> cookies = testBrowser.getCookies();
-        
-        htmlDocument.add("<p>");
-        
-        for (Cookie cookie: cookies) {
-            
-            htmlDocument.add("<b>Cookies</b><br/>");
-            printCookie(cookie);
-
-            
-        }
-        
-        htmlDocument.add("</p>");
-        
-        return cookies;
-    }
-
-    public Cookie sayAndGetCookieWithName(String name) {
-        
-        Cookie cookie = testBrowser.getCookieWithName(name);
-        htmlDocument.add("<b>Cookie</b><br/>");
-        printCookie(cookie);
-        
-        return cookie;
-
-    }
-    
-    private void printCookie(Cookie cookie) {
-        
-        htmlDocument.add("Name: " + cookie.getName() + "<br/>");
-        htmlDocument.add("Path: " + cookie.getPath() + "<br/>");
-        htmlDocument.add("Domain: " + cookie.getDomain() + "<br/>");
-        htmlDocument.add("Value: " + cookie.getValue() + "<br/>");
-        
-    }
-
-   
-
-    @Override
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-        
-    }
 
 
-    @Override
-    public Response sayAndMakeRequest(Request httpRequest) {
-        
-        Response httpResponse = testBrowser.makeRequest(httpRequest); 
-        
-        printHttpRequestAndHttpResponse(httpRequest, httpResponse);
-        
-        return httpResponse;
-        
-    }
+
 
     
-    public void printHttpRequestAndHttpResponse(Request httpRequest, Response response) {
+    private void printHttpRequestAndHttpResponse(Request httpRequest, Response response) {
 
         htmlDocument.add("<div class=\"panel panel-default\">");
         htmlDocument.add("<div class=\"panel-body\">");
@@ -340,7 +417,6 @@ public class RenderMachineImpl implements RenderMachine {
     
     private List<String> getHtmlFormattedHeaders(Map<String, String> headers) {
         
-        
         List<String> htmlStuff = Lists.newArrayList(); 
         
         
@@ -358,8 +434,6 @@ public class RenderMachineImpl implements RenderMachine {
                 htmlStuff.add("<dd><div class=\"http-response-body\">" + header.getValue() + "</div></dd>");   
                 
             }
-        
-
            
             htmlStuff.add("</dl>");
             htmlStuff.add("</div>");
@@ -369,38 +443,52 @@ public class RenderMachineImpl implements RenderMachine {
         
         return htmlStuff;
         
+    }
+    
+    private void unzipCssFromJarIntoBaseDirectory() {
         
+        unzipFromJar("META-INF/resources/webjars/bootstrap/3.0.0/css", BASE_DIR);
         
     }
-
-    @Override
-    public <T> void sayAndAssertThat(String message, 
-                               T actual,
-                               Matcher<? super T> matcher) {
+    
+    private void unzipJQueryFromJarIntoBaseDirectory() {
         
-        sayAndAssertThat(message, "", actual, matcher);
-
+        unzipFromJar("META-INF/resources/webjars/jquery/1.9.0", BASE_DIR);
+        
     }
-       
-    @Override
-    public <T> void sayAndAssertThat(String message, 
-                               String reason,
-                               T actual,
-                               Matcher<? super T> matcher) {
-        
-        htmlDocument.add("<div class=\"alert alert-success\">");
-        htmlDocument.add(message);
-        htmlDocument.add("</div>");
+    
+    
+    private void unzipFromJar(String classpathLocation, String destinationDirectory) {
 
-        MatcherAssert.assertThat(reason, actual, matcher);
+        try {
 
-    }
+            URL url = this.getClass().getClassLoader().getResource(classpathLocation);
 
+            JarURLConnection urlcon = (JarURLConnection) (url.openConnection());
+            try (JarFile jar = urlcon.getJarFile();) {
+                Enumeration<JarEntry> entries = jar.entries();
+                while (entries.hasMoreElements()) {
+                    JarEntry jarEntry = entries.nextElement();
 
-    @Override
-    public void sayRaw(String rawHtml) {
-        htmlDocument.add(rawHtml);
-        
+                    if (jarEntry.isDirectory()) {
+
+                        new File(destinationDirectory + File.separator + jarEntry.getName()).mkdirs();
+
+                    } else {
+
+                        ByteStreams.copy(
+                                jar.getInputStream(jarEntry),
+                                new FileOutputStream(new File(destinationDirectory + File.separator + jarEntry.getName())));
+
+                    }
+
+                }
+            }
+
+        } catch (IOException e) {
+            logger.error("An error occurred while copying from webjars archive to site directory", e);
+        }
+
     }
     
 }

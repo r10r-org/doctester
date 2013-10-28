@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -255,7 +256,7 @@ public class TestBrowserImpl implements TestBrowser {
                 if (httpRequest.headers.containsKey(HttpConstants.HEADER_CONTENT_TYPE)
                 		&& httpRequest.headers.containsValue(HttpConstants.APPLICATION_JSON)) {
                 	
-                    
+
                     String string = new ObjectMapper().writeValueAsString(httpRequest.payload);
                     
                     StringEntity entity = new StringEntity(string, "utf-8");

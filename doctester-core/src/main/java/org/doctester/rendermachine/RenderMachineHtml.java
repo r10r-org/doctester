@@ -21,7 +21,8 @@ public interface RenderMachineHtml {
     String BOOTSTRAP_BASE = "META-INF/resources/webjars/bootstrap/3.0.0/";
     String JQUERY_BASE = "META-INF/resources/webjars/jquery/1.9.0/";
     
-     
+    String HTML_NEWLINE = "<br/>";
+    
     String HTML_BEGIN = 
             "<!DOCTYPE html>\n" + 
             "<html lang=\"en\">\n";
@@ -30,15 +31,15 @@ public interface RenderMachineHtml {
     
     String CUSTOM_CSS =
         "<style>" +
-        "body {\n" + 
-    		"  padding-top: 100px;\n" + 
-    		"  padding-bottom: 20px;\n" + 
-    		"}\n" +
-    		"div.http-response-body {\n" +
-    		"  max-height:200px;\n" + 
-    		"  overflow:auto;\n" +
-    		"}\n" +
-    		"</style>";
+        "  body {\n" + 
+    	"    padding-top: 100px;\n" + 
+    	"    padding-bottom: 20px;\n" + 
+    	"  }\n" +
+    	"  div.http-response-body {\n" +
+    	"    max-height:200px;\n" + 
+    	"    overflow:auto;\n" +
+    	"  }\n" +
+    	"</style>";
 
     
     String HTML_HEAD = 
@@ -62,32 +63,39 @@ public interface RenderMachineHtml {
     
     String BOOTSTRAP_HEADER =
         "<div class=\"navbar navbar-inverse navbar-fixed-top\">\n" + 
-    		"  <div class=\"container\">\n" + 
-    		"    <div class=\"navbar-header\">\n" + 
-    		"      <a class=\"navbar-brand\" href=\"#\">&#10084; %s</a>\n" + 
-    		"    </div>\n" + 
-    		"    <div class=\"navbar-collapse collapse\"></div>" +	
-    		"  </div>\n" +     		
-    		"</div>";
+        "  <div class=\"container\">\n" + 
+    	"    <div class=\"navbar-header\">\n" + 
+    	"      <a class=\"navbar-brand\" href=\"#\">&#10084; %s</a>\n" + 
+    	"    </div>\n" + 
+    	"    <div class=\"navbar-collapse collapse\">" +
+        "    </div>" +	
+    	"  </div>\n" +     		
+    	"</div>";
+        
+    String BOOTSTRAP_CONTAINER_BEGIN = 
+        "<div class=\"container\">" +
+        "<div class=\"row\">";
     
-    
-    String BOOTSTRAP_CONTAINER_BEGIN = "<div class=\"container\"><div class=\"row\">";
-    
-    String BOOTSTRAP_LEFT_NAVBAR_BEGIN = "<div class=\"col-md-3\">\n" + 
-    		"          <div class=\"panel panel-default\">\n" +
-        "<div class=\"panel-body\">" +
-    		"            <ul class=\"nav nav-pills nav-stacked\">\n";
+    String BOOTSTRAP_LEFT_NAVBAR_EMPTY = 
+        "<div class=\"col-md-3\">\n" + 
+    	"</div>";
+        
+    String BOOTSTRAP_LEFT_NAVBAR_BEGIN = 
+        "<div class=\"col-md-3\">\n" + 
+    	"  <div class=\"panel panel-default\">\n" +
+        "    <div class=\"panel-body\">" +
+    	"      <ul class=\"nav nav-pills nav-stacked\">\n";
     
     String BOOTSTRAP_LEFT_NAVBAR_ELEMENT = 
-            "                <li>\n" + 
-            "  <a href=\"#%s\">%s</a>\n" + 
-            "</li>\n";
+        "<li>\n" + 
+        "  <a href=\"#%s\">%s</a>\n" + 
+        "</li>\n";
     
     String BOOTSTRAP_LEFT_NAVBAR_END = 
-            "            </ul>\n" + 
-            "          </div>\n" + 
-            "          </div>\n" + 
-            "        </div>";
+            "     </ul>\n" + 
+            "    </div>\n" + 
+            "  </div>\n" + 
+            "</div>";
     
     String BOOTSTRAP_RIGHT_CONTENT_BEGIN = "<div class=\"col-md-9\" role=\"main\">";
     
@@ -95,10 +103,13 @@ public interface RenderMachineHtml {
     String BOOTSTRAP_RIGHT_CONTENT_END = "</div>";
     
     
-    String BOOTSTRAP_CONTAINER_END = "      </div></div></div><footer>\n" + 
-    		"        Made with &#10084; and DoctestJ\n" + 
-    		"      </footer>\n" + 
-    		"    </div> <!-- /container -->";
+    String BOOTSTRAP_CONTAINER_END = 
+
+            "  </div>" +
+            "  <footer>\n" + 
+    		"   Made with &#10084; and Doctester\n" + 
+    		"  </footer>\n" + 
+    		"</div> <!-- /container -->";
 
     
     String BODY_BEGIN = "<body>";

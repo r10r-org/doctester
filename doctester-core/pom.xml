@@ -32,19 +32,19 @@
 
 	<build>
    
-        <plugins>
+		<plugins>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
               
-            </plugin>
-       </plugins>  
+			</plugin>
+		</plugins>  
                 
 		<resources>
 			<resource>
@@ -53,13 +53,13 @@
 					<include>**/*</include>
 				</includes>
 			</resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*</include>
+				</includes>
+			</resource>
 		</resources>
 
 
@@ -67,12 +67,12 @@
 
 	<dependencies>
     
-        <!-- some styling for the html reports -->
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>3.0.0</version>
-        </dependency>
+		<!-- some styling for the html reports -->
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>3.0.0</version>
+		</dependency>
 
 
 		<!-- guava is just cool -->
@@ -90,81 +90,81 @@
 		</dependency>
 
                
-        <!-- Testing -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
-            <scope>test</scope>
-        </dependency>
+		<!-- Testing -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.9.5</version>
+			<scope>test</scope>
+		</dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <!-- junit-dep has all dependencies declared, rather than bundled (bundled 
-                causes massive classpath headaches) -->
-            <artifactId>junit-dep</artifactId>
-            <version>4.11</version>
-        </dependency>
-        <dependency>
-    		<groupId>org.hamcrest</groupId>
-    		<artifactId>hamcrest-library</artifactId>
-    		<version>1.2.1</version>
-    	</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<!-- junit-dep has all dependencies declared, rather than bundled (bundled 
+			causes massive classpath headaches) -->
+			<artifactId>junit-dep</artifactId>
+			<version>4.11</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<version>1.2.1</version>
+		</dependency>
     	
            
-        <!--HttpCient is used to mainly test low level Json Apis -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.2.1</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+		<!--HttpCient is used to mainly test low level Json Apis -->
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.2.1</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
         
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpmime</artifactId>
-            <version>4.2.1</version>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>4.2.1</version>
+		</dependency>
         
-        <!-- We use Jackson for rendering jsons and xml: -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.2.3</version>
-        </dependency>
+		<!-- We use Jackson for rendering jsons and xml: -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.2.3</version>
+		</dependency>
         
-        <!-- XML parsing -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-            <version>2.2.3</version>
-        </dependency>
+		<!-- XML parsing -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>2.2.3</version>
+		</dependency>
         
-                <!-- Logback is the successor of log4j. We use it: -->
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.0.13</version>
-        </dependency>
+		<!-- Logback is the successor of log4j. We use it: -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.13</version>
+		</dependency>
         
-        <!-- Replace commons-logging with slf4j bridge (that will use logback)-->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.7.5</version>
-        </dependency>
+		<!-- Replace commons-logging with slf4j bridge (that will use logback)-->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.7.5</version>
+		</dependency>
         
-        <!-- Replace log4j with slf4j bridge (that will use logback)-->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>log4j-over-slf4j</artifactId>
-            <version>1.7.5</version>
-        </dependency>
+		<!-- Replace log4j with slf4j bridge (that will use logback)-->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>1.7.5</version>
+		</dependency>
  
 
 	</dependencies>
