@@ -56,7 +56,7 @@ public class TestBrowserImpl implements TestBrowser {
 	
 	private static Logger logger = LoggerFactory.getLogger(TestBrowserImpl.class);	
 
-	static final String HANDLE_REDIRECTS = "http.protocol.handle-redirects";
+	private static final String HANDLE_REDIRECTS = "http.protocol.handle-redirects";
 	
     private DefaultHttpClient httpClient;
 
@@ -122,7 +122,7 @@ public class TestBrowserImpl implements TestBrowser {
 
         try {
             
-            HttpUriRequest apacheHttpRequest = null;
+            HttpUriRequest apacheHttpRequest;
             
 
             httpClient.getParams().setParameter(
@@ -132,10 +132,10 @@ public class TestBrowserImpl implements TestBrowser {
                 
                 apacheHttpRequest = new HttpGet(request.url.toUri());
                 
-            } else if (HttpConstants.DELETE.equalsIgnoreCase(request.httpRequestType)){
+            } else {
                 
                 apacheHttpRequest = new HttpDelete(request.url.toUri());
-            }
+            } 
 
             if (request.headers != null) {
 

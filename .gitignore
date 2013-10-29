@@ -9,4 +9,4 @@ bin
 *.iml
 .idea
 
-
+nb-configuration.xml
