@@ -1,7 +1,7 @@
 Doctester
 =========
 
-[![Build Status](https://buildhive.cloudbees.com/job/raphaelbauer/job/doctester/badge/icon)](https://buildhive.cloudbees.com/job/raphaelbauer/job/doctester/)
+[![Build Status](https://buildhive.cloudbees.com/job/doctester/job/doctester/badge/icon)](https://buildhive.cloudbees.com/job/doctester/job/doctester/)
 
 ## Problem
 
