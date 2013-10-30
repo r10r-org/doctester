@@ -18,7 +18,6 @@ package org.doctester;
 import java.util.List;
 import java.util.UUID;
 
-import javax.management.RuntimeErrorException;
 
 import org.apache.http.cookie.Cookie;
 import org.doctester.rendermachine.RenderMachine;
@@ -32,7 +31,6 @@ import org.doctester.testbrowser.Url;
 import org.hamcrest.Matcher;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 
 public abstract class DocTester implements TestBrowser, RenderMachineCommands {

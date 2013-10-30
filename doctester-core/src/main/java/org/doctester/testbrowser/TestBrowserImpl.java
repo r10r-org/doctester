@@ -47,10 +47,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import java.io.IOException;
+import org.apache.http.ParseException;
 
 public class TestBrowserImpl implements TestBrowser {
 	
@@ -64,10 +65,12 @@ public class TestBrowserImpl implements TestBrowser {
         httpClient = new DefaultHttpClient();
     }
 
+    @Override
     public List<Cookie> getCookies() {
         return httpClient.getCookieStore().getCookies();
     }
 
+    @Override
     public Cookie getCookieWithName(String name) {
 
         List<Cookie> cookies = getCookies();
@@ -82,11 +85,13 @@ public class TestBrowserImpl implements TestBrowser {
         return null;
     }
 
+    @Override
     public void clearCookies() {
         httpClient.getCookieStore().clear();
 
     }
     
+    @Override
     public Response makeRequest(Request httpRequest) {
         
         Response httpResponse;
@@ -162,7 +167,7 @@ public class TestBrowserImpl implements TestBrowser {
             }
             
 
-        } catch (Exception e) {
+        } catch (IOException e) {
         	logger.error("Fatal problem creating GET or DELETE request in TestBrowser", e);
             throw new RuntimeException(e);
         }
@@ -176,7 +181,7 @@ public class TestBrowserImpl implements TestBrowser {
 
     private Response makePostOrPutRequest(Request httpRequest) {
 
-        org.apache.http.HttpResponse apacheHttpClientResponse = null;
+        org.apache.http.HttpResponse apacheHttpClientResponse;
         Response response = null;
 
         try {
@@ -296,7 +301,7 @@ public class TestBrowserImpl implements TestBrowser {
             
             apacheHttpRequest.releaseConnection();
 
-        } catch (Exception e) {
+        } catch (IOException e) {
         	logger.error("Fatal problem creating POST or PUT request in TestBrowser", e);
             throw new RuntimeException(e);
         }
@@ -326,7 +331,7 @@ public class TestBrowserImpl implements TestBrowser {
 
             body = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
 
-        } catch (Exception e) {
+        } catch (IOException | ParseException e) {
         	logger.error("Error while converting ApacheHttpClient response body to a String we can use", e);
         } 
 
