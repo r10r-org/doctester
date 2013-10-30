@@ -39,7 +39,16 @@ public interface RenderMachineHtml {
     	"    max-height:200px;\n" + 
     	"    overflow:auto;\n" +
     	"  }\n" +
-    	"</style>";
+    	"</style>\n";
+    
+    String CUSTOM_JS = 
+        // fixes the problem where anchors scroll too far north:
+        // See also: https://github.com/twbs/bootstrap/issues/1768
+        "<script>\n" +
+        "  var shiftWindow = function() { scrollBy(0, -100) };\n" +
+        "  window.addEventListener(\"hashchange\", shiftWindow);\n" +
+        "  function load() { if (window.location.hash) shiftWindow(); }\n" +
+        "</script>\n";
 
     
     String HTML_HEAD = 
@@ -53,6 +62,7 @@ public interface RenderMachineHtml {
     		"    <title>%s</title>\n" + 
     		"\n" + 
     		CUSTOM_CSS +
+            CUSTOM_JS +
     		"    <!-- Bootstrap core CSS -->\n" + 
     		"    <link href=\"" + BOOTSTRAP_BASE + "css/bootstrap.css\" rel=\"stylesheet\">\n" + 
     		"\n" + 
@@ -65,7 +75,7 @@ public interface RenderMachineHtml {
         "<div class=\"navbar navbar-inverse navbar-fixed-top\">\n" + 
         "  <div class=\"container\">\n" + 
     	"    <div class=\"navbar-header\">\n" + 
-    	"      <a class=\"navbar-brand\" href=\"#\">&#10084; %s</a>\n" + 
+    	"      <a class=\"navbar-brand\" href=\"#\">&#10003; %s</a>\n" + 
     	"    </div>\n" + 
     	"    <div class=\"navbar-collapse collapse\">" +
         "    </div>" +	

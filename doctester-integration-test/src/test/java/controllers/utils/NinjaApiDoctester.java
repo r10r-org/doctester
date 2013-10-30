@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers;
+package controllers.utils;
 
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaTestServer;
@@ -42,6 +42,7 @@ public abstract class NinjaApiDoctester extends DocTester {
         ninjaTestServer.shutdown();
     }
     
+    @Override
     public String getTestServerUrl() {
    	
     	return ninjaTestServer.getServerAddress();

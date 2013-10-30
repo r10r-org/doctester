@@ -14,26 +14,38 @@
  * limitations under the License.
  */
 
-package controllers;
+package controllers.utils;
 
+import java.util.List;
 import ninja.utils.NinjaConstant;
+import ninja.utils.NinjaTestBrowser;
 import ninja.utils.NinjaTestServer;
+import org.apache.http.cookie.Cookie;
 
 import org.doctester.DocTester;
+import org.doctester.testbrowser.Request;
+import org.doctester.testbrowser.Response;
+import org.doctester.testbrowser.TestBrowser;
+import org.doctester.testbrowser.TestBrowserImpl;
+import org.doctester.testbrowser.Url;
 import org.junit.After;
 import org.junit.Before;
 
-public abstract class NinjaApiDoctester extends DocTester {
+public abstract class NinjaTest implements TestBrowser {
 	
 	public NinjaTestServer ninjaTestServer;
+    
+    /** A persistent HttpClient that stores cookies to make requests */
+	public TestBrowser ninjaTestBrowser;
 
-    public NinjaApiDoctester() {
+    public NinjaTest() {
     }
 
     @Before
     public void startServerInTestMode() {
         System.setProperty(NinjaConstant.MODE_KEY_NAME, NinjaConstant.MODE_TEST);
         ninjaTestServer = new NinjaTestServer();
+        ninjaTestBrowser = new TestBrowserImpl();
     }
 
     @After
@@ -42,10 +54,32 @@ public abstract class NinjaApiDoctester extends DocTester {
         ninjaTestServer.shutdown();
     }
     
-    public String getTestServerUrl() {
-   	
-    	return ninjaTestServer.getServerAddress();
-    	
+    public final Url testServerUrl() {
+        
+       return Url.host(ninjaTestServer.getServerAddress());
+        
     }
+
+    @Override
+    public List<Cookie> getCookies() {
+        return ninjaTestBrowser.getCookies();
+    }
+
+    @Override
+    public Cookie getCookieWithName(String name) {
+        return ninjaTestBrowser.getCookieWithName(name);
+    }
+
+    @Override
+    public void clearCookies() {
+        ninjaTestBrowser.clearCookies();
+    }
+
+    @Override
+    public Response makeRequest(Request httpRequest) {
+        return ninjaTestBrowser.makeRequest(httpRequest);
+    }
+    
+    
 
 }

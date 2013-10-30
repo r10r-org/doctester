@@ -36,57 +36,37 @@ import org.junit.BeforeClass;
 
 
 public abstract class DocTester implements TestBrowser, RenderMachineCommands {
-    
-    /**
-     * Use this system variable to configure your own RenderMachine.
-     */
-    private static String RENDER_MACHINE_KEY = "org.doctester.rendermachine";
-    
-    private static String RENDER_MACHINE_DEFAULT = RenderMachineImpl.class.getName();
 
-    // Unique for each test
+    // Unique for each test method.
     private TestBrowser testBrowser;
     
     // Unique for whole testClass => one outputfile per testClass.
-    public static RenderMachine renderMachine;
-
-    @BeforeClass
-    public static void beginDoctest() {
-        
-        // We create a new instance from the RenderMachine / or take the default one.
-        String renderMachineClass = System.getProperty(RENDER_MACHINE_KEY, RENDER_MACHINE_DEFAULT);
-
-        Class<?> clazz;
-        
-        try {
-            clazz = Class.forName(renderMachineClass);
-            renderMachine = (RenderMachine) clazz.newInstance();
-        } catch (Exception e) {
-            
-            e.printStackTrace();
-            throw new RuntimeErrorException(
-                    new Error(
-                            "Something went wrong with configuration of RenderMachine via " 
-                                    + RENDER_MACHINE_KEY));
-            
-        } 
-        
-
-    }
+    private static RenderMachine renderMachine = null;
 
 
     @Before
     public void setupForTestCaseMethod() {
+        
+        initRenderingMachineIfNull();
 
         // This is all a bit strange. But JUnit's @BeforeClass
         // is static. Therefore the only possibility to transmit
-        // the filename to the renderMachine.
+        // the filename to the renderMachine is here.
         // We accept that we set the fileName too often.
         testBrowser = getTestBrowser();
         renderMachine.setTestBrowser(testBrowser);
         renderMachine.setFileName(getName());
 
     }
+    
+    public void initRenderingMachineIfNull() {
+    
+        if (renderMachine == null) {
+            renderMachine = getRenderMachine();
+        }
+    
+    }
+   
     
     @AfterClass
     public static void finishDocTest() {
@@ -198,11 +178,24 @@ public abstract class DocTester implements TestBrowser, RenderMachineCommands {
      * You may override this method if you want to supply your own testbrowser
      * for your class or classes.
      * 
-     * @return
+     * @return a TestBrowser that will be used for each test method.
      */
     public TestBrowser getTestBrowser() {
 
         return new TestBrowserImpl();
+
+    }
+    
+    /**
+     * You may override this method if you want to supply your own rendering machine
+     * for your class or classes.
+     * 
+     * @return a RenderMachine that generates output and lives for a whole test 
+     *         class.
+     */
+    public RenderMachine getRenderMachine() {
+
+        return new RenderMachineImpl();
 
     }
     

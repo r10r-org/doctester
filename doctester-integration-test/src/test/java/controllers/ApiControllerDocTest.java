@@ -16,6 +16,7 @@
 
 package controllers;
 
+import controllers.utils.NinjaApiDoctester;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 import java.lang.reflect.Type;

@@ -16,6 +16,7 @@
 
 package controllers;
 
+import controllers.utils.NinjaTest;
 import static org.junit.Assert.assertTrue;
 
 import org.doctester.testbrowser.Request;
@@ -23,7 +24,7 @@ import org.doctester.testbrowser.Response;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LoginLogoutControllerTest extends NinjaApiDoctester {
+public class LoginLogoutControllerTest extends NinjaTest {
     
     @Before
     public void setup() {

@@ -16,6 +16,7 @@
 
 package controllers;
 
+import controllers.utils.NinjaTest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -40,7 +41,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
-public class ApiControllerTest extends NinjaApiDoctester {
+public class ApiControllerTest extends NinjaTest {
     
     @Before
     public void setup() {

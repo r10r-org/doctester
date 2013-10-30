@@ -16,15 +16,15 @@
 
 package controllers;
 
+import controllers.utils.NinjaTest;
 import static org.junit.Assert.assertTrue;
-import ninja.NinjaTest;
 
 import org.doctester.testbrowser.Request;
 import org.doctester.testbrowser.Response;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ApplicationControllerTest extends NinjaApiDoctester {
+public class ApplicationControllerTest extends NinjaTest {
     
     @Before
     public void setup() {
