@@ -212,4 +212,12 @@
 
 	</dependencies>
 
+
+        <distributionManagement>
+                <site>
+                        <id>github-project-site</id>
+                        <url>gitsite:git@github.com/doctester/doctester.git</url>
+                </site>
+
+        </distributionManagement>
 </project>
