@@ -1,0 +1,69 @@
+<project xmlns="http://maven.apache.org/DECORATION/1.1.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd"
+         name="DocTester - Java JUnit Doctest Framework">
+    
+    
+    <bannerLeft>
+        <name>DocTester - Java JUnit Doctest Framework</name>
+        <href>http://www.doctester.org</href>
+    </bannerLeft>
+    <body>
+    
+    <head>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'XXX']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+    
+    </head>
+        <menu name="">
+        	<item name="Home" href="./index.html"/>
+        </menu>
+        
+        <menu name="Get involved">
+          <item name="@doctester" href="https://twitter.com/doctester"/>
+          <item name="Mailing list" href="https://groups.google.com/d/forum/doctester"/>
+        	<item name="Source code" href="https://github.com/doctester/doctester"/>
+        	<item name="Bug tracker" href="https://github.com/doctester/doctester/issues"/>
+        	<item name="Security issues" href="./security.html"/>
+        </menu>
+        
+        <menu name="Develop">
+          <item name="Changelog" href="./developer/changelog.html"/>
+        	<item name="Roadmap" href="./developer/roadmap.html"/>
+        	<item name="How to contribute" href="./developer/getting_started.html"/>
+        </menu>
+        
+
+    </body>
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.3.0</version>
+    </skin>
+      <custom>
+    <fluidoSkin>
+      <googleSearch>
+        <sitesearch>
+        http://www.doctester.org
+        </sitesearch>
+      </googleSearch>
+      <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+      <gitHub>
+        <projectId>doctester/doctester</projectId>
+        <ribbonOrientation>right</ribbonOrientation>
+        <ribbonColor>black</ribbonColor>
+      </gitHub>
+    </fluidoSkin>
+  </custom>
+</project>
