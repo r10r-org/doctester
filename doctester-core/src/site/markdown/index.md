@@ -80,7 +80,7 @@ In reality that looks like:
 
 And generates the following output:
 
-![A screenshot of the generated html output](https://github.com/doctester/doctester/raw/master/img/doctester_example_output.png)
+![A screenshot of the generated html output](../images/doctester_example_output.png)
 
 
 
