@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="Date-Revision-yyyymmdd" content="20131031" />
     <meta http-equiv="Content-Language" content="en" />
-    <title>DocTester - Java JUnit Doctest Framework - </title>
+    <title>DocTester - Java JUnit Doctest Framework - Generated Reports</title>
     <link rel="stylesheet" href="./css/apache-maven-fluido-1.3.0.min.css" />
     <link rel="stylesheet" href="./css/site.css" />
     <link rel="stylesheet" href="./css/print.css" media="print" />
@@ -79,10 +79,12 @@
                 <ul class="nav nav-list">
                     <li class="nav-header"></li>
                                 
-      <li class="active">
+      <li>
     
-            <a href="#"><i class="none"></i>Home</a>
-          </li>
+                          <a href="index.html" title="Home">
+          <i class="none"></i>
+        Home</a>
+            </li>
                               <li class="nav-header">Get involved</li>
                                 
       <li>
@@ -167,44 +169,21 @@
                 
         <div id="bodyColumn"  class="span9" >
                                   
-            <h1>Doctester</h1><p><a href="https://buildhive.cloudbees.com/job/doctester/job/doctester/"><img src="https://buildhive.cloudbees.com/job/doctester/job/doctester/badge/icon"  alt="Build Status"/></a></p><h2>Problem</h2><p>You are developing a state of the art restful webservice. Everyone loves you
-of course. You have several endpoints that deliver Json entities.
-Different payloads, query parameters and response codes.</p><p>You of course not only have the working implementation, but also some integration
-tests running on a server and being tested by a unit test.</p><p>And then you also have some documentation - right? About the entities, the endpoints,
-query parameters, the variable parts, Json payload definitions, response codes.
-In short: All the information a 3rd party developer needs to use your webservice.</p><p>But then you improve and change your webservice. You do of course adjust the tests,
-but somehow your documentation gets worse and worse. Outdated and even wrong.</p><p>Not a nice prospect.</p><h2>Solution</h2><p>Doctester allows you to write tests and documentation at the same time!
-By doing so you make sure that
-your documentation is always in sync with the current webservice. No more defunct
-documentation.</p><p>In fact Doctester is just an add-on for JUnit that
-gives you some additional methods to create a html file and cleanly document
-all important parameters of a webservice call into that file.</p><p>Documentation is created when your run your tests. That also means that
-your documentation is always in sync with your webservice. Horray!</p><h2>Some specs</h2><p>Doctester is heavily inspired by python doctests and also the Devbliss
-doctest library. However, doctester is quite different to the alternatives.</p>
-<ul>
-  <li>Plain old Java JUnit tests</li><li>Hamcrest for unit testing =&gt; Slick and simple Api</li><li>Webservice client with fluent interface for testing Json and Xml interfaces.</li><li>Simply - only 7 classes to date.</li><li>Uses Bootstrap for styling</li>
-</ul><h2>Example</h2><p>Basic commands:</p>
-<ul>
-  <li>sayNextSection(): A new headline for your test.</li><li>say(): Some fluent text wrapped inside a paragraph.</li><li>sayAndMakeRequest: Make a request and write the documentation of the whole
- request / response cycle to the html file.</li><li>sayAndAssertThat(): Creates a green bar with a text.</li>
-</ul><p>In reality that looks like:</p>
-<pre>
-
-  sayNextSection("Retrieving articles for a user (Json)");
-
-  say("Retrieving all articles of a user is a GET request to " + GET_ARTICLES_URL);
-
-  Response response = sayAndMakeRequest(
-    Request
-      .GET().url(testServerUrl().path(("/api/articles.json"))));
-        
-  ArticlesDto articlesDto = response.payloadAsJson(ArticlesDto.class);
-
-  sayAndAssertThat("We get back all 3 articles of that user ", 3, equalTo(articlesDto.articles.size()));
-
-</pre><p>And generates the following output:</p><p><img src="../images/doctester_example_output.png"  alt="A screenshot of the generated html output"/></p><p>By default the resulting html is generated into src/target/site/doctester/</p><p>There is an integration test that uses all of doctester. Check out:
-<a href="https://github.com/doctester/doctester/blob/master/doctester-integration-test/src/test/java/controllers/ApiControllerDocTest.java">https://github.com/doctester/doctester/blob/master/doctester-integration-test/src/test/java/controllers/ApiControllerDocTest.java</a></p><h2>Contact</h2><p>We welcome feedback. Don&rsquo;t hesitate to contact us! If you got ideas or find bugs
-please file an issue via our issue tracker!</p><p>Your Team Doctester :)</p><p>Raphael Bauer( <a href="mailto:raphael@raphaelbauer.com)">raphael@raphaelbauer.com)</a>, Stefan Weller (<a href="mailto:stefan.weller@zanox.com">stefan.weller@zanox.com</a>)</p>
+            <div class="section">
+<h2>Generated Reports<a name="Generated_Reports"></a></h2>
+<p>This document provides an overview of the various reports that are automatically generated by <a class="externalLink" href="http://maven.apache.org">Maven</a> . Each report is briefly described below.</p>
+<div class="section">
+<h3>Overview<a name="Overview"></a></h3>
+<table border="0" class="table table-striped">
+<tr class="a">
+<th>Document</th>
+<th>Description</th></tr>
+<tr class="b">
+<td><a href="apidocs/index.html">JavaDocs</a></td>
+<td>JavaDoc API documentation.</td></tr>
+<tr class="a">
+<td><a href="testapidocs/index.html">Test JavaDocs</a></td>
+<td>Test JavaDoc API documentation.</td></tr></table></div></div>
                   </div>
             </div>
           </div>

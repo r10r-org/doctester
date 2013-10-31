@@ -10,12 +10,12 @@
     <meta name="Date-Revision-yyyymmdd" content="20131031" />
     <meta http-equiv="Content-Language" content="en" />
     <title>DocTester - Java JUnit Doctest Framework - </title>
-    <link rel="stylesheet" href="./css/apache-maven-fluido-1.3.0.min.css" />
-    <link rel="stylesheet" href="./css/site.css" />
-    <link rel="stylesheet" href="./css/print.css" media="print" />
+    <link rel="stylesheet" href="../css/apache-maven-fluido-1.3.0.min.css" />
+    <link rel="stylesheet" href="../css/site.css" />
+    <link rel="stylesheet" href="../css/print.css" media="print" />
 
       
-    <script type="text/javascript" src="./js/apache-maven-fluido-1.3.0.min.js"></script>
+    <script type="text/javascript" src="../js/apache-maven-fluido-1.3.0.min.js"></script>
 
                           
         
@@ -79,10 +79,12 @@
                 <ul class="nav nav-list">
                     <li class="nav-header"></li>
                                 
-      <li class="active">
+      <li>
     
-            <a href="#"><i class="none"></i>Home</a>
-          </li>
+                          <a href="../index.html" title="Home">
+          <i class="none"></i>
+        Home</a>
+            </li>
                               <li class="nav-header">Get involved</li>
                                 
       <li>
@@ -115,7 +117,7 @@
                   
       <li>
     
-                          <a href="security.html" title="Security issues">
+                          <a href="../security.html" title="Security issues">
           <i class="none"></i>
         Security issues</a>
             </li>
@@ -123,24 +125,22 @@
                                 
       <li>
     
-                          <a href="developer/changelog.html" title="Changelog">
+                          <a href="../developer/changelog.html" title="Changelog">
           <i class="none"></i>
         Changelog</a>
             </li>
                   
       <li>
     
-                          <a href="developer/roadmap.html" title="Roadmap">
+                          <a href="../developer/roadmap.html" title="Roadmap">
           <i class="none"></i>
         Roadmap</a>
             </li>
                   
-      <li>
+      <li class="active">
     
-                          <a href="developer/getting_started.html" title="How to contribute">
-          <i class="none"></i>
-        How to contribute</a>
-            </li>
+            <a href="#"><i class="none"></i>How to contribute</a>
+          </li>
             </ul>
                 
                     
@@ -158,7 +158,7 @@
                             <div class="clear"></div>
                             <div class="clear"></div>
                              <a href="http://maven.apache.org/" title="Built by Maven" class="poweredBy">
-        <img class="builtBy" alt="Built by Maven" src="./images/logos/maven-feather.png" />
+        <img class="builtBy" alt="Built by Maven" src="../images/logos/maven-feather.png" />
       </a>
                   </div>
           </div>
@@ -167,44 +167,40 @@
                 
         <div id="bodyColumn"  class="span9" >
                                   
-            <h1>Doctester</h1><p><a href="https://buildhive.cloudbees.com/job/doctester/job/doctester/"><img src="https://buildhive.cloudbees.com/job/doctester/job/doctester/badge/icon"  alt="Build Status"/></a></p><h2>Problem</h2><p>You are developing a state of the art restful webservice. Everyone loves you
-of course. You have several endpoints that deliver Json entities.
-Different payloads, query parameters and response codes.</p><p>You of course not only have the working implementation, but also some integration
-tests running on a server and being tested by a unit test.</p><p>And then you also have some documentation - right? About the entities, the endpoints,
-query parameters, the variable parts, Json payload definitions, response codes.
-In short: All the information a 3rd party developer needs to use your webservice.</p><p>But then you improve and change your webservice. You do of course adjust the tests,
-but somehow your documentation gets worse and worse. Outdated and even wrong.</p><p>Not a nice prospect.</p><h2>Solution</h2><p>Doctester allows you to write tests and documentation at the same time!
-By doing so you make sure that
-your documentation is always in sync with the current webservice. No more defunct
-documentation.</p><p>In fact Doctester is just an add-on for JUnit that
-gives you some additional methods to create a html file and cleanly document
-all important parameters of a webservice call into that file.</p><p>Documentation is created when your run your tests. That also means that
-your documentation is always in sync with your webservice. Horray!</p><h2>Some specs</h2><p>Doctester is heavily inspired by python doctests and also the Devbliss
-doctest library. However, doctester is quite different to the alternatives.</p>
+            <h1>How to contribute</h1><h2>Great you want to contribute!</h2><p>Contributing to Doctester is really simple. Well. There are some rules that you should follow:</p>
 <ul>
-  <li>Plain old Java JUnit tests</li><li>Hamcrest for unit testing =&gt; Slick and simple Api</li><li>Webservice client with fluent interface for testing Json and Xml interfaces.</li><li>Simply - only 7 classes to date.</li><li>Uses Bootstrap for styling</li>
-</ul><h2>Example</h2><p>Basic commands:</p>
+  <li>Make sure your feature is well tested.</li><li>Make sure your feature is well documented (Javadoc).</li><li>Make sure there is a tutorial inside the website (doctester-core/src/site/markdown).</li><li>Make sure you are following the code style below.</li><li>Add your changes to changelog.md and your name to team.md.</li>
+</ul><p>Then send us a pull request and you become a happy member of the Doctester family :)</p><h2>Code style</h2>
 <ul>
-  <li>sayNextSection(): A new headline for your test.</li><li>say(): Some fluent text wrapped inside a paragraph.</li><li>sayAndMakeRequest: Make a request and write the documentation of the whole
- request / response cycle to the html file.</li><li>sayAndAssertThat(): Creates a green bar with a text.</li>
-</ul><p>In reality that looks like:</p>
-<pre>
-
-  sayNextSection("Retrieving articles for a user (Json)");
-
-  say("Retrieving all articles of a user is a GET request to " + GET_ARTICLES_URL);
-
-  Response response = sayAndMakeRequest(
-    Request
-      .GET().url(testServerUrl().path(("/api/articles.json"))));
-        
-  ArticlesDto articlesDto = response.payloadAsJson(ArticlesDto.class);
-
-  sayAndAssertThat("We get back all 3 articles of that user ", 3, equalTo(articlesDto.articles.size()));
-
-</pre><p>And generates the following output:</p><p><img src="../images/doctester_example_output.png"  alt="A screenshot of the generated html output"/></p><p>By default the resulting html is generated into src/target/site/doctester/</p><p>There is an integration test that uses all of doctester. Check out:
-<a href="https://github.com/doctester/doctester/blob/master/doctester-integration-test/src/test/java/controllers/ApiControllerDocTest.java">https://github.com/doctester/doctester/blob/master/doctester-integration-test/src/test/java/controllers/ApiControllerDocTest.java</a></p><h2>Contact</h2><p>We welcome feedback. Don&rsquo;t hesitate to contact us! If you got ideas or find bugs
-please file an issue via our issue tracker!</p><p>Your Team Doctester :)</p><p>Raphael Bauer( <a href="mailto:raphael@raphaelbauer.com)">raphael@raphaelbauer.com)</a>, Stefan Weller (<a href="mailto:stefan.weller@zanox.com">stefan.weller@zanox.com</a>)</p>
+  <li>Default Sun Java / Eclipse code style</li><li>If you change only tiny things only reformat stuff you actually changed. Otherwise reviewing is really hard.</li><li>We use spaces.</li><li>All files are UTF-8.</li>
+</ul><h2>Making a release</h2><p>Making a Doctester release</p><p>1) Preliminary</p>
+<ul>
+  <li>Make sure changelog.md is updated</li><li>Make sure the archetypes are up-to-date (Doctester version must match release version)</li><li>Make sure the archetypes version in docu (JPA + getting_started) matches release version</li>
+</ul><p>2) Release to central maven repo</p>
+<ul>
+  
+  <li>
+    <p>Make sure you are using <a href="http://semver.org/">http://semver.org/</a> for versioning.</p>
+  </li>
+  <li>
+    <p>mvn release:clean</p>
+  </li>
+  <li>
+    <p>mvn release:prepare</p>
+  </li>
+  <li>
+    <p>mvn release:perform</p>
+  </li>
+  <li>
+    <p>Log into <a href="http://oss.sonatype.org">http://oss.sonatype.org</a> and release the packages</p>
+  </li>
+</ul><p>3) publish website</p>
+<ul>
+  <li>git checkout TAG</li><li>cd doctester-core</li><li>mvn site site:deploy</li>
+</ul><p>And back to develop:</p>
+<ul>
+  <li>git checkout develop</li>
+</ul>
                   </div>
             </div>
           </div>
