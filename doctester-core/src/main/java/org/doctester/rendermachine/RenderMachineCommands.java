@@ -52,13 +52,13 @@ public interface RenderMachineCommands {
     /**
      * @return all cookies saved by this TestBrowser.
      */
-    public abstract List<Cookie> sayAndGetCookies();
+    public List<Cookie> sayAndGetCookies();
 
-    public abstract Cookie sayAndGetCookieWithName(String name);
+    public Cookie sayAndGetCookieWithName(String name);
     
-    public abstract Response sayAndMakeRequest(Request httpRequest);
+    public Response sayAndMakeRequest(Request httpRequest);
     
-    public abstract <T> void sayAndAssertThat(String message, String reason, T actual, Matcher<? super T> matcher);
+    public <T> void sayAndAssertThat(String message, String reason, T actual, Matcher<? super T> matcher);
     
     public <T> void sayAndAssertThat(String message, T actual, Matcher<? super T> matcher);
 }

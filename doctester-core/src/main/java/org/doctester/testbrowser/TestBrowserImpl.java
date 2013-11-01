@@ -157,7 +157,7 @@ public class TestBrowserImpl implements TestBrowser {
             apacheHttpClientResponse = httpClient.execute(apacheHttpRequest);
             
             
-            response = convertFromApacheHttpResponseToDocTestJHttpResponse(apacheHttpClientResponse);
+            response = convertFromApacheHttpResponseToDocTesterHttpResponse(apacheHttpClientResponse);
             
             
             if (apacheHttpRequest instanceof HttpGet) {
@@ -297,7 +297,7 @@ public class TestBrowserImpl implements TestBrowser {
 
             // Here we go!
             apacheHttpClientResponse = httpClient.execute(apacheHttpRequest);
-            response = convertFromApacheHttpResponseToDocTestJHttpResponse(apacheHttpClientResponse);
+            response = convertFromApacheHttpResponseToDocTesterHttpResponse(apacheHttpClientResponse);
             
             apacheHttpRequest.releaseConnection();
 
@@ -314,7 +314,7 @@ public class TestBrowserImpl implements TestBrowser {
 
 
 
-    private org.doctester.testbrowser.Response convertFromApacheHttpResponseToDocTestJHttpResponse(org.apache.http.HttpResponse httpResponse) {
+    private org.doctester.testbrowser.Response convertFromApacheHttpResponseToDocTesterHttpResponse(org.apache.http.HttpResponse httpResponse) {
 
         Map<String, String> headers = Maps.newHashMap();
 

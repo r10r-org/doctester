@@ -31,9 +31,13 @@ import org.doctester.testbrowser.Url;
 import org.hamcrest.Matcher;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public abstract class DocTester implements TestBrowser, RenderMachineCommands {
+    
+    private Logger logger = LoggerFactory.getLogger(DocTester.class);
 
     // Unique for each test method.
     private TestBrowser testBrowser;
@@ -46,13 +50,15 @@ public abstract class DocTester implements TestBrowser, RenderMachineCommands {
     public void setupForTestCaseMethod() {
         
         initRenderingMachineIfNull();
-
+        
+        // Set a fresh TestBrowser for each testmethod.
+        testBrowser = getTestBrowser();
+        renderMachine.setTestBrowser(testBrowser);
+        
         // This is all a bit strange. But JUnit's @BeforeClass
         // is static. Therefore the only possibility to transmit
         // the filename to the renderMachine is here.
         // We accept that we set the fileName too often.
-        testBrowser = getTestBrowser();
-        renderMachine.setTestBrowser(testBrowser);
         renderMachine.setFileName(getName());
 
     }
@@ -201,14 +207,20 @@ public abstract class DocTester implements TestBrowser, RenderMachineCommands {
      * @return a valid host name of your test server (eg http://localhost:8127). 
      *          This will be used in the testServerUrl() method.
      */
-    public abstract String getTestServerUrl();
+    public String getTestServerUrl() {
+        
+        final String errorText = "If you want to use the TestBrowser you have to override getTestServerUrl().";
+        logger.error(errorText);
+        
+        throw new IllegalStateException(errorText);
+    }
 
     /**
      * Override me if you want to give me a name. You should...
      * @return The name of the file. MyTest.class.getSimpleName() often makes sense.
      */
     public String getName() {
-        System.out.println("Please override getName() method of DocTester to get a better fileName for doctest");       
+        logger.error("Please override getName() method of DocTester to get a better fileName for doctest.");       
         return UUID.randomUUID().toString();
     }
 

@@ -25,6 +25,7 @@ import org.doctester.testbrowser.Request;
 import org.doctester.testbrowser.Url;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Categories;
 
 
 public class DocTesterTest extends DocTester {
@@ -65,15 +66,37 @@ public class DocTesterTest extends DocTester {
 
     }
     
+    @Test
+    public void testThatCopyingOfCustomDoctesterCssWorks() throws Exception {
+        
+        String EXPECTED_FILENAME = DocTesterTest.class.getSimpleName() + ".html";
+        
+        doCreateSomeTestOuputForDoctest();
+        
+        finishDocTest();  
+
+        File expectedDoctestfile = new File("target/site/doctester/" + EXPECTED_FILENAME);
+        File expectedCustomCssFile = new File("target/site/doctester/custom_doctester_stylesheet.css");
+        
+        // just a simple test to make sure the name is written somewhere in the file.
+        assertThatFileContainsText(expectedDoctestfile, "custom_doctester_stylesheet.css");
+        
+        // just a simple test to make sure that index.html contains a "link" to the doctest file.
+        assertThatFileContainsText(expectedCustomCssFile, "body");
+
+    }
+    
+    
+    @Test(expected = IllegalStateException.class)
+    public void testThatUsageOfTestBrowserWithoutSpecifyingGetTestUrlIsNotAllowed() {
+        
+        getTestServerUrl();
+
+    }
+    
     @Override
     public String getName() {
         return DocTesterTest.class.getSimpleName();
-    }
-
-    @Override
-    public String getTestServerUrl() {
-   
-        return "NOTUSED";
     }
     
     

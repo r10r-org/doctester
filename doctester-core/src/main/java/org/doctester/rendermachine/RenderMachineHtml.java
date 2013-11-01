@@ -59,7 +59,7 @@ public interface RenderMachineHtml {
     		"    <meta name=\"author\" content=\"\">\n" + 
     		"    <link rel=\"shortcut icon\" href=\"../../assets/ico/favicon.png\">\n" + 
     		"\n" + 
-    		"    <title>%s</title>\n" + 
+    		"    <title>%s</title>\n" +              
     		"\n" + 
     		CUSTOM_CSS +
             CUSTOM_JS +
@@ -67,7 +67,7 @@ public interface RenderMachineHtml {
     		"    <link href=\"" + BOOTSTRAP_BASE + "css/bootstrap.css\" rel=\"stylesheet\">\n" + 
     		"\n" + 
     		"    <!-- Custom styles for this template -->\n" + 
-    		"    <link href=\"starter-template.css\" rel=\"stylesheet\">\n" + 
+            "<link href=\"custom_doctester_stylesheet.css\" rel=\"stylesheet\">\n" + 
     		"\n" + 
     		"  </head>";
     
@@ -117,7 +117,7 @@ public interface RenderMachineHtml {
 
             "  </div>" +
             "  <footer>\n" + 
-    		"   Made with &#10084; and Doctester\n" + 
+    		"   Made with &#10084; and <a href=\"http://www.doctester.org\">DocTester</a>\n" + 
     		"  </footer>\n" + 
     		"</div> <!-- /container -->";
 

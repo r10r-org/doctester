@@ -143,23 +143,16 @@
 
 		<dependency>
 			<groupId>junit</groupId>
-			<!-- junit-dep has all dependencies declared, rather than bundled (bundled 
-			causes massive classpath headaches) -->
-			<artifactId>junit-dep</artifactId>
+			<artifactId>junit</artifactId>
 			<version>4.11</version>
+			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-library</artifactId>
-			<version>1.2.1</version>
-		</dependency>
-    	
            
 		<!--HttpCient is used to mainly test low level Json Apis -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.2.1</version>
+			<version>4.2.5</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>commons-logging</artifactId>
@@ -171,7 +164,7 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
-			<version>4.2.1</version>
+			<version>4.2.5</version>
 		</dependency>
         
 		<!-- We use Jackson for rendering jsons and xml: -->

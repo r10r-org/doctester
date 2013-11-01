@@ -1,10 +1,10 @@
 How to contribute
 =================
 
-Great you want to contribute!
------------------------------
+Great you want to contribute!!
+------------------------------
 
-Contributing to Doctester is really simple. Well. There are some rules that you should follow:
+Contributing to DocTester is really simple. Well. There are some rules that you should follow:
 
 - Make sure your feature is well tested.
 - Make sure your feature is well documented (Javadoc).
@@ -12,7 +12,7 @@ Contributing to Doctester is really simple. Well. There are some rules that you 
 - Make sure you are following the code style below.
 - Add your changes to changelog.md and your name to team.md.
 
-Then send us a pull request and you become a happy member of the Doctester family :)
+Then send us a pull request and you become a happy member of the DocTester family :)
 
 
 Code style
@@ -32,8 +32,6 @@ Making a Doctester release
 1) Preliminary
 
 - Make sure changelog.md is updated
-- Make sure the archetypes are up-to-date (Doctester version must match release version)
-- Make sure the archetypes version in docu (JPA + getting_started) matches release version
 
 2) Release to central maven repo
 

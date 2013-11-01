@@ -40,6 +40,7 @@ import com.google.common.collect.Lists;
 import com.google.common.html.HtmlEscapers;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import java.io.FileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,16 @@ public class RenderMachineImpl implements RenderMachine {
     private final static Logger logger = LoggerFactory.getLogger(RenderMachineImpl.class);
 
     private final String BASE_DIR = "target/site/doctester";
+    
+    public final String CUSTOM_DOCTESTER_STYLESHEET_LOCATION_WITHOUT_FILENAME = "org/doctester";
+        
+    public final String CUSTOM_DOCTESTER_STYLESHEET_FILENAME = "custom_doctester_stylesheet.css";
+    
+    public final String CUSTOM_DOCTESTER_STYLESHEET_LOCATION =
+            CUSTOM_DOCTESTER_STYLESHEET_LOCATION_WITHOUT_FILENAME 
+            + "/" 
+            + CUSTOM_DOCTESTER_STYLESHEET_FILENAME;
+    
     
     private final String INDEX_FILE_WITHOUT_SUFFIX = "index";
     
@@ -192,9 +203,10 @@ public class RenderMachineImpl implements RenderMachine {
     
     @Override
     public void finishAndWriteOut() {
-        
+
         unzipCssFromJarIntoBaseDirectory();      
         unzipJQueryFromJarIntoBaseDirectory();
+        copyCustomUserSuppliedCssIfItExists();
         
         doCreateHtmlPageforThisDoctest();  
         doCreateIndexPage();
@@ -456,6 +468,42 @@ public class RenderMachineImpl implements RenderMachine {
         unzipFromJar("META-INF/resources/webjars/jquery/1.9.0", BASE_DIR);
         
     }
+    
+     private void copyCustomUserSuppliedCssIfItExists() {
+
+         
+        String baseDirWithCustomCssFileName = BASE_DIR 
+                                                + File.separator 
+                                                + CUSTOM_DOCTESTER_STYLESHEET_FILENAME; 
+         
+        try {
+
+            URL url = this.getClass().getClassLoader().getResource(CUSTOM_DOCTESTER_STYLESHEET_LOCATION);
+            
+            if (url == null) {
+                
+            
+            } else {
+                logger.info("Found custom stylesheet at " + CUSTOM_DOCTESTER_STYLESHEET_LOCATION);
+                
+                Resources.copy(
+                        url, 
+                        new FileOutputStream(
+                                new File(baseDirWithCustomCssFileName)));
+            }
+            
+            
+        } catch (IOException e){
+            
+            logger.error(
+                    "Something went wrong when copying file from " 
+                        + CUSTOM_DOCTESTER_STYLESHEET_LOCATION
+                        + " to real base directory at: "
+                        + baseDirWithCustomCssFileName, e);
+        
+        }
+     }
+            
     
     
     private void unzipFromJar(String classpathLocation, String destinationDirectory) {
