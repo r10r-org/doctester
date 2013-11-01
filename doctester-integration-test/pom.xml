@@ -184,7 +184,7 @@ the specific language governing permissions and limitations under the License. -
 		<dependency>
 			<groupId>org.doctester</groupId>
 			<artifactId>doctester-core</artifactId>
-			<version>1.0.0-beta-2-SNAPSHOT</version>
+			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
         
