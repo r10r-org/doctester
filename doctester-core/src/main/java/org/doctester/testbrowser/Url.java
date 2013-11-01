@@ -16,8 +16,10 @@
 
 package org.doctester.testbrowser;
 
+import com.google.common.collect.Maps;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
@@ -38,27 +40,36 @@ public class Url {
 	
 	private static Logger logger = LoggerFactory.getLogger(Url.class);	
     
-    private URIBuilder uriBuilder;
+    private StringBuilder simpleUrlBuilder;
+    
+    private Map<String, String> queryParameters;
     
     private Url() {
+        simpleUrlBuilder = new StringBuilder();
+        queryParameters = Maps.newHashMap();
+                
     }
     
     /**
      * Create a Url instance from a host. Host should look like
-     * http://myserver:8080 or so.
+     * http://myserver:8080 or http://myserver:8080/application.
      * 
-     * @param host The host e.g. http://myserver:8080
+     * @param host The host e.g. http://myserver:8080 may contain trailing slash or parts of a path.
      * @return The Url you can customize even further with path, query parameters and so on.
      */
     public static Url host(String host) {
         
         Url url = new Url();
         
-        try {
-            url.uriBuilder = new URIBuilder(host);
-        } catch (URISyntaxException e) {
-        	logger.error("Error while creating url from host. Your host should look like e.g. http://myserver:8080", e);
+        String hostWithoutTrailingSlash;
+        
+        if (host.endsWith("/")) {
+            hostWithoutTrailingSlash = host.substring(0, host.length() - 1);
+        } else {
+            hostWithoutTrailingSlash = host;
         }
+        
+        url.simpleUrlBuilder.append(hostWithoutTrailingSlash);
         
         return url;
         
@@ -81,8 +92,7 @@ public class Url {
             pathWithLeadingSlash = path;
         }
         
-        
-        uriBuilder.setPath(pathWithLeadingSlash);
+        simpleUrlBuilder.append(pathWithLeadingSlash);
         
         return this;
         
@@ -98,7 +108,7 @@ public class Url {
      */
     public Url addQueryParameter(String key, String value) {
         
-        uriBuilder.setParameter(key, value);
+        queryParameters.put(key, value);
         
         return this;
         
@@ -112,11 +122,25 @@ public class Url {
     public URI toUri() {
         
         URI uri = null;
+        
         try {
             
+            URIBuilder uriBuilder = new URIBuilder(simpleUrlBuilder.toString());
+            
+            for (Map.Entry<String,String> queryParameter : queryParameters.entrySet()) {
+                
+                uriBuilder.addParameter(queryParameter.getKey(), queryParameter.getValue());
+                
+            }
+            
             uri = uriBuilder.build();
+            
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            
+            String message = "Something strange happend when creating a URI from your Url (host, query parameters, path and so on)";
+            logger.error(message);
+            
+            throw new IllegalStateException(message, e);
         }
         
         return uri;

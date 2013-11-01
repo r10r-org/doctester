@@ -49,7 +49,7 @@ public class DocTesterTest extends DocTester {
     @Test
     public void testThatIndexWritingOutDoctestFileWorks() throws Exception {
         
-        String EXPECTED_FILENAME = DocTesterTest.class.getSimpleName() + ".html";
+        String EXPECTED_FILENAME = DocTesterTest.class.getName() + ".html";
         
         doCreateSomeTestOuputForDoctest();
         
@@ -69,7 +69,7 @@ public class DocTesterTest extends DocTester {
     @Test
     public void testThatCopyingOfCustomDoctesterCssWorks() throws Exception {
         
-        String EXPECTED_FILENAME = DocTesterTest.class.getSimpleName() + ".html";
+        String EXPECTED_FILENAME = DocTesterTest.class.getName() + ".html";
         
         doCreateSomeTestOuputForDoctest();
         
@@ -90,18 +90,11 @@ public class DocTesterTest extends DocTester {
     @Test(expected = IllegalStateException.class)
     public void testThatUsageOfTestBrowserWithoutSpecifyingGetTestUrlIsNotAllowed() {
         
-        getTestServerUrl();
+        testServerUrl();
 
     }
     
-    @Override
-    public String getName() {
-        return DocTesterTest.class.getSimpleName();
-    }
-    
-    
     public void doCreateSomeTestOuputForDoctest() {
-    
             
         sayNextSection("another fun heading!");
         say("and a very long text...!");

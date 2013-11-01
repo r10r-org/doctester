@@ -66,11 +66,11 @@ public class ApiControllerDocTest extends NinjaApiDoctester {
         
         say("Retrieving all articles of a user is a GET request to " + GET_ARTICLES_URL);
         
-        Response response = sayAndMakeRequest(
-                Request
+        Response response = sayAndMakeRequest( 
+               Request
                     .GET().url(testServerUrl().path((GET_ARTICLES_URL.replace("{username}", USER)))));
         
-        ArticlesDto articlesDto = response.payloadAsJson(ArticlesDto.class);
+        ArticlesDto articlesDto = response.payloadAs(ArticlesDto.class);
 
 
         sayAndAssertThat("We get back all 3 articles of that user ", 3, equalTo(articlesDto.articles.size()));
@@ -163,13 +163,6 @@ public class ApiControllerDocTest extends NinjaApiDoctester {
         				.path(LOGIN_URL))
         		.formParameters(formParameters));
 
-    }
-
-	@Override
-	public String getName() {
-		return ApiControllerDocTest.class.getSimpleName();
-	}
-		
-		
+    }		
 
 }

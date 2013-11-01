@@ -50,13 +50,13 @@ public class ResponseTest {
     public void testPayloadAsXml() {
         
         Map<String, String> headers = Maps.newHashMap();
-        headers.put(HttpConstants.HEADER_CONTENT_TYPE, HttpConstants.APPLICATION_XML);
+        headers.put(HttpConstants.HEADER_CONTENT_TYPE, HttpConstants.APPLICATION_XML_WITH_CHARSET_UTF_8);
         
         Response response = new Response(headers, 200, ARTICLES_XML);
         
         assertThat(response.httpStatus, CoreMatchers.equalTo(200));
         
-        ArticlesDto articlesDto = response.payloadAsXml(ArticlesDto.class);        
+        ArticlesDto articlesDto = response.payloadXmlAs(ArticlesDto.class);        
         assertThat(articlesDto.articles.size(), CoreMatchers.equalTo(3));
         
         assertThat(headers.size(), CoreMatchers.equalTo(1));
@@ -68,12 +68,12 @@ public class ResponseTest {
         
 
         Map<String, String> headers = Maps.newHashMap();
-        headers.put(HttpConstants.HEADER_CONTENT_TYPE, HttpConstants.APPLICATION_JSON);
+        headers.put(HttpConstants.HEADER_CONTENT_TYPE, HttpConstants.APPLICATION_JSON_WITH_CHARSET_UTF8);
         
         Response response = new Response(headers, 200, ARTICLES_JSON);
         
         
-        ArticlesDto articlesDto = response.payloadAsJson(ArticlesDto.class);
+        ArticlesDto articlesDto = response.payloadJsonAs(ArticlesDto.class);
         
         assertThat(response.httpStatus, CoreMatchers.equalTo(200));
         assertThat(articlesDto.articles.size(), CoreMatchers.equalTo(3));

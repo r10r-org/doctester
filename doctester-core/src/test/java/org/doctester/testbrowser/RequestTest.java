@@ -68,7 +68,7 @@ public class RequestTest {
 
         Request request = Request.GET().contentTypeApplicationJson();
         
-        assertThat(request.headers.get(HttpConstants.HEADER_CONTENT_TYPE), CoreMatchers.equalTo(HttpConstants.APPLICATION_JSON));
+        assertThat(request.headers.get(HttpConstants.HEADER_CONTENT_TYPE), CoreMatchers.equalTo(HttpConstants.APPLICATION_JSON_WITH_CHARSET_UTF8));
 
     }
 
@@ -77,7 +77,7 @@ public class RequestTest {
         
         Request request = Request.GET().contentTypeApplicationXml();
         
-        assertThat(request.headers.get(HttpConstants.HEADER_CONTENT_TYPE), CoreMatchers.equalTo(HttpConstants.APPLICATION_XML));
+        assertThat(request.headers.get(HttpConstants.HEADER_CONTENT_TYPE), CoreMatchers.equalTo(HttpConstants.APPLICATION_XML_WITH_CHARSET_UTF_8));
     }
 
     @Test

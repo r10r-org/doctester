@@ -25,6 +25,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import java.io.IOException;
 
 /**
  * 
@@ -81,19 +82,25 @@ public class Response {
 
     /**
      * Parses response into Plain old Java objects.
-     * First checks headers and then converts object into suitable Pojo object.
+     * First checks header Content-Type 
+     * and then converts object into suitable Pojo object.
+     * 
+     * Can handle "application/json" and "application/xml".
+     * 
+     * If you want to force the parsing of a certain content type
+     * check out payloadJsonAs/...) and payloadXmlAs(...).
      * 
      * @param clazz The class to use as blueprint for parsing the response body. 
      * @return An instance of the class or null if parsing went wrong.
      */
-    public <T> T payloadAsPojo(Class<T> clazz) {
+    public <T> T payloadAs(Class<T> clazz) {
         
         T parsedBody = null;
         
         if (isContentTypeApplicationXml(headers)) {
-            parsedBody = payloadAsXml(clazz);
+            parsedBody = payloadXmlAs(clazz);
         } else if (isContentTypeApplicationJson(headers)) {
-            parsedBody = payloadAsJson(clazz);
+            parsedBody = payloadJsonAs(clazz);
         } else {
             logger.error("Could neither find application/json or application/xml content type in response. Returning null.");
         }
@@ -104,12 +111,12 @@ public class Response {
 
     /**
      * The payload of this request de-serialized into the specified class type.
-     * The payload must be Xml.
+     * The payload must be valid Xml.
      * 
      * @param clazz The class type that should be used to de-serialize the payload.
      * @return An instance of clazz filled with data from the payload.
      */
-    public <T> T payloadAsXml(Class<T> clazz) {
+    public <T> T payloadXmlAs(Class<T> clazz) {
 
     	T parsedBody = null;
     	
@@ -132,14 +139,14 @@ public class Response {
      * @param typeReference The TypeReference that should be used to de-serialize the payload.
      * @return An instance of clazz filled with data from the payload.
      */
-    public <T> T payloadAsXml(TypeReference<T> typeReference) {
+    public <T> T payloadXmlAs(TypeReference<T> typeReference) {
         
     	T parsedBody = null;
     	
     	try {
     		parsedBody = xmlMapper.readValue(payload, typeReference);
 
-        } catch (Exception e) {
+        } catch (IOException e) {
 
         	logger.error("Something went wrong parsing the payload of this response into Xml", e);
         } 
@@ -154,13 +161,13 @@ public class Response {
      * @param clazz The class type that should be used to de-serialize the payload.
      * @return An instance of clazz filled with data from the payload.
      */
-    public <T> T payloadAsJson(Class<T> clazz) {
+    public <T> T payloadJsonAs(Class<T> clazz) {
 
     	T parsedBody = null;
     	
         try {
         	parsedBody = objectMapper.readValue(payload, clazz);
-        } catch (Exception e) {
+        } catch (IOException e) {
         	logger.error("Something went wrong parsing the payload of this response into Json", e);
         } 
         
@@ -176,13 +183,13 @@ public class Response {
      * @param typeReference The TypeReference that should be used to de-serialze the payload.
      * @return An instance of clazz filled with data from the payload.
      */
-    public <T> T payloadAsJson(TypeReference<T> typeReference) {
+    public <T> T payloadJsonAs(TypeReference<T> typeReference) {
 
     	T parsedBody = null;
     	
         try {
             parsedBody = objectMapper.readValue(payload, typeReference);
-        } catch (Exception e) {
+        } catch (IOException e) {
         	logger.error("Something went wrong parsing the payload of this response into Json", e);
         } 
         
@@ -193,8 +200,15 @@ public class Response {
     
         String contentType = headers.get(HttpConstants.HEADER_CONTENT_TYPE);
         
-        if (HttpConstants.APPLICATION_JSON.equals(contentType)) {
+        if (contentType == null) {
+            return false;
+        }
+        
+        if (contentType != null 
+                && contentType.contains(HttpConstants.APPLICATION_JSON)) {
+            
             return true;
+            
         } else {
             return false;
         }
@@ -204,10 +218,13 @@ public class Response {
     
     private boolean isContentTypeApplicationXml(Map<String, String> headers) {
     
-        String contentType =  headers.get(HttpConstants.HEADER_CONTENT_TYPE);
+        String contentType = headers.get(HttpConstants.HEADER_CONTENT_TYPE);
         
-        if (HttpConstants.APPLICATION_XML.equals(contentType)) {
+        if (contentType != null 
+                && contentType.contains(HttpConstants.APPLICATION_XML)) {
+            
             return true;
+            
         } else {
             return false;
         }

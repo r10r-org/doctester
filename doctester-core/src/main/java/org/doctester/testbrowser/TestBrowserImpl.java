@@ -259,7 +259,7 @@ public class TestBrowserImpl implements TestBrowser {
             if (httpRequest.payload != null) {
                 
                 if (httpRequest.headers.containsKey(HttpConstants.HEADER_CONTENT_TYPE)
-                		&& httpRequest.headers.containsValue(HttpConstants.APPLICATION_JSON)) {
+                		&& httpRequest.headers.containsValue(HttpConstants.APPLICATION_JSON_WITH_CHARSET_UTF8)) {
                 	
 
                     String string = new ObjectMapper().writeValueAsString(httpRequest.payload);
@@ -270,12 +270,12 @@ public class TestBrowserImpl implements TestBrowser {
                     apacheHttpRequest.setEntity(entity);
                     
                 } else if (httpRequest.headers.containsKey(HttpConstants.HEADER_CONTENT_TYPE)
-                		&& httpRequest.headers.containsValue(HttpConstants.APPLICATION_XML)) {
+                		&& httpRequest.headers.containsValue(HttpConstants.APPLICATION_XML_WITH_CHARSET_UTF_8)) {
                     
                     String string = new XmlMapper().writeValueAsString(httpRequest.payload);
                     
                     StringEntity entity = new StringEntity(string, "utf-8");
-                    entity.setContentType(HttpConstants.APPLICATION_XML);                   
+                    entity.setContentType(HttpConstants.APPLICATION_XML_WITH_CHARSET_UTF_8);                   
                     
                     apacheHttpRequest.setEntity(new StringEntity(string, "utf-8"));
                     

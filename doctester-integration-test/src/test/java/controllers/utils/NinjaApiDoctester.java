@@ -20,6 +20,7 @@ import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaTestServer;
 
 import org.doctester.DocTester;
+import org.doctester.testbrowser.Url;
 import org.junit.After;
 import org.junit.Before;
 
@@ -43,10 +44,8 @@ public abstract class NinjaApiDoctester extends DocTester {
     }
     
     @Override
-    public String getTestServerUrl() {
-   	
-    	return ninjaTestServer.getServerAddress();
-    	
+    public Url testServerUrl() {
+    	return Url.host(ninjaTestServer.getServerAddress());    	
     }
 
 }

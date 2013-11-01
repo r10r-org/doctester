@@ -135,7 +135,7 @@ public class Request {
     public Request contentTypeApplicationJson() {
         
         addHeader(
-                HttpConstants.HEADER_CONTENT_TYPE, HttpConstants.APPLICATION_JSON);
+                HttpConstants.HEADER_CONTENT_TYPE, HttpConstants.APPLICATION_JSON_WITH_CHARSET_UTF8);
         
         return this;
         
@@ -151,7 +151,7 @@ public class Request {
     public Request contentTypeApplicationXml() {
         
         addHeader(
-                HttpConstants.HEADER_CONTENT_TYPE, HttpConstants.APPLICATION_XML);
+                HttpConstants.HEADER_CONTENT_TYPE, HttpConstants.APPLICATION_XML_WITH_CHARSET_UTF_8);
         
         return this;
         

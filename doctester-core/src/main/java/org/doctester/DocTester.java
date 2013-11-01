@@ -16,7 +16,6 @@
 
 package org.doctester;
 import java.util.List;
-import java.util.UUID;
 
 
 import org.apache.http.cookie.Cookie;
@@ -31,13 +30,32 @@ import org.doctester.testbrowser.Url;
 import org.hamcrest.Matcher;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 public abstract class DocTester implements TestBrowser, RenderMachineCommands {
     
-    private Logger logger = LoggerFactory.getLogger(DocTester.class);
+    @Rule
+    public TestRule testWatcher = new TestWatcher() {
+       @Override
+       protected void starting(Description description) {
+           classNameForDocTesterOutputFile = description.getClassName();
+       }
+    };
+    
+    /** 
+     * classNameForDocTesterOutputFile will be set by the testWatcher.
+     * That way we can easily generate a filename as output filename.
+     * Usually it is something like "com.mycompany.NameOfClassTest".
+     */
+    private String classNameForDocTesterOutputFile;
+     
+    private final Logger logger = LoggerFactory.getLogger(DocTester.class);
 
     // Unique for each test method.
     private TestBrowser testBrowser;
@@ -59,7 +77,7 @@ public abstract class DocTester implements TestBrowser, RenderMachineCommands {
         // is static. Therefore the only possibility to transmit
         // the filename to the renderMachine is here.
         // We accept that we set the fileName too often.
-        renderMachine.setFileName(getName());
+        renderMachine.setFileName(classNameForDocTesterOutputFile);
 
     }
     
@@ -158,22 +176,6 @@ public abstract class DocTester implements TestBrowser, RenderMachineCommands {
         return renderMachine.sayAndMakeRequest(httpRequest);
     }
     
-    /**
-     * Convenience method that allows you to write tests in a fluent way. 
-     * <p>
-     * For instance:
-     * <code>
-     * sayAndMakeRequest(
-     *           Request
-     *               .GET()
-     *               .url(testServerUrl().path("search").addQueryParameter("q", "toys")));
-     * </code>
-     */
-    public final Url testServerUrl() {
-        
-       return Url.host(getTestServerUrl());
-        
-    }
     
     // //////////////////////////////////////////////////////////////////////////
     // Configuration of DoctestJ
@@ -202,26 +204,29 @@ public abstract class DocTester implements TestBrowser, RenderMachineCommands {
         return new RenderMachineImpl();
 
     }
-    
-    /**
+
+    /** 
+     * Convenience method that allows you to write tests with the testbrowser
+     * in a fluent way. 
+     * 
+     * <code>
+     * 
+     * sayAndMakeRequest(
+     *           Request
+     *               .GET()
+     *               .url(testServerUrl().path("search").addQueryParameter("q", "toys")));
+     * </code>
+     * 
+     * 
      * @return a valid host name of your test server (eg http://localhost:8127). 
      *          This will be used in the testServerUrl() method.
      */
-    public String getTestServerUrl() {
+    public Url testServerUrl() {
         
         final String errorText = "If you want to use the TestBrowser you have to override getTestServerUrl().";
         logger.error(errorText);
         
         throw new IllegalStateException(errorText);
-    }
-
-    /**
-     * Override me if you want to give me a name. You should...
-     * @return The name of the file. MyTest.class.getSimpleName() often makes sense.
-     */
-    public String getName() {
-        logger.error("Please override getName() method of DocTester to get a better fileName for doctest.");       
-        return UUID.randomUUID().toString();
     }
 
 }

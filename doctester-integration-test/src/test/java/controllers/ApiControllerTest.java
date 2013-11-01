@@ -125,7 +125,7 @@ public class ApiControllerTest extends NinjaTest {
     			.url(
     					testServerUrl().path("api/bob@gmail.com/articles.xml")));
 
-        ArticlesDto articlesDto = response.payloadAsXml(ArticlesDto.class);
+        ArticlesDto articlesDto = response.payloadAs(ArticlesDto.class);
 
         assertEquals(3, articlesDto.articles.size());
 
@@ -168,7 +168,7 @@ public class ApiControllerTest extends NinjaTest {
     			.url(
     					testServerUrl().path("api/bob@gmail.com/articles.xml")));
 
-        articlesDto = response.payloadAsXml(ArticlesDto.class);
+        articlesDto = response.payloadAs(ArticlesDto.class);
         // one new result:
         assertEquals(4, articlesDto.articles.size());
 

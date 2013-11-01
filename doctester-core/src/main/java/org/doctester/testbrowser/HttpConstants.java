@@ -29,9 +29,11 @@ public interface HttpConstants {
     
     String HEADER_CONTENT_TYPE = "Content-Type";
     
-    String APPLICATION_JSON = "application/json; charset=utf-8";
+    String APPLICATION_JSON = "application/json";
+    String APPLICATION_JSON_WITH_CHARSET_UTF8 = "application/json; charset=utf-8";
     
-    String APPLICATION_XML = "application/xml; charset=utf-8";
+    String APPLICATION_XML = "application/xml";
+    String APPLICATION_XML_WITH_CHARSET_UTF_8 = "application/xml; charset=utf-8";
     
     String GET = "GET";
     String DELETE =  "DELETE";
