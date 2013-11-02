@@ -1,0 +1,1 @@
+doctester-core/src/site/markdown/developer/getting_started.md

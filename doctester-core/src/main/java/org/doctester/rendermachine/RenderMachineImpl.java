@@ -385,7 +385,7 @@ public class RenderMachineImpl implements RenderMachine {
         htmlDocument.add("<div class=\"panel-body\">");
         htmlDocument.add("<dl class=\"dl-horizontal\">");
         htmlDocument.add("<dt>Type</dt><dd>" + httpRequest.httpRequestType + "</dd>");
-        htmlDocument.add("<dt>Url</dt><dd>" + httpRequest.url.toString() + "</dd>");
+        htmlDocument.add("<dt>Url</dt><dd>" + httpRequest.uri.toString() + "</dd>");
         
         htmlDocument.addAll(getHtmlFormattedHeaders(httpRequest.headers));
         

@@ -17,6 +17,7 @@
 package org.doctester.testbrowser;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Map;
 
 
@@ -37,7 +38,7 @@ public class Request {
     
     public String httpRequestType;
     
-    public Url url;
+    public URI uri;
     
     public Map<String, File> filesToUpload;
     
@@ -161,13 +162,29 @@ public class Request {
 
     /**
      * 
-     * Set the Url of this request.
+     * Set the Uri of this request.
+     * Usually you may want to use testServerUrl() from you Doctest
+     * and call toUri() at the end...
      * 
-     * @param url The Url of this request.
+     * @param uri The Uri of this request.
      * @return This Request for chaining.
      */
     public Request url(Url url) {
-        this.url = url;
+        this.uri = url.uri();
+        return this;
+    }
+    
+    /**
+     * 
+     * Set the Uri of this request.
+     * Usually you may want to use testServerUrl() from you Doctest
+     * and call toUri() at the end...
+     * 
+     * @param uri The Uri of this request.
+     * @return This Request for chaining.
+     */
+    public Request url(URI uri) {
+        this.uri = uri;
         return this;
     }
 

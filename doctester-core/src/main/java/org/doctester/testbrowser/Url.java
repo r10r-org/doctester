@@ -16,7 +16,6 @@
 
 package org.doctester.testbrowser;
 
-import com.google.common.collect.Maps;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -24,6 +23,8 @@ import java.util.Map;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Maps;
 
 /**
  * 
@@ -119,7 +120,7 @@ public class Url {
      * 
      * @return The URI you can pass to any lib using Uri.
      */
-    public URI toUri() {
+    public URI uri() {
         
         URI uri = null;
         
@@ -152,7 +153,7 @@ public class Url {
      */
     public String toString() {
         
-        return toUri().toString();
+        return uri().toString();
         
     }
     

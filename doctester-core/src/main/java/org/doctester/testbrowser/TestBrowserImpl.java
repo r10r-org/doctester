@@ -135,11 +135,11 @@ public class TestBrowserImpl implements TestBrowser {
 
             if (HttpConstants.GET.equalsIgnoreCase(request.httpRequestType)) {
                 
-                apacheHttpRequest = new HttpGet(request.url.toUri());
+                apacheHttpRequest = new HttpGet(request.uri);
                 
             } else {
                 
-                apacheHttpRequest = new HttpDelete(request.url.toUri());
+                apacheHttpRequest = new HttpDelete(request.uri);
             } 
 
             if (request.headers != null) {
@@ -194,11 +194,11 @@ public class TestBrowserImpl implements TestBrowser {
             
             if (HttpConstants.POST.equalsIgnoreCase(httpRequest.httpRequestType)) {
                 
-                apacheHttpRequest =  new HttpPost(httpRequest.url.toUri());
+                apacheHttpRequest =  new HttpPost(httpRequest.uri);
                 
             } else {
                 
-                apacheHttpRequest =  new HttpPut(httpRequest.url.toUri());
+                apacheHttpRequest =  new HttpPut(httpRequest.uri);
             }
             
 

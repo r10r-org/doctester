@@ -86,7 +86,7 @@ public class RequestTest {
         Url url = Url.host("http:/test.com");
         Request result = Request.GET().url(url);
         
-        assertThat(result.url, CoreMatchers.equalTo(url));
+        assertThat(result.uri, CoreMatchers.equalTo(url.uri()));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class RequestTest {
         
         
         System.out.println("addFileToUpload");
-        String param = "";
+
         File fileToUpload = new File(".");
         Request request = Request.GET().addFileToUpload("fileParam", fileToUpload);
         
