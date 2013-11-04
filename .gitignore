@@ -12,3 +12,4 @@ bin
 nb-configuration.xml
 
 *~
+*.h2.db
