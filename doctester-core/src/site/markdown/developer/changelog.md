@@ -1,3 +1,8 @@
+Version 1.0.1
+=============
+
+ * 2013-11-05 Fixed bug with forced logback binding. Binding slf4j should be done by projects using DocTester (ra).
+
 Version XXX
 ===========
 
