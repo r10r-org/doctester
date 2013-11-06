@@ -31,7 +31,6 @@
 	</parent>
 
 	<build>
-   
 		<plugins>
 
 			<plugin>
@@ -81,7 +80,7 @@
 			</plugin>
 			
 		</plugins>  
-                
+
 		<resources>
 			<resource>
 				<directory>src/main/java</directory>
@@ -109,7 +108,6 @@
 	</build>
 
 	<dependencies>
-    
 		<!-- some styling for the html reports -->
 		<dependency>
 			<groupId>org.webjars</groupId>
@@ -132,7 +130,6 @@
 			<version>1.3</version>
 		</dependency>
 
-               
 		<!-- Testing -->
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -147,7 +144,7 @@
 			<version>4.11</version>
 			<scope>provided</scope>
 		</dependency>
-           
+
 		<!--HttpCient is used to mainly test low level Json Apis -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -160,27 +157,27 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-        
+
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
 			<version>4.2.5</version>
 		</dependency>
-        
+
 		<!-- We use Jackson for rendering jsons and xml: -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
 			<version>2.2.3</version>
 		</dependency>
-        
+
 		<!-- XML parsing -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
 			<version>2.2.3</version>
 		</dependency>
-        
+
 
 		<!-- We use slf4j for logging -->
 		<dependency>
@@ -189,30 +186,28 @@
 			<version>1.7.5</version>
 		</dependency>
 		
-        
-		<!-- Replace commons-logging with slf4j bridge (that will use logback)-->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.5</version>
+			<scope>test</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>1.7.5</version>
+			<scope>test</scope>
 		</dependency>
-        
-		<!-- Replace log4j with slf4j bridge (that will use logback)-->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>log4j-over-slf4j</artifactId>
-			<version>1.7.5</version>
-		</dependency>
- 
 
 	</dependencies>
 
 
-        <distributionManagement>
-                <site>
-                        <id>github-project-site</id>
-                        <url>gitsite:git@github.com/doctester/doctester.git</url>
-                </site>
+	<distributionManagement>
+		<site>
+			<id>github-project-site</id>
+			<url>gitsite:git@github.com/doctester/doctester.git</url>
+		</site>
 
-        </distributionManagement>
+	</distributionManagement>
 </project>
