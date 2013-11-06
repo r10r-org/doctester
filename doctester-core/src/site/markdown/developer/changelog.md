@@ -1,3 +1,9 @@
+Version 1.0.2
+=============
+
+ * 2013-11-06 Changed codebase to tabs (ra).
+ * 2013-11-06 Json is now rendered with intendation in html reports (pretty printed)(ra).
+
 Version 1.0.1
 =============
 
