@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.doctester.testbrowser;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -26,62 +25,58 @@ import static org.junit.Assert.*;
  */
 public class UrlTest {
 
-    /**
-     * Test of host method, of class Url.
-     */
-    @Test
-    public void testHostWithoutPath() {
-        String host = "http://www.google.com:8080";
-        
-        Url url = Url.host(host);
-        
-        assertThat(url.toString(), equalTo("http://www.google.com:8080"));
+	/**
+	 * Test of host method, of class Url.
+	 */
+	@Test
+	public void testHostWithoutPath() {
+		String host = "http://www.google.com:8080";
 
-    }
-    
-    /**
-     * Test of host method, of class Url.
-     */
-    @Test
-    public void testHostWithoutPathAndTrailingSlash() {
-        String host = "http://www.google.com:8080/";
-        
-        Url url = Url.host(host);
-        
-        assertThat(url.toString(), equalTo("http://www.google.com:8080"));
+		Url url = Url.host(host);
 
-    }
-    
-    
-    
-    /**
-     * Test of host method, of class Url.
-     */
-    @Test
-    public void testHostWithPath() {
-        String host = "http://www.google.com:8080/";
-        Url url = Url.host(host);
-        url.path("testing");
-        assertThat(url.toString(), equalTo("http://www.google.com:8080/testing"));
-        url.path("/");
-        assertThat(url.toString(), equalTo("http://www.google.com:8080/testing/"));
-    }
-    
+		assertThat(url.toString(), equalTo("http://www.google.com:8080"));
 
+	}
 
-    /**
-     * Test of addQueryParameter method, of class Url.
-     */
-    @Test
-    public void testAddQueryParameter() {
-        String host = "http://www.google.com:8080/";
-        Url url = Url.host(host);
-        url.path("testing");
-        assertThat(url.toString(), equalTo("http://www.google.com:8080/testing"));
-        url.addQueryParameter("search", "term");
-        assertThat(url.toString(), equalTo("http://www.google.com:8080/testing?search=term"));
-        url.addQueryParameter("search2", "term2");
-        assertThat(url.toString(), equalTo("http://www.google.com:8080/testing?search=term&search2=term2"));
-    }
-    
+	/**
+	 * Test of host method, of class Url.
+	 */
+	@Test
+	public void testHostWithoutPathAndTrailingSlash() {
+		String host = "http://www.google.com:8080/";
+
+		Url url = Url.host(host);
+
+		assertThat(url.toString(), equalTo("http://www.google.com:8080"));
+
+	}
+
+	/**
+	 * Test of host method, of class Url.
+	 */
+	@Test
+	public void testHostWithPath() {
+		String host = "http://www.google.com:8080/";
+		Url url = Url.host(host);
+		url.path("testing");
+		assertThat(url.toString(), equalTo("http://www.google.com:8080/testing"));
+		url.path("/");
+		assertThat(url.toString(), equalTo("http://www.google.com:8080/testing/"));
+	}
+
+	/**
+	 * Test of addQueryParameter method, of class Url.
+	 */
+	@Test
+	public void testAddQueryParameter() {
+		String host = "http://www.google.com:8080/";
+		Url url = Url.host(host);
+		url.path("testing");
+		assertThat(url.toString(), equalTo("http://www.google.com:8080/testing"));
+		url.addQueryParameter("search", "term");
+		assertThat(url.toString(), equalTo("http://www.google.com:8080/testing?search=term"));
+		url.addQueryParameter("search2", "term2");
+		assertThat(url.toString(), equalTo("http://www.google.com:8080/testing?search=term&search2=term2"));
+	}
+
 }

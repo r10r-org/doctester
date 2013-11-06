@@ -1,19 +1,18 @@
 /**
  * Copyright (C) 2013 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-
 package org.doctester.testbrowser;
 
 import java.io.File;
@@ -54,304 +53,282 @@ import java.io.IOException;
 import org.apache.http.ParseException;
 
 public class TestBrowserImpl implements TestBrowser {
-	
-	private static Logger logger = LoggerFactory.getLogger(TestBrowserImpl.class);	
+
+	private static Logger logger = LoggerFactory.getLogger(TestBrowserImpl.class);
 
 	private static final String HANDLE_REDIRECTS = "http.protocol.handle-redirects";
-	
-    private DefaultHttpClient httpClient;
 
-    public TestBrowserImpl() {
-        httpClient = new DefaultHttpClient();
-    }
+	private DefaultHttpClient httpClient;
 
-    @Override
-    public List<Cookie> getCookies() {
-        return httpClient.getCookieStore().getCookies();
-    }
+	public TestBrowserImpl() {
+		httpClient = new DefaultHttpClient();
+	}
 
-    @Override
-    public Cookie getCookieWithName(String name) {
+	@Override
+	public List<Cookie> getCookies() {
+		return httpClient.getCookieStore().getCookies();
+	}
 
-        List<Cookie> cookies = getCookies();
+	@Override
+	public Cookie getCookieWithName(String name) {
 
-        // skip through cookies and return cookie you want
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(name)) {
-                return cookie;
-            }
-        }
+		List<Cookie> cookies = getCookies();
 
-        return null;
-    }
+		// skip through cookies and return cookie you want
+		for (Cookie cookie : cookies) {
+			if (cookie.getName().equals(name)) {
+				return cookie;
+			}
+		}
 
-    @Override
-    public void clearCookies() {
-        httpClient.getCookieStore().clear();
+		return null;
+	}
 
-    }
-    
-    @Override
-    public Response makeRequest(Request httpRequest) {
-        
-        Response httpResponse;
-        
-        if (HttpConstants.GET.equalsIgnoreCase(httpRequest.httpRequestType)
-                || HttpConstants.DELETE.equalsIgnoreCase(httpRequest.httpRequestType)) {
-            
-            httpResponse = makeGetOrDeleteRequest(httpRequest);
+	@Override
+	public void clearCookies() {
+		httpClient.getCookieStore().clear();
 
-        }
+	}
 
-        else if (HttpConstants.POST.equalsIgnoreCase(httpRequest.httpRequestType)
-                || HttpConstants.PUT.equalsIgnoreCase(httpRequest.httpRequestType)) {
-            
-            httpResponse = makePostOrPutRequest(httpRequest);
+	@Override
+	public Response makeRequest(Request httpRequest) {
 
-        }  else {
-            
-            throw new RuntimeErrorException(new Error("Your requested httpRequest.httpRequestType is not supported"));
-        }
-        
+		Response httpResponse;
 
-        return httpResponse;
+		if (HttpConstants.GET.equalsIgnoreCase(httpRequest.httpRequestType)
+						|| HttpConstants.DELETE.equalsIgnoreCase(httpRequest.httpRequestType)) {
 
-    }
-    
+			httpResponse = makeGetOrDeleteRequest(httpRequest);
 
-    private Response makeGetOrDeleteRequest(Request request) {
+		} else if (HttpConstants.POST.equalsIgnoreCase(httpRequest.httpRequestType)
+						|| HttpConstants.PUT.equalsIgnoreCase(httpRequest.httpRequestType)) {
 
-    	Response response = null;
-    	
-        org.apache.http.HttpResponse apacheHttpClientResponse;
+			httpResponse = makePostOrPutRequest(httpRequest);
 
-        try {
-            
-            HttpUriRequest apacheHttpRequest;
-            
+		} else {
 
-            httpClient.getParams().setParameter(
-                    CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+			throw new RuntimeErrorException(new Error("Your requested httpRequest.httpRequestType is not supported"));
+		}
 
-            if (HttpConstants.GET.equalsIgnoreCase(request.httpRequestType)) {
-                
-                apacheHttpRequest = new HttpGet(request.uri);
-                
-            } else {
-                
-                apacheHttpRequest = new HttpDelete(request.uri);
-            } 
+		return httpResponse;
 
-            if (request.headers != null) {
+	}
 
-                // add all headers
-                for (Entry<String, String> header : request.headers
-                        .entrySet()) {
-                    apacheHttpRequest.addHeader(header.getKey(), header.getValue());
-                }
+	private Response makeGetOrDeleteRequest(Request request) {
 
-            }
-            
-            setHandleRedirect(apacheHttpRequest, request.followRedirects);
+		Response response = null;
 
-            apacheHttpClientResponse = httpClient.execute(apacheHttpRequest);
-            
-            
-            response = convertFromApacheHttpResponseToDocTesterHttpResponse(apacheHttpClientResponse);
-            
-            
-            if (apacheHttpRequest instanceof HttpGet) {
-            	((HttpGet) apacheHttpRequest).releaseConnection();
-            } else if (apacheHttpRequest instanceof HttpDelete) {
-            	((HttpDelete) apacheHttpRequest).releaseConnection();
-            }
-            
+		org.apache.http.HttpResponse apacheHttpClientResponse;
 
-        } catch (IOException e) {
-        	logger.error("Fatal problem creating GET or DELETE request in TestBrowser", e);
-            throw new RuntimeException(e);
-        }
+		try {
 
-        
+			HttpUriRequest apacheHttpRequest;
 
-        return response;
-    }
+			httpClient.getParams().setParameter(
+							CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
+			if (HttpConstants.GET.equalsIgnoreCase(request.httpRequestType)) {
 
+				apacheHttpRequest = new HttpGet(request.uri);
 
-    private Response makePostOrPutRequest(Request httpRequest) {
+			} else {
 
-        org.apache.http.HttpResponse apacheHttpClientResponse;
-        Response response = null;
+				apacheHttpRequest = new HttpDelete(request.uri);
+			}
 
-        try {
+			if (request.headers != null) {
 
-            httpClient.getParams().setParameter(
-                    CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+				// add all headers
+				for (Entry<String, String> header : request.headers
+								.entrySet()) {
+					apacheHttpRequest.addHeader(header.getKey(), header.getValue());
+				}
 
-            
-            HttpEntityEnclosingRequestBase apacheHttpRequest;
-            
-            if (HttpConstants.POST.equalsIgnoreCase(httpRequest.httpRequestType)) {
-                
-                apacheHttpRequest =  new HttpPost(httpRequest.uri);
-                
-            } else {
-                
-                apacheHttpRequest =  new HttpPut(httpRequest.uri);
-            }
-            
+			}
 
-            if (httpRequest.headers != null) {
-                // add all headers
-                for (Entry<String, String> header : httpRequest.headers
-                        .entrySet()) {
-                    apacheHttpRequest.addHeader(header.getKey(), header.getValue());
-                }
-            }
+			setHandleRedirect(apacheHttpRequest, request.followRedirects);
+
+			apacheHttpClientResponse = httpClient.execute(apacheHttpRequest);
+
+			response = convertFromApacheHttpResponseToDocTesterHttpResponse(apacheHttpClientResponse);
+
+			if (apacheHttpRequest instanceof HttpGet) {
+				((HttpGet) apacheHttpRequest).releaseConnection();
+			} else if (apacheHttpRequest instanceof HttpDelete) {
+				((HttpDelete) apacheHttpRequest).releaseConnection();
+			}
+
+		} catch (IOException e) {
+			logger.error("Fatal problem creating GET or DELETE request in TestBrowser", e);
+			throw new RuntimeException(e);
+		}
+
+		return response;
+	}
+
+	private Response makePostOrPutRequest(Request httpRequest) {
+
+		org.apache.http.HttpResponse apacheHttpClientResponse;
+		Response response = null;
+
+		try {
+
+			httpClient.getParams().setParameter(
+							CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+			HttpEntityEnclosingRequestBase apacheHttpRequest;
+
+			if (HttpConstants.POST.equalsIgnoreCase(httpRequest.httpRequestType)) {
+
+				apacheHttpRequest = new HttpPost(httpRequest.uri);
+
+			} else {
+
+				apacheHttpRequest = new HttpPut(httpRequest.uri);
+			}
+
+			if (httpRequest.headers != null) {
+				// add all headers
+				for (Entry<String, String> header : httpRequest.headers
+								.entrySet()) {
+					apacheHttpRequest.addHeader(header.getKey(), header.getValue());
+				}
+			}
 
             ///////////////////////////////////////////////////////////////////
-            // Either add form parameters...
-            ///////////////////////////////////////////////////////////////////
-           
-            if (httpRequest.formParameters != null) {
-            	
-            	List<BasicNameValuePair> formparams = Lists.newArrayList();
-                for (Entry<String, String> parameter : httpRequest.formParameters
-                        .entrySet()) {
+			// Either add form parameters...
+			///////////////////////////////////////////////////////////////////
+			if (httpRequest.formParameters != null) {
 
-                    formparams.add(new BasicNameValuePair(parameter.getKey(),
-                            parameter.getValue()));
-                }
-                
-                // encode form parameters and add
-                UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formparams);
-                apacheHttpRequest.setEntity(entity);
+				List<BasicNameValuePair> formparams = Lists.newArrayList();
+				for (Entry<String, String> parameter : httpRequest.formParameters
+								.entrySet()) {
 
-            }
+					formparams.add(new BasicNameValuePair(parameter.getKey(),
+									parameter.getValue()));
+				}
 
+				// encode form parameters and add
+				UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formparams);
+				apacheHttpRequest.setEntity(entity);
+
+			}
 
             ///////////////////////////////////////////////////////////////////
-            // Or add multipart file upload
+			// Or add multipart file upload
+			///////////////////////////////////////////////////////////////////
+			if (httpRequest.filesToUpload != null) {
+
+				MultipartEntity entity = new MultipartEntity(
+								HttpMultipartMode.BROWSER_COMPATIBLE);
+
+				for (Map.Entry<String, File> entry : httpRequest.filesToUpload
+								.entrySet()) {
+
+					// For File parameters
+					entity.addPart(entry.getKey(),
+									new FileBody((File) entry.getValue()));
+
+				}
+
+				apacheHttpRequest.setEntity(entity);
+
+			}
+
             ///////////////////////////////////////////////////////////////////
-            if (httpRequest.filesToUpload != null) {
+			// Or add payload and convert if Json or Xml
+			///////////////////////////////////////////////////////////////////
+			if (httpRequest.payload != null) {
 
-                MultipartEntity entity = new MultipartEntity(
-                        HttpMultipartMode.BROWSER_COMPATIBLE);
+				if (httpRequest.headers.containsKey(HttpConstants.HEADER_CONTENT_TYPE)
+								&& httpRequest.headers.containsValue(HttpConstants.APPLICATION_JSON_WITH_CHARSET_UTF8)) {
 
-                for (Map.Entry<String, File> entry : httpRequest.filesToUpload
-                        .entrySet()) {
+					String string = new ObjectMapper().writeValueAsString(httpRequest.payload);
 
-                    // For File parameters
-                    entity.addPart(entry.getKey(),
-                            new FileBody((File) entry.getValue()));
+					StringEntity entity = new StringEntity(string, "utf-8");
+					entity.setContentType("application/json; charset=utf-8");
 
-                }
-                
-                apacheHttpRequest.setEntity(entity);
+					apacheHttpRequest.setEntity(entity);
 
-            }
-            
-            
-            ///////////////////////////////////////////////////////////////////
-            // Or add payload and convert if Json or Xml
-            ///////////////////////////////////////////////////////////////////
-            if (httpRequest.payload != null) {
-                
-                if (httpRequest.headers.containsKey(HttpConstants.HEADER_CONTENT_TYPE)
-                		&& httpRequest.headers.containsValue(HttpConstants.APPLICATION_JSON_WITH_CHARSET_UTF8)) {
-                	
+				} else if (httpRequest.headers.containsKey(HttpConstants.HEADER_CONTENT_TYPE)
+								&& httpRequest.headers.containsValue(HttpConstants.APPLICATION_XML_WITH_CHARSET_UTF_8)) {
 
-                    String string = new ObjectMapper().writeValueAsString(httpRequest.payload);
-                    
-                    StringEntity entity = new StringEntity(string, "utf-8");
-                    entity.setContentType("application/json; charset=utf-8");
-                    
-                    apacheHttpRequest.setEntity(entity);
-                    
-                } else if (httpRequest.headers.containsKey(HttpConstants.HEADER_CONTENT_TYPE)
-                		&& httpRequest.headers.containsValue(HttpConstants.APPLICATION_XML_WITH_CHARSET_UTF_8)) {
-                    
-                    String string = new XmlMapper().writeValueAsString(httpRequest.payload);
-                    
-                    StringEntity entity = new StringEntity(string, "utf-8");
-                    entity.setContentType(HttpConstants.APPLICATION_XML_WITH_CHARSET_UTF_8);                   
-                    
-                    apacheHttpRequest.setEntity(new StringEntity(string, "utf-8"));
-                    
-                } else if (httpRequest.payload instanceof String) {
-                        
-                    StringEntity entity = new StringEntity((String) httpRequest.payload, "utf-8");
-                    apacheHttpRequest.setEntity(entity);
-                            
-                } else {
-                    
-                    StringEntity entity = new StringEntity(httpRequest.payload.toString(), "utf-8");
-                    apacheHttpRequest.setEntity(entity);
-                    
-                }
-                
-            }   
-            
-            setHandleRedirect(apacheHttpRequest, httpRequest.followRedirects);
+					String string = new XmlMapper().writeValueAsString(httpRequest.payload);
 
-            // Here we go!
-            apacheHttpClientResponse = httpClient.execute(apacheHttpRequest);
-            response = convertFromApacheHttpResponseToDocTesterHttpResponse(apacheHttpClientResponse);
-            
-            apacheHttpRequest.releaseConnection();
+					StringEntity entity = new StringEntity(string, "utf-8");
+					entity.setContentType(HttpConstants.APPLICATION_XML_WITH_CHARSET_UTF_8);
 
-        } catch (IOException e) {
-        	logger.error("Fatal problem creating POST or PUT request in TestBrowser", e);
-            throw new RuntimeException(e);
-        }
+					apacheHttpRequest.setEntity(new StringEntity(string, "utf-8"));
 
-        
-        return response;
+				} else if (httpRequest.payload instanceof String) {
 
-    }
-  
+					StringEntity entity = new StringEntity((String) httpRequest.payload, "utf-8");
+					apacheHttpRequest.setEntity(entity);
 
+				} else {
 
+					StringEntity entity = new StringEntity(httpRequest.payload.toString(), "utf-8");
+					apacheHttpRequest.setEntity(entity);
 
-    private org.doctester.testbrowser.Response convertFromApacheHttpResponseToDocTesterHttpResponse(org.apache.http.HttpResponse httpResponse) {
+				}
 
-        Map<String, String> headers = Maps.newHashMap();
+			}
 
-        for (Header header : httpResponse.getAllHeaders()) {
+			setHandleRedirect(apacheHttpRequest, httpRequest.followRedirects);
 
-            headers.put(header.getName(), header.getValue());
+			// Here we go!
+			apacheHttpClientResponse = httpClient.execute(apacheHttpRequest);
+			response = convertFromApacheHttpResponseToDocTesterHttpResponse(apacheHttpClientResponse);
 
-        }
+			apacheHttpRequest.releaseConnection();
 
-        int httpStatus = httpResponse.getStatusLine().getStatusCode();
+		} catch (IOException e) {
+			logger.error("Fatal problem creating POST or PUT request in TestBrowser", e);
+			throw new RuntimeException(e);
+		}
 
-        String body = null;
-        try {
+		return response;
 
-            body = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+	}
 
-        } catch (IOException | ParseException e) {
-        	logger.error("Error while converting ApacheHttpClient response body to a String we can use", e);
-        } 
+	private org.doctester.testbrowser.Response convertFromApacheHttpResponseToDocTesterHttpResponse(org.apache.http.HttpResponse httpResponse) {
 
-        org.doctester.testbrowser.Response doctestJHttpResponse = new org.doctester.testbrowser.Response(
-                headers, httpStatus, body);
+		Map<String, String> headers = Maps.newHashMap();
 
-        return doctestJHttpResponse;
+		for (Header header : httpResponse.getAllHeaders()) {
 
-    }
-    
-    /**
-     * Tells ApacheHttpClient whether to follow redirects.
-     * See also: http://stackoverflow.com/questions/1519392/how-to-prevent-apache-http-client-from-following-a-redirect
-     */
-    private void setHandleRedirect(HttpUriRequest httpUriRequest, boolean handleRedirect) {
-    	
-        HttpParams params = new BasicHttpParams();
-        params.setParameter(HANDLE_REDIRECTS, handleRedirect);
-        httpUriRequest.setParams(params);
-    	
-    }
+			headers.put(header.getName(), header.getValue());
+
+		}
+
+		int httpStatus = httpResponse.getStatusLine().getStatusCode();
+
+		String body = null;
+		try {
+
+			body = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+
+		} catch (IOException | ParseException e) {
+			logger.error("Error while converting ApacheHttpClient response body to a String we can use", e);
+		}
+
+		org.doctester.testbrowser.Response doctestJHttpResponse = new org.doctester.testbrowser.Response(
+						headers, httpStatus, body);
+
+		return doctestJHttpResponse;
+
+	}
+
+	/**
+	 * Tells ApacheHttpClient whether to follow redirects. See also:
+	 * http://stackoverflow.com/questions/1519392/how-to-prevent-apache-http-client-from-following-a-redirect
+	 */
+	private void setHandleRedirect(HttpUriRequest httpUriRequest, boolean handleRedirect) {
+
+		HttpParams params = new BasicHttpParams();
+		params.setParameter(HANDLE_REDIRECTS, handleRedirect);
+		httpUriRequest.setParams(params);
+
+	}
 
 }
