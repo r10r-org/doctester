@@ -1,3 +1,8 @@
+Version 1.0.3
+=============
+
+ * 2013-11-07 Better documentation (ra).
+
 Version 1.0.2
 =============
 

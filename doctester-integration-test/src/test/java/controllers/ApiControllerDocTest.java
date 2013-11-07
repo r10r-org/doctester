@@ -56,7 +56,7 @@ public class ApiControllerDocTest extends NinjaApiDoctester {
     }
 
     @Test
-    public void testGetAndPostArticleViaJson() throws Exception {
+    public void testGetAndPostArticleViaJson() {
 
         // /////////////////////////////////////////////////////////////////////
         // Test initial data:
@@ -146,7 +146,7 @@ public class ApiControllerDocTest extends NinjaApiDoctester {
         return gson;
     }
 
-    private void doLogin() throws Exception {
+    private void doLogin() {
 
         say("To authenticate we send our credentials to " + LOGIN_URL);
         say("We are then issued a cookie from the server that authenticates us in further requests");
