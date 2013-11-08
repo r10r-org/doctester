@@ -11,7 +11,7 @@ the specific language governing permissions and limitations under the License. -
 
 	<groupId>org.doctester</groupId>
 	<artifactId>doctester</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
+	<version>1.0.3</version>
 	<packaging>pom</packaging>
 
 	<!-- Deploy to central maven using the oss-parent of sonatype -->
