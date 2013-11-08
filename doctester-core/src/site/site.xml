@@ -31,7 +31,7 @@
 		</menu>
         
 		<menu name="Get involved">
-			<item name="@doctester" href="https://twitter.com/doctester"/>
+			<item name="@doctester" href="https://twitter.com/team_doctester"/>
 			<item name="Mailing list" href="https://groups.google.com/d/forum/doctester"/>
 			<item name="Source code" href="https://github.com/doctester/doctester"/>
 			<item name="Bug tracker" href="https://github.com/doctester/doctester/issues"/>
