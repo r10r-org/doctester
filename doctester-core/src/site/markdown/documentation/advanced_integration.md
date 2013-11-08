@@ -5,14 +5,14 @@ If you are integrating DocTester into your project it often makes sense to wrap
 DocTester.java inside another class.
 
 Especially if you are using the integrated testbrowser to test an Api. In that
-case this allows you to overwrite <code>testServerUrl()</code> to get the
+case this allows you to overwrite **testServerUrl()** to get the
 actual url of the server under test.
 
 
 ## Arquillian / JBoss integration
 
-The key is to run the Arquillian test as client side test via <code>@RunAsClient</code>. 
-You can then map the server url into your test via <code>@ArquillianResource</code>
+The key is to run the Arquillian test as client side test via **@RunAsClient**. 
+You can then map the server url into your test via **@ArquillianResource**
 
 
 <pre class="prettyprint languague-java">
