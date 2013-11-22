@@ -47,7 +47,7 @@ This in turn generates the following output:
 By default the resulting html is generated into src/target/site/doctester/
 
 
-There is an integration test that uses all of doctester. Check out for a more
+There is an integration test that uses all of DocTester. Check out for a more
 comprehensive example:
 
 https://github.com/doctester/doctester/blob/master/doctester-integration-test/src/test/java/controllers/ApiControllerDocTest.java
