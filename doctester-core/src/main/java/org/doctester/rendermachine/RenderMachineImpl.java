@@ -32,16 +32,19 @@ import org.doctester.testbrowser.Request;
 import org.doctester.testbrowser.Response;
 import org.doctester.testbrowser.TestBrowser;
 import org.hamcrest.Matcher;
-import org.hamcrest.MatcherAssert;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import java.io.FileFilter;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -165,13 +168,24 @@ public class RenderMachineImpl implements RenderMachine {
 					T actual,
 					Matcher<? super T> matcher) {
 
-		htmlDocument.add("<div class=\"alert alert-success\">");
-		htmlDocument.add(message);
-		htmlDocument.add("</div>");
+		try {
+			
+			Assert.assertThat(reason, actual, matcher);
+			
+			htmlDocument.add("<div class=\"alert alert-success\">");
+			htmlDocument.add(message);
+			htmlDocument.add("</div>");
+			
+		} catch (AssertionError assertionError) {
+		
+			htmlDocument.add("<div class=\"alert alert-danger\">");
+			htmlDocument.add(convertStackTraceIntoHtml(assertionError));
+			htmlDocument.add("</div>");
+		
+			throw assertionError;
+		}	
 
-		MatcherAssert.assertThat(reason, actual, matcher);
-
-	}
+  }
 
 	@Override
 	public void sayRaw(String rawHtml) {
@@ -495,6 +509,24 @@ public class RenderMachineImpl implements RenderMachine {
 			logger.error("An error occurred while copying from webjars archive to site directory", e);
 		}
 
+	}
+	
+	
+	public static String convertStackTraceIntoHtml(Throwable throwable) {
+		
+		StringWriter sw = new StringWriter();
+		
+		throwable.printStackTrace(new PrintWriter(sw));
+		
+		String exceptionAsStringRaw = sw.toString();
+		
+		
+		String exceptionAsStringHtmlEscaped 
+						= HtmlEscapers.htmlEscaper().escape(exceptionAsStringRaw);
+		exceptionAsStringHtmlEscaped = exceptionAsStringHtmlEscaped.replaceAll("\n", "<br/>");
+		
+		return exceptionAsStringHtmlEscaped;
+	
 	}
 
 }

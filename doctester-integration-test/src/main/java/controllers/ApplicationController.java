@@ -57,6 +57,8 @@ public class ApplicationController {
     }
 
     public Result index() {
+			
+			System.out.println("STEFAN WELLER FOR PRESIDENT!");
 
         Article frontPost = articleDao.getFirstArticleForFrontPage();
 

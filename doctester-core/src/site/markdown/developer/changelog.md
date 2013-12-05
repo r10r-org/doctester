@@ -1,3 +1,12 @@
+Version 1.1
+=============
+
+ * 2013-12-04 Better documentation how to setup DocTester in your own projects (ra).
+ * 2013-11-04 Added support so that JUnit falures are marked as red
+              in the generated html file. Before they were green what can be
+              misleading (ra).
+ * 2013-11-04 Integration test bump to Ninja 2.3.0 (ra).
+
 Version 1.0.3
 =============
 

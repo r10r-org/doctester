@@ -23,12 +23,17 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 import org.doctester.testbrowser.Request;
 import org.doctester.testbrowser.Url;
+import org.hamcrest.CoreMatchers;
+import static org.hamcrest.CoreMatchers.is;
 import org.junit.Assert;
+import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.experimental.categories.Categories;
 
 public class DocTesterTest extends DocTester {
 
+	public static String EXPECTED_FILENAME = DocTesterTest.class.getName() + ".html";
+	
 	@Test
 	public void testThatIndexFileWritingWorks() throws Exception {
 
@@ -47,8 +52,6 @@ public class DocTesterTest extends DocTester {
 	@Test
 	public void testThatIndexWritingOutDoctestFileWorks() throws Exception {
 
-		String EXPECTED_FILENAME = DocTesterTest.class.getName() + ".html";
-
 		doCreateSomeTestOuputForDoctest();
 
 		finishDocTest();
@@ -66,8 +69,6 @@ public class DocTesterTest extends DocTester {
 
 	@Test
 	public void testThatCopyingOfCustomDoctesterCssWorks() throws Exception {
-
-		String EXPECTED_FILENAME = DocTesterTest.class.getName() + ".html";
 
 		doCreateSomeTestOuputForDoctest();
 
@@ -90,6 +91,33 @@ public class DocTesterTest extends DocTester {
 		testServerUrl();
 
 	}
+	
+	@Test
+	public void testThatAssertionFailureGetsWrittenToDoctesterHtmlFile() throws Exception {
+
+		boolean gotTestFailure = false;
+		
+		try {
+			sayAndAssertThat("This will go wrong", false, is(true));
+		} catch (AssertionError assertionError) {
+			gotTestFailure = true;
+		}
+		
+		assertThat(gotTestFailure, is(true));
+		
+		
+		finishDocTest();
+		
+		File expectedDoctestfile = new File("target/site/doctester/" + DocTesterTest.EXPECTED_FILENAME);
+		
+		// this makes sure that the correct alert type is used together
+		// with proper escaping and replacement of \n values...
+		assertThatFileContainsText(expectedDoctestfile, 
+						"<div class=\"alert alert-danger\">\n" +
+						"java.lang.AssertionError: <br/>Expected: is &lt;true&gt;<br/>     but: was &lt;false&gt;<br/>");
+		
+	
+	}
 
 	public void doCreateSomeTestOuputForDoctest() {
 
@@ -98,7 +126,7 @@ public class DocTesterTest extends DocTester {
 
 	}
 
-	public void assertThatFileContainsText(File file, String text) throws IOException {
+	public static void assertThatFileContainsText(File file, String text) throws IOException {
 
 		String content = Files.toString(file, Charsets.UTF_8);
 		Assert.assertTrue(content.contains(text));
