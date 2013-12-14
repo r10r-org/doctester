@@ -1,3 +1,8 @@
+Version 1.1.1
+=============
+
+ * 2013-12-14 Bump to 2.3.0 of all jackson libraries (xml, json binding) (ra).
+
 Version 1.1
 =============
 
