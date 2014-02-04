@@ -1,3 +1,9 @@
+Version X.X.X
+=============
+
+ * 2013-01-19 Bump to guava 16.0 in doctester-core and Ninja 2.5.1 in integration tests. (ra)
+
+
 Version 1.1.1
 =============
 
