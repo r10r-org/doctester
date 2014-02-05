@@ -18,14 +18,10 @@ package org.doctester.rendermachine;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.JarURLConnection;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 import org.apache.http.cookie.Cookie;
 import org.doctester.testbrowser.Request;
@@ -36,9 +32,7 @@ import org.hamcrest.Matcher;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
-import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import java.io.FileFilter;
@@ -210,14 +204,16 @@ public class RenderMachineImpl implements RenderMachine {
 	@Override
 	public void finishAndWriteOut() {
 
-		unzipCssFromJarIntoBaseDirectory();
-		unzipJQueryFromJarIntoBaseDirectory();
+		copyAllAssetsLikeJQueryAndBootstrapFromResourcesToDoctesterOutputDirectory();
+
 		copyCustomUserSuppliedCssIfItExists();
 
 		doCreateHtmlPageforThisDoctest();
 		doCreateIndexPage();
 
 	}
+	
+	
 
 	@Override
 	public void setFileName(String fileName) {
@@ -434,84 +430,51 @@ public class RenderMachineImpl implements RenderMachine {
 
 	}
 
-	private void unzipCssFromJarIntoBaseDirectory() {
+	private void copyResourceIfItExists(String resource, String targetFileForResource) {
 
-		unzipFromJar("META-INF/resources/webjars/bootstrap/3.0.0/css", BASE_DIR);
+		try {
+			URL url = this.getClass().getClassLoader().getResource(
+					resource);
+			
+			if (url == null) {
+				logger.info("Did not find resource {}.", resource);
+				return;
+			}
+
+			File targetFile = new File(targetFileForResource);
+
+			Files.createParentDirs(targetFile);
+
+			Resources.copy(url, new FileOutputStream(targetFile));
+
+		} catch (IOException ex) {
+			logger.error("Something went wrong copying resource {}", resource, ex);
+		}
 
 	}
+	
+	public void copyAllAssetsLikeJQueryAndBootstrapFromResourcesToDoctesterOutputDirectory() {
+	
+		for (String resource : RenderMachineHtml.RESOURCES_TO_COPY) {
+			copyResourceIfItExists(resource, BASE_DIR + File.separator + resource);
+		}
 
-	private void unzipJQueryFromJarIntoBaseDirectory() {
-
-		unzipFromJar("META-INF/resources/webjars/jquery/1.9.0", BASE_DIR);
-
+		copyCustomUserSuppliedCssIfItExists();
+	
 	}
-
-	private void copyCustomUserSuppliedCssIfItExists() {
-
+	
+	public void copyCustomUserSuppliedCssIfItExists() {
+		
 		String baseDirWithCustomCssFileName = BASE_DIR
 						+ File.separator
 						+ CUSTOM_DOCTESTER_STYLESHEET_FILENAME;
 
-		try {
-
-			URL url = this.getClass().getClassLoader().getResource(CUSTOM_DOCTESTER_STYLESHEET_LOCATION);
-
-			if (url == null) {
-
-			} else {
-				logger.info("Found custom stylesheet at " + CUSTOM_DOCTESTER_STYLESHEET_LOCATION);
-
-				Resources.copy(
-								url,
-								new FileOutputStream(
-												new File(baseDirWithCustomCssFileName)));
-			}
-
-		} catch (IOException e) {
-
-			logger.error(
-							"Something went wrong when copying file from "
-							+ CUSTOM_DOCTESTER_STYLESHEET_LOCATION
-							+ " to real base directory at: "
-							+ baseDirWithCustomCssFileName, e);
-
-		}
+		copyResourceIfItExists(
+				CUSTOM_DOCTESTER_STYLESHEET_LOCATION,
+				baseDirWithCustomCssFileName);
+	
 	}
 
-	private void unzipFromJar(String classpathLocation, String destinationDirectory) {
-
-		try {
-
-			URL url = this.getClass().getClassLoader().getResource(classpathLocation);
-
-			JarURLConnection urlcon = (JarURLConnection) (url.openConnection());
-			try (JarFile jar = urlcon.getJarFile();) {
-				Enumeration<JarEntry> entries = jar.entries();
-				while (entries.hasMoreElements()) {
-					JarEntry jarEntry = entries.nextElement();
-
-					if (jarEntry.isDirectory()) {
-
-						new File(destinationDirectory + File.separator + jarEntry.getName()).mkdirs();
-
-					} else {
-
-						ByteStreams.copy(
-										jar.getInputStream(jarEntry),
-										new FileOutputStream(new File(destinationDirectory + File.separator + jarEntry.getName())));
-
-					}
-
-				}
-			}
-
-		} catch (IOException e) {
-			logger.error("An error occurred while copying from webjars archive to site directory", e);
-		}
-
-	}
-	
-	
 	public static String convertStackTraceIntoHtml(Throwable throwable) {
 		
 		StringWriter sw = new StringWriter();

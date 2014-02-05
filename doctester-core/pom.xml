@@ -80,10 +80,10 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>           
+				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
 			
-		</plugins>  
+		</plugins>
 
 		<resources>
 			<resource>
@@ -112,13 +112,6 @@
 	</build>
 
 	<dependencies>
-		<!-- some styling for the html reports -->
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>bootstrap</artifactId>
-			<version>3.0.0</version>
-		</dependency>
-
 
 		<!-- guava is just cool -->
 		<dependency>

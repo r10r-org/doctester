@@ -1,6 +1,7 @@
 Version X.X.X
 =============
 
+ * 2014-02-05 Fixed issue #1. Doctester now independent of webjars version on classpath. (ra)
  * 2014-02-05 Bump to guava 16.0.1 in doctester-core and Ninja 2.5.1 in integration tests. (ra)
  * 2014-01-19 Bump to guava 16.0 in doctester-core and Ninja 2.5.1 in integration tests. (ra)
 

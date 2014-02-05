@@ -17,8 +17,18 @@ package org.doctester.rendermachine;
 
 public interface RenderMachineHtml {
 
-	String BOOTSTRAP_BASE = "META-INF/resources/webjars/bootstrap/3.0.0/";
-	String JQUERY_BASE = "META-INF/resources/webjars/jquery/1.9.0/";
+	String BOOTSTRAP_BASE = "assets/bootstrap/3.0.0/";
+	String JQUERY_BASE = "assets/jquery/1.9.0/";
+
+	/** 
+	 * These are resources we bundle with DocTester.
+	 * We need them so that the output looks nice.
+	 */
+	String[] RESOURCES_TO_COPY = {
+		BOOTSTRAP_BASE + "css/bootstrap.min.css",
+		BOOTSTRAP_BASE + "js/bootstrap.min.js",
+		JQUERY_BASE + "jquery.min.js"
+	};
 
 	String HTML_NEWLINE = "<br/>";
 
@@ -62,7 +72,7 @@ public interface RenderMachineHtml {
 					+ CUSTOM_CSS
 					+ CUSTOM_JS
 					+ "    <!-- Bootstrap core CSS -->\n"
-					+ "    <link href=\"" + BOOTSTRAP_BASE + "css/bootstrap.css\" rel=\"stylesheet\">\n"
+					+ "    <link href=\"" + BOOTSTRAP_BASE + "css/bootstrap.min.css\" rel=\"stylesheet\">\n"
 					+ "\n"
 					+ "    <!-- Custom styles for this template -->\n"
 					+ "<link href=\"custom_doctester_stylesheet.css\" rel=\"stylesheet\">\n"
