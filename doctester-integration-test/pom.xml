@@ -19,7 +19,7 @@ the specific language governing permissions and limitations under the License. -
 	</parent>
     
 	<properties>
-		<ninja.version>2.5.1</ninja.version>
+		<ninja.version>3.0.0</ninja.version>
 		<jetty.version>9.0.5.v20130815</jetty.version>
 	</properties>
 
@@ -187,24 +187,26 @@ the specific language governing permissions and limitations under the License. -
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.doctester</groupId>
-			<artifactId>doctester-core</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
+
         
 		<dependency>
-			<groupId>org.ninjaframework</groupId>
-			<artifactId>ninja-test-utilities</artifactId>
-			<version>${ninja.version}</version>
-			<scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.devbliss.doctest</groupId>
-                    <artifactId>doctest</artifactId>
-                </exclusion>
-            </exclusions>
+		    <groupId>org.ninjaframework</groupId>
+		    <artifactId>ninja-test-utilities</artifactId>
+		    <version>${ninja.version}</version>
+		    <scope>test</scope>
+		    <exclusions>
+			<exclusion>
+			    <groupId>com.devbliss.doctest</groupId>
+			    <artifactId>doctest</artifactId>
+			</exclusion>
+		    </exclusions>
+		</dependency>
+                
+		<dependency>
+		    <groupId>org.doctester</groupId>
+		    <artifactId>doctester-core</artifactId>
+		    <version>${project.version}</version>
+		    <scope>test</scope>
 		</dependency>
 
         <dependency>
