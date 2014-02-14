@@ -39,8 +39,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
-import de.devbliss.apitester.ApiResponse;
-
 public class ApiControllerDocTest extends NinjaApiDoctester {
     
     String GET_ARTICLES_URL = "/api/{username}/articles.json";
