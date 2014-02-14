@@ -186,22 +186,7 @@ the specific language governing permissions and limitations under the License. -
 			<version>3.0.1</version>
 			<scope>provided</scope>
 		</dependency>
-
-
-        
-		<dependency>
-		    <groupId>org.ninjaframework</groupId>
-		    <artifactId>ninja-test-utilities</artifactId>
-		    <version>${ninja.version}</version>
-		    <scope>test</scope>
-		    <exclusions>
-			<exclusion>
-			    <groupId>com.devbliss.doctest</groupId>
-			    <artifactId>doctest</artifactId>
-			</exclusion>
-		    </exclusions>
-		</dependency>
-                
+		
 		<dependency>
 		    <groupId>org.doctester</groupId>
 		    <artifactId>doctester-core</artifactId>
@@ -209,12 +194,19 @@ the specific language governing permissions and limitations under the License. -
 		    <scope>test</scope>
 		</dependency>
 
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.2.2</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+		    <groupId>org.ninjaframework</groupId>
+		    <artifactId>ninja-test-utilities</artifactId>
+		    <version>${ninja.version}</version>
+		    <scope>test</scope>
+		</dependency>
+
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <version>2.2.2</version>
+		    <scope>test</scope>
+		</dependency>
         
 		<dependency>
 			<groupId>junit</groupId>

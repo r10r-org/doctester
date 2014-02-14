@@ -1,7 +1,9 @@
 Version X.X.X
 =============
-
-* Updated dependencies:
+ 
+ * 2014-02-14 Reordered dependencies in integration test so that we do not need
+   exclusions any more (just cosmetics) (ra).
+ * 2014-02-14 Updated dependencies (ra).
    [INFO]   com.fasterxml.jackson.core:jackson-core ............... 2.3.0 -> 2.3.1
    [INFO]   com.fasterxml.jackson.dataformat:jackson-dataformat-xml ...
    [INFO]                                                           2.3.0 -> 2.3.1
