@@ -22,14 +22,18 @@ import java.util.Map.Entry;
 
 import javax.management.RuntimeErrorException;
 
+import com.google.common.collect.Sets;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
@@ -51,6 +55,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.io.IOException;
 import org.apache.http.ParseException;
+
+import static org.doctester.testbrowser.HttpConstants.*;
 
 public class TestBrowserImpl implements TestBrowser {
 
@@ -95,13 +101,11 @@ public class TestBrowserImpl implements TestBrowser {
 
 		Response httpResponse;
 
-		if (HttpConstants.GET.equalsIgnoreCase(httpRequest.httpRequestType)
-						|| HttpConstants.DELETE.equalsIgnoreCase(httpRequest.httpRequestType)) {
+		if (Sets.newHashSet(HEAD, GET, DELETE).contains(httpRequest.httpRequestType)) {
 
-			httpResponse = makeGetOrDeleteRequest(httpRequest);
+			httpResponse = makeHeadGetOrDeleteRequest(httpRequest);
 
-		} else if (HttpConstants.POST.equalsIgnoreCase(httpRequest.httpRequestType)
-						|| HttpConstants.PUT.equalsIgnoreCase(httpRequest.httpRequestType)) {
+		} else if (Sets.newHashSet(POST, PUT).contains(httpRequest.httpRequestType)) {
 
 			httpResponse = makePostOrPutRequest(httpRequest);
 
@@ -114,9 +118,9 @@ public class TestBrowserImpl implements TestBrowser {
 
 	}
 
-	private Response makeGetOrDeleteRequest(Request request) {
+	private Response makeHeadGetOrDeleteRequest(Request request) {
 
-		Response response = null;
+		Response response;
 
 		org.apache.http.HttpResponse apacheHttpClientResponse;
 
@@ -127,13 +131,18 @@ public class TestBrowserImpl implements TestBrowser {
 			httpClient.getParams().setParameter(
 							CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
-			if (HttpConstants.GET.equalsIgnoreCase(request.httpRequestType)) {
+			if (GET.equalsIgnoreCase(request.httpRequestType)) {
 
 				apacheHttpRequest = new HttpGet(request.uri);
 
-			} else {
+			} else if (DELETE.equalsIgnoreCase(request.httpRequestType)){
 
 				apacheHttpRequest = new HttpDelete(request.uri);
+
+			} else {
+
+				apacheHttpRequest = new HttpHead(request.uri);
+
 			}
 
 			if (request.headers != null) {
@@ -152,10 +161,9 @@ public class TestBrowserImpl implements TestBrowser {
 
 			response = convertFromApacheHttpResponseToDocTesterHttpResponse(apacheHttpClientResponse);
 
-			if (apacheHttpRequest instanceof HttpGet) {
-				((HttpGet) apacheHttpRequest).releaseConnection();
-			} else if (apacheHttpRequest instanceof HttpDelete) {
-				((HttpDelete) apacheHttpRequest).releaseConnection();
+
+			if (apacheHttpRequest instanceof HttpRequestBase) {
+				((HttpRequestBase) apacheHttpRequest).releaseConnection();
 			}
 
 		} catch (IOException e) {
@@ -178,7 +186,7 @@ public class TestBrowserImpl implements TestBrowser {
 
 			HttpEntityEnclosingRequestBase apacheHttpRequest;
 
-			if (HttpConstants.POST.equalsIgnoreCase(httpRequest.httpRequestType)) {
+			if (POST.equalsIgnoreCase(httpRequest.httpRequestType)) {
 
 				apacheHttpRequest = new HttpPost(httpRequest.uri);
 
@@ -240,8 +248,8 @@ public class TestBrowserImpl implements TestBrowser {
 			///////////////////////////////////////////////////////////////////
 			if (httpRequest.payload != null) {
 
-				if (httpRequest.headers.containsKey(HttpConstants.HEADER_CONTENT_TYPE)
-								&& httpRequest.headers.containsValue(HttpConstants.APPLICATION_JSON_WITH_CHARSET_UTF8)) {
+				if (httpRequest.headers.containsKey(HEADER_CONTENT_TYPE)
+								&& httpRequest.headers.containsValue(APPLICATION_JSON_WITH_CHARSET_UTF8)) {
 
 					String string = new ObjectMapper().writeValueAsString(httpRequest.payload);
 
@@ -250,13 +258,13 @@ public class TestBrowserImpl implements TestBrowser {
 
 					apacheHttpRequest.setEntity(entity);
 
-				} else if (httpRequest.headers.containsKey(HttpConstants.HEADER_CONTENT_TYPE)
-								&& httpRequest.headers.containsValue(HttpConstants.APPLICATION_XML_WITH_CHARSET_UTF_8)) {
+				} else if (httpRequest.headers.containsKey(HEADER_CONTENT_TYPE)
+								&& httpRequest.headers.containsValue(APPLICATION_XML_WITH_CHARSET_UTF_8)) {
 
 					String string = new XmlMapper().writeValueAsString(httpRequest.payload);
 
 					StringEntity entity = new StringEntity(string, "utf-8");
-					entity.setContentType(HttpConstants.APPLICATION_XML_WITH_CHARSET_UTF_8);
+					entity.setContentType(APPLICATION_XML_WITH_CHARSET_UTF_8);
 
 					apacheHttpRequest.setEntity(new StringEntity(string, "utf-8"));
 
@@ -304,14 +312,16 @@ public class TestBrowserImpl implements TestBrowser {
 		int httpStatus = httpResponse.getStatusLine().getStatusCode();
 
 		String body = null;
-		try {
+		HttpEntity entity = httpResponse.getEntity();
+		if (entity != null) {
+			try {
 
-			body = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+				body = EntityUtils.toString(entity, "UTF-8");
 
-		} catch (IOException | ParseException e) {
-			logger.error("Error while converting ApacheHttpClient response body to a String we can use", e);
+			} catch (IOException | ParseException e) {
+				logger.error("Error while converting ApacheHttpClient response body to a String we can use", e);
+			}
 		}
-
 		org.doctester.testbrowser.Response doctestJHttpResponse = new org.doctester.testbrowser.Response(
 						headers, httpStatus, body);
 

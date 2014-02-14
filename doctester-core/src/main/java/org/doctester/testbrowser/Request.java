@@ -58,6 +58,22 @@ public class Request {
 
 	/**
 	 *
+	 * Get a request to perform a Http HEAD request via the TestBrowser.
+	 *
+	 * @return A request configured for a Http HEAD request.
+	 *
+	 */
+	public static Request HEAD() {
+
+		Request httpRequest = new Request();
+		httpRequest.httpRequestType = HttpConstants.HEAD;
+
+		return httpRequest;
+
+	}
+
+	/**
+	 *
 	 * Get a request to perform a Http GET request via the TestBrowser.
 	 *
 	 * @return A request configured for a Http GET request.

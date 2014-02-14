@@ -18,6 +18,9 @@ package controllers;
 
 import controllers.utils.NinjaApiDoctester;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -39,8 +42,6 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
-import de.devbliss.apitester.ApiResponse;
-
 public class ApiControllerDocTest extends NinjaApiDoctester {
     
     String GET_ARTICLES_URL = "/api/{username}/articles.json";
@@ -54,6 +55,19 @@ public class ApiControllerDocTest extends NinjaApiDoctester {
     	doLogin();
     	
     }
+
+
+	@Test
+	public void testGetMetaDataViaHeadRequest() throws Exception {
+
+		sayNextSection("Fetching metadata");
+
+		Response response = sayAndMakeRequest(Request.HEAD().url(testServerUrl()));
+
+		sayAndAssertThat("We get some headers, but no metadata.", response.headers, notNullValue());
+		sayAndAssertThat("We get no payload", response.payload, nullValue());
+		sayAndAssertThat("Ninja does not yet support HEAD requests", response.httpStatus, is(404));
+	}
 
     @Test
     public void testGetAndPostArticleViaJson() {

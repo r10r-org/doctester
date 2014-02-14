@@ -34,6 +34,7 @@ public interface HttpConstants {
 	String APPLICATION_XML = "application/xml";
 	String APPLICATION_XML_WITH_CHARSET_UTF_8 = "application/xml; charset=utf-8";
 
+	String HEAD = "HEAD";
 	String GET = "GET";
 	String DELETE = "DELETE";
 	String POST = "POST";
