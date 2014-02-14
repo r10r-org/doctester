@@ -17,10 +17,13 @@
 package controllers;
 
 import controllers.utils.NinjaTest;
+
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.doctester.testbrowser.Request;
 import org.doctester.testbrowser.Response;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,6 +35,20 @@ public class ApplicationControllerTest extends NinjaTest {
         makeRequest(Request.GET().url(testServerUrl().path("setup")));
         
     }
+
+
+	@Test
+	public void testThatHeadRequestIsSent() {
+
+		// /redirect will send a location: redirect in the headers
+		Response result = makeRequest(Request.HEAD().url(testServerUrl().path("/")));
+
+		assertThat(result.headers, CoreMatchers.notNullValue());
+		assertThat(result.payload, CoreMatchers.nullValue());
+
+		assertThat(result.httpStatus, CoreMatchers.equalTo(404)); //ninja server not yet supporting HEAD
+
+	}
 
     @Test
     public void testThatHomepageWorks() {
