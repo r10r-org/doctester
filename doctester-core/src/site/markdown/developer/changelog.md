@@ -1,3 +1,8 @@
+Version 1.1.2
+=============
+
+ * 2014-02-14 Added support for HTTP HEAD requests (Jan Rudert).
+
 Version 1.1.1
 =============
 
