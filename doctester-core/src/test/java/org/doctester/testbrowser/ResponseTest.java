@@ -15,15 +15,17 @@
  */
 package org.doctester.testbrowser;
 
-import org.doctester.testbrowser.testmodels.ArticlesDto;
 import com.google.common.collect.Maps;
-import java.util.Map;
+import org.doctester.testbrowser.testmodels.ArticlesDto;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.Map;
+
+import static org.junit.Assert.assertThat;
 
 /**
  *
@@ -84,9 +86,9 @@ public class ResponseTest {
 		String prettyPayload = response.payloadAsPrettyString();
 		System.out.println("re"  + prettyPayload);
 
-		assertThat(prettyPayload, CoreMatchers.equalTo(ARTICLES_JSON_FORMATTED));
+        assertThat(prettyPayload.replace("\r", ""), CoreMatchers.equalTo(ARTICLES_JSON_FORMATTED));
 
-	}
+    }
 	
 	String ARTICLES_XML = "<ArticlesDto xmlns=\"\"><articles><id>1</id><title>My third post</title><postedAt>1382972199545</postedAt><content>Lorem ipsum dolor sit amet, consectetur adipiscing elit sed nisl sed lorem commodo elementum in a leo. Aliquam erat volutpat. Nulla libero odio, consectetur eget rutrum ac, varius vitae orci. Suspendisse facilisis tempus elit, facilisis ultricies massa condimentum in. Aenean id felis libero. Quisque nisl eros, accumsan eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula. eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula. eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula. eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula. eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula. eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula. eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula. eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula.</content><authorIds>1</authorIds></articles><articles><id>2</id><title>My second post</title><postedAt>1382972199710</postedAt><content>Lorem ipsum dolor sit amet, consectetur adipiscing elit sed nisl sed lorem commodo elementum in a leo. Aliquam erat volutpat. Nulla libero odio, consectetur eget rutrum ac, varius vitae orci. Suspendisse facilisis tempus elit, facilisis ultricies massa condimentum in. Aenean id felis libero. Quisque nisl eros, accumsan eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula. eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula. eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula. eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula. eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula. eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula. eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula. eget ornare id, pharetra eget felis. Aenean purus erat, egestas nec scelerisque non, eleifend id ligula.</content><authorIds>1</authorIds></articles><articles><id>3</id><title>Hello to the blog example!</title><postedAt>1382972199712</postedAt><content>&lt;p&gt;Hi and welcome to the demo of Ninja!&lt;/p&gt; &lt;p&gt;This example shows how you can use Ninja in the wild. Some things you can learn:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;How to use the templating system (header, footer)&lt;/li&gt;&lt;li&gt;How to test your application with ease./li&gt;&lt;li&gt;Setting up authentication (login / logout)&lt;/li&gt;&lt;li&gt;Internationalization (i18n)&lt;/li&gt;&lt;li&gt;Static assets / using webjars&lt;/li&gt;&lt;li&gt;Persisting data&lt;/li&gt;&lt;li&gt;Beautiful &lt;a href=\"/article/3\"&gt;html routes&lt;/a&gt; for your application&lt;/li&gt;&lt;li&gt;How to design your restful Api (&lt;a href=\"/api/bob@gmail.com/articles.json\"&gt;Json&lt;/a&gt; and &lt;a href=\"/api/bob@gmail.com/articles.xml\"&gt;Xml&lt;/a&gt;)&lt;/li&gt;&lt;li&gt;... and much much more.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;We are always happy to see you on our mailing list! Check out &lt;a href=\"http://www.ninjaframework.org\"&gt;our website for more&lt;/a&gt;.&lt;/p&gt;</content><authorIds>1</authorIds></articles></ArticlesDto>";
 
