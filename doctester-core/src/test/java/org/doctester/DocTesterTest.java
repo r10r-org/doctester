@@ -17,18 +17,14 @@ package org.doctester;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.io.File;
 import java.io.IOException;
-import static org.hamcrest.CoreMatchers.equalTo;
 
-import org.doctester.testbrowser.Request;
-import org.doctester.testbrowser.Url;
-import org.hamcrest.CoreMatchers;
 import static org.hamcrest.CoreMatchers.is;
-import org.junit.Assert;
 import static org.junit.Assert.assertThat;
-import org.junit.Test;
-import org.junit.experimental.categories.Categories;
 
 public class DocTesterTest extends DocTester {
 
@@ -114,10 +110,10 @@ public class DocTesterTest extends DocTester {
 		// with proper escaping and replacement of \n values...
 		assertThatFileContainsText(expectedDoctestfile, 
 						"<div class=\"alert alert-danger\">\n" +
-						"java.lang.AssertionError: <br/>Expected: is &lt;true&gt;<br/>     but: was &lt;false&gt;<br/>");
-		
-	
-	}
+                                "java.lang.AssertionError: <br/>Expected: is &lt;true&gt;<br/>     but: was &lt;false&gt;");
+
+
+    }
 
 	public void doCreateSomeTestOuputForDoctest() {
 

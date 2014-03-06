@@ -16,6 +16,11 @@ Version X.X.X
    [INFO]   org.slf4j:slf4j-simple ................................ 1.7.5 -> 1.7.6
    [INFO] 
 
+Version 1.1.3
+=============
+
+ * 2014-03-03 Add convenience method to set output file name. Adapt tests to work in Windows environment (Stefan Weller).
+
 Version 1.1.2
 =============
 

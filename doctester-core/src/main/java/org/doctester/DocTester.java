@@ -15,17 +15,11 @@
  */
 package org.doctester;
 
-import java.util.List;
-
 import org.apache.http.cookie.Cookie;
 import org.doctester.rendermachine.RenderMachine;
 import org.doctester.rendermachine.RenderMachineCommands;
 import org.doctester.rendermachine.RenderMachineImpl;
-import org.doctester.testbrowser.Request;
-import org.doctester.testbrowser.Response;
-import org.doctester.testbrowser.TestBrowser;
-import org.doctester.testbrowser.TestBrowserImpl;
-import org.doctester.testbrowser.Url;
+import org.doctester.testbrowser.*;
 import org.hamcrest.Matcher;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -35,6 +29,8 @@ import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public abstract class DocTester implements TestBrowser, RenderMachineCommands {
 
@@ -223,4 +219,12 @@ public abstract class DocTester implements TestBrowser, RenderMachineCommands {
 		throw new IllegalStateException(errorText);
 	}
 
+    /**
+     * Alternative way to set the output file name. This can be handy when DocTester is not part of JUnit lifecycle.
+     *
+     * @param name alternative name of output file
+     */
+    public void setClassNameForDocTesterOutputFile(final String name) {
+        this.classNameForDocTesterOutputFile = name;
+    }
 }
