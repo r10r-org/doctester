@@ -56,4 +56,23 @@ public class UserDao {
  
     }
 
+    @Transactional
+    public boolean isAdmin(String username) {
+
+    	if (username != null) {
+
+    		EntityManager entityManager = this.entityManagerProvider.get();
+    		
+    		Query query = entityManager.createQuery("SELECT COUNT(x) FROM User x WHERE username = :usernameParam AND isAdmin = true");
+    		
+    		Long count = (Long) query.setParameter("usernameParam", username).getSingleResult();
+    		
+    		return count == 1;
+    		
+    	}
+    	
+    	return false;
+    	
+    }
+
 }

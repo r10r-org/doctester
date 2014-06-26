@@ -48,6 +48,11 @@ public class SetupDao {
             // Create a new user and save it
             User bob = new User("bob@gmail.com", "secret", "Bob");
             entityManager.persist(bob);
+
+            // Create a new admin and save it
+            User tom = new User("tom@domain.com", "secret", "Tom");
+            tom.isAdmin = true;
+            entityManager.persist(tom);
             
             // Create a new post
             Article bobPost3 = new Article(bob, "My third post", lipsum);

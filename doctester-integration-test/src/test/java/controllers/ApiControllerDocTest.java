@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.Map;
 
+import models.Article;
 import models.ArticleDto;
 import models.ArticlesDto;
 import ninja.NinjaApiDocTest;
@@ -46,16 +47,12 @@ public class ApiControllerDocTest extends NinjaApiDoctester {
     
     String GET_ARTICLES_URL = "/api/{username}/articles.json";
     String POST_ARTICLE_URL = "/api/{username}/article.json";
+    String DELETE_ARTICLE_URL = "/api/article/{id}";
     String LOGIN_URL = "/login";
     
     String USER = "bob@gmail.com";
+    String ADMIN = "tom@domain.com";
     
-    //@Test
-    public void testLogin() throws Exception {
-    	doLogin();
-    	
-    }
-
 
 	@Test
 	public void testGetMetaDataViaHeadRequest() throws Exception {
@@ -69,6 +66,7 @@ public class ApiControllerDocTest extends NinjaApiDoctester {
 		sayAndAssertThat("Ninja does not yet support HEAD requests", response.httpStatus, is(404));
 	}
 
+	
     @Test
     public void testGetAndPostArticleViaJson() {
 
@@ -141,6 +139,86 @@ public class ApiControllerDocTest extends NinjaApiDoctester {
 
     }
 
+	@Test
+	public void testGetAndDeleteArticle() {
+
+		// /////////////////////////////////////////////////////////////////////
+		// Test initial data:
+		// /////////////////////////////////////////////////////////////////////
+
+		sayNextSection("Retrieving articles for a user (Json)");
+
+		say("Retrieving all articles of a user is a GET request to "
+				+ GET_ARTICLES_URL);
+
+		Response response = sayAndMakeRequest(Request.GET().url(
+				testServerUrl().path(
+						(GET_ARTICLES_URL.replace("{username}", USER)))));
+
+		ArticlesDto articlesDto = response.payloadAs(ArticlesDto.class);
+
+		sayAndAssertThat("We get back all 3 articles of that user ", 3,
+				equalTo(articlesDto.articles.size()));
+
+		// /////////////////////////////////////////////////////////////////////
+		// Delete an article:
+		// /////////////////////////////////////////////////////////////////////
+		sayNextSection("Deleting an article");
+
+		say("Deleting an article is a delete request to " + DELETE_ARTICLE_URL);
+		say("Please note that you have to be authenticated as an admin in order to be allowed to delete.");
+
+		Article article = articlesDto.articles.get(0);
+
+		response = sayAndMakeRequest(Request
+				.DELETE()
+				.url(testServerUrl().path(
+						(DELETE_ARTICLE_URL.replace("{id}", article.id.toString())))));
+
+		sayAndAssertThat(
+				"You have to be authenticated as an admin in order to delete articles",
+				response.httpStatus, equalTo(403));
+
+		doLogin();
+
+		say("Now we are authenticated but not as an admin and still expect to fail...");
+
+		response = sayAndMakeRequest(Request
+				.DELETE()
+				.url(testServerUrl().path(
+						(DELETE_ARTICLE_URL.replace("{id}", article.id.toString())))));
+
+		sayAndAssertThat(
+				"You have to be authenticated as an admin in order to delete articles",
+				response.httpStatus, equalTo(403));
+
+		doAdminLogin();
+
+		say("Now we are authenticated but not as an admin and still expect to fail...");
+
+		response = sayAndMakeRequest(Request
+				.DELETE()
+				.url(testServerUrl().path(
+						(DELETE_ARTICLE_URL.replace("{id}", article.id.toString())))));
+
+        sayAndAssertThat("After successful admin login we are able to delte articles", response.httpStatus, equalTo(204));
+
+		// /////////////////////////////////////////////////////////////////////
+		// Fetch articles again => assert we got a one less...
+		// /////////////////////////////////////////////////////////////////////
+
+		say("If we now fetch the articles again we are getting a new article (the one we have posted successfully");
+		response = sayAndMakeRequest(Request.GET().url(
+				testServerUrl().path(
+						(GET_ARTICLES_URL.replace("{username}", USER)))));
+
+		articlesDto = getGsonWithLongToDateParsing().fromJson(response.payload,
+				ArticlesDto.class);
+		// one new result:
+		sayAndAssertThat("We are now getting 2 articles.", 2,
+				equalTo(articlesDto.articles.size()));
+
+	}
 
 
     private Gson getGsonWithLongToDateParsing() {
@@ -160,14 +238,25 @@ public class ApiControllerDocTest extends NinjaApiDoctester {
         return gson;
     }
 
-    private void doLogin() {
+
+	private void doAdminLogin() {
+		doLogin(ADMIN, "secret");
+	}
+
+	
+	private void doLogin() {
+		doLogin(USER, "secret");
+	}
+
+	
+    private void doLogin(String username, String password) {
 
         say("To authenticate we send our credentials to " + LOGIN_URL);
         say("We are then issued a cookie from the server that authenticates us in further requests");
 
         Map<String, String> formParameters = Maps.newHashMap();
-        formParameters.put("username", USER);
-        formParameters.put("password", "secret");
+        formParameters.put("username", username);
+        formParameters.put("password", password);
         
         makeRequest(
         		Request
@@ -177,6 +266,6 @@ public class ApiControllerDocTest extends NinjaApiDoctester {
         				.path(LOGIN_URL))
         		.formParameters(formParameters));
 
-    }		
+    }
 
 }

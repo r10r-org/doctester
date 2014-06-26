@@ -27,7 +27,6 @@ import models.ArticleDto;
 import models.ArticlesDto;
 import models.User;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
@@ -112,5 +111,26 @@ public class ArticleDao {
         return true;
         
     }
+
+    /**
+     * Returns false if article not found, true if successfully deleted.
+     */
+    @Transactional
+	public boolean removeArticle(String username, Long id) {
+
+		EntityManager entityManager = entitiyManagerProvider.get();
+
+		Query query = entityManager.createQuery("SELECT a FROM Article a WHERE id = :idParam");
+		Article article = (Article) query.setParameter("idParam", id).getSingleResult();
+		
+		if (article == null) {
+			return false;
+		}
+		
+		entityManager.remove(article);
+		
+		return true;
+
+	}
 
 }
