@@ -16,7 +16,6 @@
 
 package controllers;
 
-import models.Article;
 import models.ArticleDto;
 import models.ArticlesDto;
 import ninja.FilterWith;
@@ -84,17 +83,15 @@ public class ApiController {
 
     }
 
-	@FilterWith({
-		SecureFilter.class,
-		AdminFilter.class })
-	public Result deleteArticle(@LoggedInUser String username,
-			@PathParam("id") Long id) {
+    @FilterWith({ SecureFilter.class, AdminFilter.class })
+    public Result deleteArticle(@LoggedInUser String username,
+            @PathParam("id") Long id) {
 
-		if (!articleDao.removeArticle(username, id)) {
-			return Results.notFound();
-		}
+        if (!articleDao.removeArticle(username, id)) {
+            return Results.notFound();
+        }
 
-		return Results.noContent();
+        return Results.noContent();
 
-	}
+    }
 }

@@ -13,32 +13,32 @@ import ninja.utils.NinjaConstant;
 
 public class AdminFilter implements Filter {
 
-	@Inject
-	UserDao dao;
+    @Inject
+    UserDao dao;
 
     public final String USERNAME = "username";
 
     @Override
     public Result filter(FilterChain chain, Context context) {
 
-    	Session session = context.getSession();
-    	
-    	if (session != null) {
-    		
-    		String username = session.get(USERNAME);
-    		
-    		if (username != null) {
-    			
-    			if (dao.isAdmin(username)) {
-    				return chain.next(context);
-    			}
-    			
-    		}
+        Session session = context.getSession();
 
-    	}
+        if (session != null) {
 
-		return Results.forbidden().html().template(NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN);
-    	
+            String username = session.get(USERNAME);
+
+            if (username != null) {
+
+                if (dao.isAdmin(username)) {
+                    return chain.next(context);
+                }
+
+            }
+
+        }
+
+        return Results.forbidden().html()
+                .template(NinjaConstant.LOCATION_VIEW_FTL_HTML_FORBIDDEN);
 
     }
 

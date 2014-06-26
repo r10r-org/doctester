@@ -116,21 +116,23 @@ public class ArticleDao {
      * Returns false if article not found, true if successfully deleted.
      */
     @Transactional
-	public boolean removeArticle(String username, Long id) {
+    public boolean removeArticle(String username, Long id) {
 
-		EntityManager entityManager = entitiyManagerProvider.get();
+        EntityManager entityManager = entitiyManagerProvider.get();
 
-		Query query = entityManager.createQuery("SELECT a FROM Article a WHERE id = :idParam");
-		Article article = (Article) query.setParameter("idParam", id).getSingleResult();
-		
-		if (article == null) {
-			return false;
-		}
-		
-		entityManager.remove(article);
-		
-		return true;
+        Query query = entityManager
+                .createQuery("SELECT a FROM Article a WHERE id = :idParam");
+        Article article = (Article) query.setParameter("idParam", id)
+                .getSingleResult();
 
-	}
+        if (article == null) {
+            return false;
+        }
+
+        entityManager.remove(article);
+
+        return true;
+
+    }
 
 }
