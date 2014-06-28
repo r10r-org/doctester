@@ -1,4 +1,4 @@
-Version X.X.X
+Version 1.1.4
 =============
 
  * 2014-06-28 Added support for DELETE queries + bugfix (dlorych) (https://github.com/doctester/doctester/pull/3)
