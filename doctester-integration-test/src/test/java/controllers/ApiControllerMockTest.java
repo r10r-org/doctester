@@ -31,7 +31,9 @@ import dao.ArticleDao;
 @RunWith(MockitoJUnitRunner.class)
 public class ApiControllerMockTest {
 
-    @Mock
+    private static final long TEST_ARTICLE_ID = 1L;
+
+	@Mock
     ArticleDao articleDao;
     
     ApiController apiController;
@@ -40,7 +42,6 @@ public class ApiControllerMockTest {
     public void setupTest() {
         apiController = new ApiController();
         apiController.articleDao = articleDao;
-        
     }
     
 
@@ -63,6 +64,28 @@ public class ApiControllerMockTest {
         Result result = apiController.postArticleJson(null, null);
         
         assertEquals(404, result.getStatusCode());
+
+    }
+
+    @Test
+    public void testThatDeleteArticleReturnsNotFoundWhenArticleDaoReturnsFalse() {
+
+        when(articleDao.removeArticle(null, TEST_ARTICLE_ID)).thenReturn(false);
+        
+        Result result = apiController.deleteArticle(null, TEST_ARTICLE_ID);
+        
+        assertEquals(404, result.getStatusCode());
+
+    }
+
+    @Test
+    public void testThatDeleteArticleReturnsOkNoContentWhenArticleDaoReturnsTrue() {
+
+        when(articleDao.removeArticle(null, TEST_ARTICLE_ID)).thenReturn(true);
+
+        Result result = apiController.deleteArticle(null, TEST_ARTICLE_ID);
+        
+        assertEquals(204, result.getStatusCode());
 
     }
 

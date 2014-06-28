@@ -16,15 +16,16 @@
 
 package controllers;
 
-import controllers.utils.NinjaTest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.Map;
 
+import models.Article;
 import models.ArticleDto;
 import models.ArticlesDto;
 
@@ -40,6 +41,8 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+
+import controllers.utils.NinjaTest;
 
 public class ApiControllerTest extends NinjaTest {
     
@@ -109,6 +112,75 @@ public class ApiControllerTest extends NinjaTest {
         articlesDto = getGsonWithLongToDateParsing().fromJson(response.payload, ArticlesDto.class);
         // one new result:
         assertEquals(4, articlesDto.articles.size());
+
+    }
+
+    @Test
+    public void testGetAndDeleteArticle() throws Exception {
+
+        // /////////////////////////////////////////////////////////////////////
+        // Test initial data:
+        // /////////////////////////////////////////////////////////////////////
+        Response response = makeRequest(
+                Request
+                .GET()
+                .contentTypeApplicationJson()
+                .url(
+                        testServerUrl().path("api/bob@gmail.com/articles.json")));
+
+        ArticlesDto articlesDto = getGsonWithLongToDateParsing().fromJson(
+                response.payload, ArticlesDto.class);
+
+        assertEquals(3, articlesDto.articles.size());
+
+        // /////////////////////////////////////////////////////////////////////
+        // Delete an article:
+        // /////////////////////////////////////////////////////////////////////
+        Article article = articlesDto.articles.get(0);
+
+        response = makeRequest(
+                Request
+                .DELETE()
+                .url(
+                        testServerUrl().path("api/article/" + article.id)));
+
+        assertEquals(403, response.httpStatus);
+        assertTrue(response.payload.contains("Error. Forbidden."));
+
+        doLogin();
+
+        response = makeRequest(
+                Request
+                .DELETE()
+                .url(
+                        testServerUrl().path("api/article/" + article.id)));
+
+        assertEquals(403, response.httpStatus);
+        assertTrue(response.payload.contains("Error. Forbidden."));
+
+        doAdminLogin();
+
+        response = makeRequest(
+                Request
+                .DELETE().url(
+                        testServerUrl().path("api/article/" + article.id)));
+
+        assertEquals(204, response.httpStatus);
+        assertNull(response.payload);
+
+        // /////////////////////////////////////////////////////////////////////
+        // Fetch articles again => assert we got a one less ...
+        // /////////////////////////////////////////////////////////////////////
+        response = makeRequest(
+                Request
+                .GET()
+                .url(
+                        testServerUrl().path("api/bob@gmail.com/articles.json")));
+
+        articlesDto = getGsonWithLongToDateParsing().fromJson(response.payload,
+                ArticlesDto.class);
+        // one new result:
+        assertEquals(2, articlesDto.articles.size());
 
     }
 
@@ -193,18 +265,27 @@ public class ApiControllerTest extends NinjaTest {
 
     private void doLogin() throws Exception {
 
-        Map<String, String> formParameters = Maps.newHashMap();
-        formParameters.put("username", "bob@gmail.com");
-        formParameters.put("password", "secret");
-        
-        makeRequest(
-        		Request
-        		.POST()
-        		.url(
-        				testServerUrl()
-        				.path("login"))
-        		.formParameters(formParameters));
+        doLogin("bob@gmail.com", "secret");
 
+    }
+
+    private void doAdminLogin() throws Exception {
+
+        doLogin("tom@domain.com", "secret");
+
+    }
+
+    private void doLogin(String username, String password) {
+        Map<String, String> formParameters = Maps.newHashMap();
+        formParameters.put("username", username);
+        formParameters.put("password", password);
+
+        makeRequest(
+                Request
+                .POST()
+                .url(
+                        testServerUrl().path("login"))
+                .formParameters(formParameters));
     }
 
 }

@@ -41,14 +41,19 @@ public class SetupDao {
         
         
         Query q = entityManager.createQuery("SELECT x FROM User x");
-        List<User> users = (List<User>) q.getResultList();        
+        List<User> users = (List<User>) q.getResultList();
         
         if (users.size() == 0) {
 
             // Create a new user and save it
             User bob = new User("bob@gmail.com", "secret", "Bob");
             entityManager.persist(bob);
-            
+
+            // Create a new admin and save it
+            User tom = new User("tom@domain.com", "secret", "Tom");
+            tom.isAdmin = true;
+            entityManager.persist(tom);
+
             // Create a new post
             Article bobPost3 = new Article(bob, "My third post", lipsum);
             entityManager.persist(bobPost3);

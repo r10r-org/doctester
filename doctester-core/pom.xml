@@ -61,10 +61,16 @@
 				</dependencies>
 			</plugin>
 			
+                        <!-- DEACTIVATED TEMPORARILY UNTIL
+                             SUPPORT FOR FINBUGS 3.0.0 IS THERE...
+                             WHY?
+                             BECAUSE findbugs-maven-plugin 2.5.4 IS 
+                             NOT COMPATIBLE WITH JAVA 1.8.
+                             http://stackoverflow.com/questions/17259201/findbugs-in-eclipse-arrayindexoutofbounds-exception-when-running
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>2.5.2</version>
+				<version>2.5.4</version>
 				<configuration>
 					<maxRank>15</maxRank>
 				</configuration>
@@ -77,6 +83,7 @@
 					</execution>
 				</executions>
 			</plugin>
+                        -->
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

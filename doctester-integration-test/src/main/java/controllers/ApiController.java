@@ -22,12 +22,14 @@ import ninja.FilterWith;
 import ninja.Result;
 import ninja.Results;
 import ninja.SecureFilter;
+import ninja.params.PathParam;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 import dao.ArticleDao;
 import etc.LoggedInUser;
+import filters.AdminFilter;
 
 @Singleton
 public class ApiController {
@@ -78,6 +80,18 @@ public class ApiController {
         } else {
             return Results.json();
         }
+
+    }
+
+    @FilterWith({ SecureFilter.class, AdminFilter.class })
+    public Result deleteArticle(@LoggedInUser String username,
+            @PathParam("id") Long id) {
+
+        if (!articleDao.removeArticle(username, id)) {
+            return Results.notFound();
+        }
+
+        return Results.noContent();
 
     }
 }

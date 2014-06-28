@@ -74,6 +74,8 @@ public class Routes implements ApplicationRoutes {
         router.GET().route("/api/{username}/articles.xml").with(ApiController.class, "getArticlesXml");
         router.POST().route("/api/{username}/article.json").with(ApiController.class, "postArticleJson");
         router.POST().route("/api/{username}/article.xml").with(ApiController.class, "postArticleXml");
+
+        router.DELETE().route("/api/article/{id}").with(ApiController.class, "deleteArticle");
  
         ///////////////////////////////////////////////////////////////////////
         // Assets (pictures / javascript)
