@@ -1,6 +1,7 @@
 Version X.X.X
 =============
 
+ * 2014-06-28 Added support for DELETE queries + bugfix (dlorych) (https://github.com/doctester/doctester/pull/3)
  * 2014-03-05 Bump to Ninja 3.1.1 (ra) 
  * 2014-02-14 Reordered dependencies in integration test so that we do not need
    exclusions any more (just cosmetics) (ra).
