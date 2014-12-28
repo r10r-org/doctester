@@ -55,7 +55,8 @@ public abstract class DocTester implements TestBrowser, RenderMachineCommands {
 	private TestBrowser testBrowser;
 
 	// Unique for whole testClass => one outputfile per testClass.
-	private static RenderMachine renderMachine = null;
+        // Protected only for testing
+	protected static RenderMachine renderMachine = null;
 
 	@Before
 	public void setupForTestCaseMethod() {
@@ -85,7 +86,10 @@ public abstract class DocTester implements TestBrowser, RenderMachineCommands {
 	@AfterClass
 	public static void finishDocTest() {
 
-		renderMachine.finishAndWriteOut();
+            if (renderMachine != null) {
+                renderMachine.finishAndWriteOut();
+                renderMachine = null;
+            }
 
 	}
 
