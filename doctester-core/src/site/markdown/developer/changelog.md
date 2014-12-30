@@ -1,3 +1,8 @@
+Version x.x.x
+=============
+
+ * 2014-12-28 Fix for #4. Testcases not teared down properly.
+
 Version 1.1.4
 =============
 
