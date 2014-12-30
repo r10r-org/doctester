@@ -1,3 +1,8 @@
+Version x.x.x
+=============
+
+ * 2014-12-30 Disabled Javadoc lint checks. (ra)
+
 Version 1.1.5
 =============
 
