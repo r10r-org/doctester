@@ -365,6 +365,9 @@ public class RenderMachineImpl implements RenderMachine {
 		htmlDocument.add("<dl class=\"dl-horizontal\">");
 		htmlDocument.add("<dt>Type</dt><dd>" + httpRequest.httpRequestType + "</dd>");
 		htmlDocument.add("<dt>Url</dt><dd>" + httpRequest.uri.toString() + "</dd>");
+		if (httpRequest.formParameters != null) {
+			htmlDocument.add("<dt>Parameters</dt><dd>" + httpRequest.formParameters.toString() + "</dd>");
+		}
 
 		htmlDocument.addAll(getHtmlFormattedHeaders(httpRequest.headers));
 
