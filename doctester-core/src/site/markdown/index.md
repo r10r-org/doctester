@@ -2,7 +2,7 @@ DocTester
 =========
 
 DocTester is a Java Testing Framework. DocTester tests and generates documentation at the same time.
-Built on top of JUnit any works as drop in for your build process.
+Built on top of JUnit. Works as simple drop-in for your build process.
 
 [![Build Status](https://buildhive.cloudbees.com/job/doctester/job/doctester/badge/icon)](https://buildhive.cloudbees.com/job/doctester/job/doctester/)
 
