@@ -50,17 +50,4 @@ public class ApplicationControllerTest extends NinjaTest {
 
 	}
 
-    @Test
-    public void testThatHomepageWorks() {
-
-        // /redirect will send a location: redirect in the headers
-        Response result = makeRequest(Request.GET().url(testServerUrl().path("/")));
-
-        // If the redirect has worked we must see the following text
-        // from the index screen:
-        assertTrue(result.payload.contains("Hello to the blog example!"));
-        assertTrue(result.payload.contains("My second post"));
-
-    }
-
 }
