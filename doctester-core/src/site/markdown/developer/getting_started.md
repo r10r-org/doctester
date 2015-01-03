@@ -20,7 +20,7 @@ Code style
 
 - Default Sun Java / Eclipse code style
 - If you change only tiny things only reformat stuff you actually changed. Otherwise reviewing is really hard.
-- We use tabs.
+- We use 4 spaces as one tab.
 - All files are UTF-8.
 
 

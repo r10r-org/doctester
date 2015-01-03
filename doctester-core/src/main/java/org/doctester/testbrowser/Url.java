@@ -38,123 +38,124 @@ import com.google.common.collect.Maps;
  */
 public class Url {
 
-	private static Logger logger = LoggerFactory.getLogger(Url.class);
+    private static Logger logger = LoggerFactory.getLogger(Url.class);
 
-	private StringBuilder simpleUrlBuilder;
+    private StringBuilder simpleUrlBuilder;
 
-	private Map<String, String> queryParameters;
+    private Map<String, String> queryParameters;
 
-	private Url() {
-		simpleUrlBuilder = new StringBuilder();
-		queryParameters = Maps.newHashMap();
+    private Url() {
+        simpleUrlBuilder = new StringBuilder();
+        queryParameters = Maps.newHashMap();
 
-	}
+    }
 
-	/**
-	 * Create a Url instance from a host. Host should look like
-	 * http://myserver:8080 or http://myserver:8080/application.
-	 *
-	 * @param host The host e.g. http://myserver:8080 may contain trailing slash
-	 * or parts of a path.
-	 * @return The Url you can customize even further with path, query parameters
-	 * and so on.
-	 */
-	public static Url host(String host) {
+    /**
+     * Create a Url instance from a host. Host should look like
+     * http://myserver:8080 or http://myserver:8080/application.
+     *
+     * @param host The host e.g. http://myserver:8080 may contain trailing slash
+     * or parts of a path.
+     * @return The Url you can customize even further with path, query
+     * parameters and so on.
+     */
+    public static Url host(String host) {
 
-		Url url = new Url();
+        Url url = new Url();
 
-		String hostWithoutTrailingSlash;
+        String hostWithoutTrailingSlash;
 
-		if (host.endsWith("/")) {
-			hostWithoutTrailingSlash = host.substring(0, host.length() - 1);
-		} else {
-			hostWithoutTrailingSlash = host;
-		}
+        if (host.endsWith("/")) {
+            hostWithoutTrailingSlash = host.substring(0, host.length() - 1);
+        } else {
+            hostWithoutTrailingSlash = host;
+        }
 
-		url.simpleUrlBuilder.append(hostWithoutTrailingSlash);
+        url.simpleUrlBuilder.append(hostWithoutTrailingSlash);
 
-		return url;
+        return url;
 
-	}
+    }
 
-	/**
-	 * Set the full path of this Url. Eg. "/my/funky/url"
-	 *
-	 * @param path Eg. "/my/funky/url"
-	 * @return This Url for chaining.
-	 */
-	public Url path(String path) {
+    /**
+     * Set the full path of this Url. Eg. "/my/funky/url"
+     *
+     * @param path Eg. "/my/funky/url"
+     * @return This Url for chaining.
+     */
+    public Url path(String path) {
 
-		String pathWithLeadingSlash;
+        String pathWithLeadingSlash;
 
-		if (!path.startsWith("/")) {
-			pathWithLeadingSlash = "/" + path;
-		} else {
-			pathWithLeadingSlash = path;
-		}
+        if (!path.startsWith("/")) {
+            pathWithLeadingSlash = "/" + path;
+        } else {
+            pathWithLeadingSlash = path;
+        }
 
-		simpleUrlBuilder.append(pathWithLeadingSlash);
+        simpleUrlBuilder.append(pathWithLeadingSlash);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	/**
-	 * Allows you to add query parameters to this url (In your browser something
-	 * like "?user=bob"
-	 *
-	 * @param key The key for this query parameter.
-	 * @param value The value for this query parameter.
-	 * @return This Url for chaining.
-	 */
-	public Url addQueryParameter(String key, String value) {
+    /**
+     * Allows you to add query parameters to this url (In your browser something
+     * like "?user=bob"
+     *
+     * @param key The key for this query parameter.
+     * @param value The value for this query parameter.
+     * @return This Url for chaining.
+     */
+    public Url addQueryParameter(String key, String value) {
 
-		queryParameters.put(key, value);
+        queryParameters.put(key, value);
 
-		return this;
+        return this;
 
-	}
+    }
 
-	/**
-	 * Creates a URI from this Uri.
-	 *
-	 * @return The URI you can pass to any lib using Uri.
-	 */
-	public URI uri() {
+    /**
+     * Creates a URI from this Uri.
+     *
+     * @return The URI you can pass to any lib using Uri.
+     */
+    public URI uri() {
 
-		URI uri = null;
+        URI uri = null;
 
-		try {
+        try {
 
-			URIBuilder uriBuilder = new URIBuilder(simpleUrlBuilder.toString());
+            URIBuilder uriBuilder = new URIBuilder(simpleUrlBuilder.toString());
 
-			for (Map.Entry<String, String> queryParameter : queryParameters.entrySet()) {
+            for (Map.Entry<String, String> queryParameter : queryParameters.entrySet()) {
 
-				uriBuilder.addParameter(queryParameter.getKey(), queryParameter.getValue());
+                uriBuilder.addParameter(queryParameter.getKey(), queryParameter.getValue());
 
-			}
+            }
 
-			uri = uriBuilder.build();
+            uri = uriBuilder.build();
 
-		} catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
 
-			String message = "Something strange happend when creating a URI from your Url (host, query parameters, path and so on)";
-			logger.error(message);
+            String message = "Something strange happend when creating a URI from your Url (host, query parameters, path and so on)";
+            logger.error(message);
 
-			throw new IllegalStateException(message, e);
-		}
+            throw new IllegalStateException(message, e);
+        }
 
-		return uri;
+        return uri;
 
-	}
+    }
 
-	/**
-	 * The real life Uri in human readable form.
-	 */
-	public String toString() {
+    /**
+     * The real life Uri in human readable form.
+     */
+    @Override
+    public String toString() {
 
-		return uri().toString();
+        return uri().toString();
 
-	}
+    }
 
 }

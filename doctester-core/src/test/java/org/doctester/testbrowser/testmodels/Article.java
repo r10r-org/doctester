@@ -22,24 +22,24 @@ import com.google.common.collect.Lists;
 
 public class Article {
 
-	public Long id;
+    public Long id;
 
-	public String title;
+    public String title;
 
-	public Date postedAt;
+    public Date postedAt;
 
-	public String content;
+    public String content;
 
-	public List<Long> authorIds;
+    public List<Long> authorIds;
 
-	public Article() {
-	}
+    public Article() {
+    }
 
-	public Article(User author, String title, String content) {
-		this.authorIds = Lists.newArrayList(author.id);
-		this.title = title;
-		this.content = content;
-		this.postedAt = new Date();
-	}
+    public Article(User author, String title, String content) {
+        this.authorIds = Lists.newArrayList(author.id);
+        this.title = title;
+        this.content = content;
+        this.postedAt = new Date();
+    }
 
 }

@@ -37,237 +37,236 @@ import java.util.logging.Level;
  */
 public class Response {
 
-	private final Logger logger = LoggerFactory.getLogger(Response.class);
+    private final Logger logger = LoggerFactory.getLogger(Response.class);
 
-	public final Map<String, String> headers;
+    public final Map<String, String> headers;
 
-	public final int httpStatus;
+    public final int httpStatus;
 
-	public final String payload;
+    public final String payload;
 
-	private final XmlMapper xmlMapper;
+    private final XmlMapper xmlMapper;
 
-	private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-	public Response(Map<String, String> headers, int httpStatus, String payload) {
+    public Response(Map<String, String> headers, int httpStatus, String payload) {
 
-		// configure the JacksonXml mapper in a cleaner way...
-		JacksonXmlModule module = new JacksonXmlModule();
+        // configure the JacksonXml mapper in a cleaner way...
+        JacksonXmlModule module = new JacksonXmlModule();
         // Check out: https://github.com/FasterXML/jackson-dataformat-xml
-		// setDefaultUseWrapper produces more similar output to
-		// the Json output. You can change that with annotations in your
-		// models.
-		module.setDefaultUseWrapper(false);
-		this.xmlMapper = new XmlMapper(module);
+        // setDefaultUseWrapper produces more similar output to
+        // the Json output. You can change that with annotations in your
+        // models.
+        module.setDefaultUseWrapper(false);
+        this.xmlMapper = new XmlMapper(module);
 
-		this.objectMapper = new ObjectMapper();
+        this.objectMapper = new ObjectMapper();
 
-		this.headers = headers;
-		this.httpStatus = httpStatus;
-		this.payload = payload;
+        this.headers = headers;
+        this.httpStatus = httpStatus;
+        this.payload = payload;
 
-	}
+    }
 
-	/**
-	 *
-	 * @return The payload of this response as String. Just the raw String.
-	 *
-	 */
-	public String payloadAsString() {
+    /**
+     *
+     * @return The payload of this response as String. Just the raw String.
+     *
+     */
+    public String payloadAsString() {
 
-		return payload;
+        return payload;
 
-	}
+    }
 
-	/**
-	 *
-	 * @return The payload of this response as String. It tries to determine the
-	 * content and format the content in a pretty way. Currently works for json.
-	 *
-	 */
-	public String payloadAsPrettyString() {
+    /**
+     *
+     * @return The payload of this response as String. It tries to determine the
+     * content and format the content in a pretty way. Currently works for json.
+     *
+     */
+    public String payloadAsPrettyString() {
 
-		if (isContentTypeApplicationJson(headers)) {
+        if (isContentTypeApplicationJson(headers)) {
 
-			return getPrettyFormattedJson(payload);
+            return getPrettyFormattedJson(payload);
 
-		} else {
-			
-			return payload;
-		}
+        } else {
 
-	}
+            return payload;
+        }
 
-	/**
-	 * Parses response into Plain old Java objects. First checks header
-	 * Content-Type and then converts object into suitable Pojo object. Can handle
-	 * "application/xmlObject" and "application/xml". If you want to force the
-	 * parsing of a certain content type check out payloadJsonAs/...) and
-	 * payloadXmlAs(...).
-	 *
-	 * @param clazz The class to use as blueprint for parsing the response body.
-	 * @return An instance of the class or null if parsing went wrong.
-	 */
-	public <T> T payloadAs(Class<T> clazz) {
+    }
 
-		T parsedBody = null;
+    /**
+     * Parses response into Plain old Java objects. First checks header
+     * Content-Type and then converts object into suitable Pojo object. Can
+     * handle "application/xmlObject" and "application/xml". If you want to
+     * force the parsing of a certain content type check out payloadJsonAs/...)
+     * and payloadXmlAs(...).
+     *
+     * @param clazz The class to use as blueprint for parsing the response body.
+     * @return An instance of the class or null if parsing went wrong.
+     */
+    public <T> T payloadAs(Class<T> clazz) {
 
-		if (isContentTypeApplicationXml(headers)) {
-			parsedBody = payloadXmlAs(clazz);
-		} else if (isContentTypeApplicationJson(headers)) {
-			parsedBody = payloadJsonAs(clazz);
-		} else {
-			logger.error("Could neither find application/json or application/xml content type in response. Returning null.");
-		}
+        T parsedBody = null;
 
-		return parsedBody;
+        if (isContentTypeApplicationXml(headers)) {
+            parsedBody = payloadXmlAs(clazz);
+        } else if (isContentTypeApplicationJson(headers)) {
+            parsedBody = payloadJsonAs(clazz);
+        } else {
+            logger.error("Could neither find application/json or application/xml content type in response. Returning null.");
+        }
 
-	}
+        return parsedBody;
 
-	/**
-	 * The payload of this request de-serialized into the specified class type.
-	 * The payload must be valid Xml.
-	 *
-	 * @param clazz The class type that should be used to de-serialize the
-	 * payload.
-	 * @return An instance of clazz filled with data from the payload.
-	 */
-	public <T> T payloadXmlAs(Class<T> clazz) {
+    }
 
-		T parsedBody = null;
+    /**
+     * The payload of this request de-serialized into the specified class type.
+     * The payload must be valid Xml.
+     *
+     * @param clazz The class type that should be used to de-serialize the
+     * payload.
+     * @return An instance of clazz filled with data from the payload.
+     */
+    public <T> T payloadXmlAs(Class<T> clazz) {
 
-		try {
-			parsedBody = this.xmlMapper.readValue(payload, clazz);
+        T parsedBody = null;
 
-		} catch (Exception e) {
+        try {
+            parsedBody = this.xmlMapper.readValue(payload, clazz);
 
-			logger.error("Something went wrong parsing the payload of this response into Xml", e);
+        } catch (Exception e) {
 
-		}
+            logger.error("Something went wrong parsing the payload of this response into Xml", e);
 
-		return parsedBody;
-	}
+        }
 
-	/**
-	 * The payload of this request de-serialized into the specified TypeReference.
-	 * The payload must be Xml.
-	 *
-	 * @param typeReference The TypeReference that should be used to de-serialize
-	 * the payload.
-	 * @return An instance of clazz filled with data from the payload.
-	 */
-	public <T> T payloadXmlAs(TypeReference<T> typeReference) {
+        return parsedBody;
+    }
 
-		T parsedBody = null;
+    /**
+     * The payload of this request de-serialized into the specified
+     * TypeReference. The payload must be Xml.
+     *
+     * @param typeReference The TypeReference that should be used to
+     * de-serialize the payload.
+     * @return An instance of clazz filled with data from the payload.
+     */
+    public <T> T payloadXmlAs(TypeReference<T> typeReference) {
 
-		try {
-			parsedBody = xmlMapper.readValue(payload, typeReference);
+        T parsedBody = null;
 
-		} catch (IOException e) {
+        try {
+            parsedBody = xmlMapper.readValue(payload, typeReference);
 
-			logger.error("Something went wrong parsing the payload of this response into Xml", e);
-		}
+        } catch (IOException e) {
 
-		return parsedBody;
-	}
+            logger.error("Something went wrong parsing the payload of this response into Xml", e);
+        }
 
-	/**
-	 * The payload of this request de-serialized into the specified class type.
-	 * The payload must be Json.
-	 *
-	 * @param clazz The class type that should be used to de-serialize the
-	 * payload.
-	 * @return An instance of clazz filled with data from the payload.
-	 */
-	public <T> T payloadJsonAs(Class<T> clazz) {
+        return parsedBody;
+    }
 
-		T parsedBody = null;
+    /**
+     * The payload of this request de-serialized into the specified class type.
+     * The payload must be Json.
+     *
+     * @param clazz The class type that should be used to de-serialize the
+     * payload.
+     * @return An instance of clazz filled with data from the payload.
+     */
+    public <T> T payloadJsonAs(Class<T> clazz) {
 
-		try {
-			parsedBody = objectMapper.readValue(payload, clazz);
-		} catch (IOException e) {
-			logger.error("Something went wrong parsing the payload of this response into Json", e);
-		}
+        T parsedBody = null;
 
-		return parsedBody;
+        try {
+            parsedBody = objectMapper.readValue(payload, clazz);
+        } catch (IOException e) {
+            logger.error("Something went wrong parsing the payload of this response into Json", e);
+        }
 
-	}
+        return parsedBody;
 
-	/**
-	 * The payload of this request de-serialized into the specified TypeReference.
-	 * The payload must be Json.
-	 *
-	 * @param typeReference The TypeReference that should be used to de-serialze
-	 * the payload.
-	 * @return An instance of clazz filled with data from the payload.
-	 */
-	public <T> T payloadJsonAs(TypeReference<T> typeReference) {
+    }
 
-		T parsedBody = null;
+    /**
+     * The payload of this request de-serialized into the specified
+     * TypeReference. The payload must be Json.
+     *
+     * @param typeReference The TypeReference that should be used to de-serialze
+     * the payload.
+     * @return An instance of clazz filled with data from the payload.
+     */
+    public <T> T payloadJsonAs(TypeReference<T> typeReference) {
 
-		try {
-			parsedBody = objectMapper.readValue(payload, typeReference);
-		} catch (IOException e) {
-			logger.error("Something went wrong parsing the payload of this response into Json", e);
-		}
+        T parsedBody = null;
 
-		return parsedBody;
-	}
+        try {
+            parsedBody = objectMapper.readValue(payload, typeReference);
+        } catch (IOException e) {
+            logger.error("Something went wrong parsing the payload of this response into Json", e);
+        }
 
-	private boolean isContentTypeApplicationJson(Map<String, String> headers) {
+        return parsedBody;
+    }
 
-		String contentType = headers.get(HttpConstants.HEADER_CONTENT_TYPE);
+    private boolean isContentTypeApplicationJson(Map<String, String> headers) {
 
-		if (contentType == null) {
-			return false;
-		}
+        String contentType = headers.get(HttpConstants.HEADER_CONTENT_TYPE);
 
-		if (contentType != null
-						&& contentType.contains(HttpConstants.APPLICATION_JSON)) {
+        if (contentType == null) {
+            return false;
+        }
 
-			return true;
+        if (contentType != null
+                && contentType.contains(HttpConstants.APPLICATION_JSON)) {
 
-		} else {
-			return false;
-		}
+            return true;
 
-	}
+        } else {
+            return false;
+        }
 
-	private boolean isContentTypeApplicationXml(Map<String, String> headers) {
+    }
 
-		String contentType = headers.get(HttpConstants.HEADER_CONTENT_TYPE);
+    private boolean isContentTypeApplicationXml(Map<String, String> headers) {
 
-		if (contentType != null
-						&& contentType.contains(HttpConstants.APPLICATION_XML)) {
+        String contentType = headers.get(HttpConstants.HEADER_CONTENT_TYPE);
 
-			return true;
+        if (contentType != null
+                && contentType.contains(HttpConstants.APPLICATION_XML)) {
 
-		} else {
-			return false;
-		}
+            return true;
 
-	}
+        } else {
+            return false;
+        }
 
-	private String getPrettyFormattedJson(String stringToFormatAsPrettyJson) {
-		String formattedJsonString;
+    }
 
-		try {
-			Object json = objectMapper.readValue(stringToFormatAsPrettyJson, Object.class);
+    private String getPrettyFormattedJson(String stringToFormatAsPrettyJson) {
+        String formattedJsonString;
 
-			formattedJsonString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
+        try {
+            Object json = objectMapper.readValue(stringToFormatAsPrettyJson, Object.class);
 
-		} catch (IOException ex) {
+            formattedJsonString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
 
-			logger.error("Error formatting Content-Type application/json. "
-							+ "Something is strange. Either this is no json, or the header is wrong. "
-							+ "Returning unformatted string", ex);
-			formattedJsonString = stringToFormatAsPrettyJson;
+        } catch (IOException ex) {
 
-		}
+            logger.error("Error formatting Content-Type application/json. "
+                    + "Something is strange. Either this is no json, or the header is wrong. "
+                    + "Returning unformatted string", ex);
+            formattedJsonString = stringToFormatAsPrettyJson;
 
-		return formattedJsonString;
+        }
 
-	}
+        return formattedJsonString;
 
+    }
 
 }

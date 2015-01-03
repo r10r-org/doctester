@@ -28,105 +28,103 @@ import static org.junit.Assert.assertThat;
 
 public class DocTesterTest extends DocTester {
 
-	public static String EXPECTED_FILENAME = DocTesterTest.class.getName() + ".html";
-	
-	@Test
-	public void testThatIndexFileWritingWorks() throws Exception {
+    public static String EXPECTED_FILENAME = DocTesterTest.class.getName() + ".html";
 
-		doCreateSomeTestOuputForDoctest();
+    @Test
+    public void testThatIndexFileWritingWorks() throws Exception {
 
-		finishDocTest();
+        doCreateSomeTestOuputForDoctest();
 
-		File expectedIndex = new File("target/site/doctester/index.html");
+        finishDocTest();
 
-		Assert.assertTrue(expectedIndex.exists());
+        File expectedIndex = new File("target/site/doctester/index.html");
 
-		assertThatFileContainsText(expectedIndex, "index");
+        Assert.assertTrue(expectedIndex.exists());
 
-	}
-
-	@Test
-	public void testThatIndexWritingOutDoctestFileWorks() throws Exception {
-
-		doCreateSomeTestOuputForDoctest();
-
-		finishDocTest();
-
-		File expectedDoctestfile = new File("target/site/doctester/" + EXPECTED_FILENAME);
-		File expectedIndexFile = new File("target/site/doctester/index.html");
-
-		// just a simple test to make sure the name is written somewhere in the file.
-		assertThatFileContainsText(expectedDoctestfile, DocTesterTest.class.getSimpleName());
-
-		// just a simple test to make sure that index.html contains a "link" to the doctest file.
-		assertThatFileContainsText(expectedIndexFile, EXPECTED_FILENAME);
-
-	}
-
-	@Test
-	public void testThatCopyingOfCustomDoctesterCssWorks() throws Exception {
-
-		doCreateSomeTestOuputForDoctest();
-
-		finishDocTest();
-
-		File expectedDoctestfile = new File("target/site/doctester/" + EXPECTED_FILENAME);
-		File expectedCustomCssFile = new File("target/site/doctester/custom_doctester_stylesheet.css");
-
-		// just a simple test to make sure the name is written somewhere in the file.
-		assertThatFileContainsText(expectedDoctestfile, "custom_doctester_stylesheet.css");
-
-		// just a simple test to make sure that index.html contains a "link" to the doctest file.
-		assertThatFileContainsText(expectedCustomCssFile, "body");
-
-	}
-
-	@Test(expected = IllegalStateException.class)
-	public void testThatUsageOfTestBrowserWithoutSpecifyingGetTestUrlIsNotAllowed() {
-
-		testServerUrl();
-
-	}
-	
-	@Test
-	public void testThatAssertionFailureGetsWrittenToDoctesterHtmlFile() throws Exception {
-
-		boolean gotTestFailure = false;
-		
-		try {
-			sayAndAssertThat("This will go wrong", false, is(true));
-		} catch (AssertionError assertionError) {
-			gotTestFailure = true;
-		}
-		
-		assertThat(gotTestFailure, is(true));
-		
-		
-		finishDocTest();
-		
-		File expectedDoctestfile = new File("target/site/doctester/" + DocTesterTest.EXPECTED_FILENAME);
-		
-		// this makes sure that the correct alert type is used together
-		// with proper escaping and replacement of \n values...
-		assertThatFileContainsText(expectedDoctestfile, 
-						"<div class=\"alert alert-danger\">\n" +
-                                "java.lang.AssertionError: <br/>Expected: is &lt;true&gt;<br/>     but: was &lt;false&gt;");
-
+        assertThatFileContainsText(expectedIndex, "index");
 
     }
 
-	public void doCreateSomeTestOuputForDoctest() {
+    @Test
+    public void testThatIndexWritingOutDoctestFileWorks() throws Exception {
 
-		sayNextSection("another fun heading!");
-		say("and a very long text...!");
+        doCreateSomeTestOuputForDoctest();
 
-	}
+        finishDocTest();
 
-	public static void assertThatFileContainsText(File file, String text) throws IOException {
+        File expectedDoctestfile = new File("target/site/doctester/" + EXPECTED_FILENAME);
+        File expectedIndexFile = new File("target/site/doctester/index.html");
 
-		String content = Files.toString(file, Charsets.UTF_8);
-		Assert.assertTrue(content.contains(text));
+        // just a simple test to make sure the name is written somewhere in the file.
+        assertThatFileContainsText(expectedDoctestfile, DocTesterTest.class.getSimpleName());
 
-	}
+        // just a simple test to make sure that index.html contains a "link" to the doctest file.
+        assertThatFileContainsText(expectedIndexFile, EXPECTED_FILENAME);
+
+    }
+
+    @Test
+    public void testThatCopyingOfCustomDoctesterCssWorks() throws Exception {
+
+        doCreateSomeTestOuputForDoctest();
+
+        finishDocTest();
+
+        File expectedDoctestfile = new File("target/site/doctester/" + EXPECTED_FILENAME);
+        File expectedCustomCssFile = new File("target/site/doctester/custom_doctester_stylesheet.css");
+
+        // just a simple test to make sure the name is written somewhere in the file.
+        assertThatFileContainsText(expectedDoctestfile, "custom_doctester_stylesheet.css");
+
+        // just a simple test to make sure that index.html contains a "link" to the doctest file.
+        assertThatFileContainsText(expectedCustomCssFile, "body");
+
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testThatUsageOfTestBrowserWithoutSpecifyingGetTestUrlIsNotAllowed() {
+
+        testServerUrl();
+
+    }
+
+    @Test
+    public void testThatAssertionFailureGetsWrittenToDoctesterHtmlFile() throws Exception {
+
+        boolean gotTestFailure = false;
+
+        try {
+            sayAndAssertThat("This will go wrong", false, is(true));
+        } catch (AssertionError assertionError) {
+            gotTestFailure = true;
+        }
+
+        assertThat(gotTestFailure, is(true));
+
+        finishDocTest();
+
+        File expectedDoctestfile = new File("target/site/doctester/" + DocTesterTest.EXPECTED_FILENAME);
+
+		// this makes sure that the correct alert type is used together
+        // with proper escaping and replacement of \n values...
+        assertThatFileContainsText(expectedDoctestfile,
+                "<div class=\"alert alert-danger\">\n"
+                + "java.lang.AssertionError: <br/>Expected: is &lt;true&gt;<br/>     but: was &lt;false&gt;");
+
+    }
+
+    public void doCreateSomeTestOuputForDoctest() {
+
+        sayNextSection("another fun heading!");
+        say("and a very long text...!");
+
+    }
+
+    public static void assertThatFileContainsText(File file, String text) throws IOException {
+
+        String content = Files.toString(file, Charsets.UTF_8);
+        Assert.assertTrue(content.contains(text));
+
+    }
 
 }

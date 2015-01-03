@@ -36,7 +36,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 public class DocTesterLifecycleTest extends DocTester {
-    
+
     @Mock // A static mock to test lifecycle of class
     public static RenderMachine renderMachineMock = Mockito.mock(RenderMachine.class);
 
@@ -45,7 +45,7 @@ public class DocTesterLifecycleTest extends DocTester {
         Assert.assertNotNull(renderMachine);
         assertThat(renderMachine, CoreMatchers.equalTo(renderMachineMock));
     }
-    
+
     @AfterClass
     public void asserThatRenderEngineHasBeenShutDownCorrectly() {
         Mockito.verify(renderMachineMock).finishAndWriteOut();
@@ -57,6 +57,5 @@ public class DocTesterLifecycleTest extends DocTester {
         // to verify that something on renderMachineMock has been called
         return renderMachineMock;
     }
-    
-    
+
 }

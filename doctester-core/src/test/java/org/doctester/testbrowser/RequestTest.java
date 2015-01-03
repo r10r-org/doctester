@@ -36,167 +36,166 @@ import org.junit.Test;
  */
 public class RequestTest {
 
+    @Test
+    public void testHEAD() {
+        Request result = Request.HEAD();
 
-	@Test
-	public void testHEAD() {
-		Request result = Request.HEAD();
+        assertThat(result.httpRequestType, equalTo("HEAD"));
 
-		assertThat(result.httpRequestType, equalTo("HEAD"));
+    }
 
-	}
+    @Test
+    public void testGET() {
+        Request result = Request.GET();
 
-	@Test
-	public void testGET() {
-		Request result = Request.GET();
+        assertThat(result.httpRequestType, equalTo("GET"));
 
-		assertThat(result.httpRequestType, equalTo("GET"));
+    }
 
-	}
+    @Test
+    public void testPOST() {
 
-	@Test
-	public void testPOST() {
+        Request result = Request.POST();
+        assertThat(result.httpRequestType, equalTo("POST"));
+    }
 
-		Request result = Request.POST();
-		assertThat(result.httpRequestType, equalTo("POST"));
-	}
+    @Test
+    public void testPUT() {
+        Request result = Request.PUT();
+        assertThat(result.httpRequestType, equalTo("PUT"));
+    }
 
-	@Test
-	public void testPUT() {
-		Request result = Request.PUT();
-		assertThat(result.httpRequestType, equalTo("PUT"));
-	}
+    @Test
+    public void testDELETE() {
+        Request result = Request.DELETE();
+        assertThat(result.httpRequestType, equalTo("DELETE"));
+    }
 
-	@Test
-	public void testDELETE() {
-		Request result = Request.DELETE();
-		assertThat(result.httpRequestType, equalTo("DELETE"));
-	}
+    @Test
+    public void testContentTypeApplicationJson() {
 
-	@Test
-	public void testContentTypeApplicationJson() {
+        Request request = Request.GET().contentTypeApplicationJson();
 
-		Request request = Request.GET().contentTypeApplicationJson();
+        assertThat(request.headers.get(HttpConstants.HEADER_CONTENT_TYPE), equalTo(HttpConstants.APPLICATION_JSON_WITH_CHARSET_UTF8));
 
-		assertThat(request.headers.get(HttpConstants.HEADER_CONTENT_TYPE), equalTo(HttpConstants.APPLICATION_JSON_WITH_CHARSET_UTF8));
+    }
 
-	}
+    @Test
+    public void testContentTypeApplicationXml() {
 
-	@Test
-	public void testContentTypeApplicationXml() {
+        Request request = Request.GET().contentTypeApplicationXml();
 
-		Request request = Request.GET().contentTypeApplicationXml();
+        assertThat(request.headers.get(HttpConstants.HEADER_CONTENT_TYPE), equalTo(HttpConstants.APPLICATION_XML_WITH_CHARSET_UTF_8));
+    }
 
-		assertThat(request.headers.get(HttpConstants.HEADER_CONTENT_TYPE), equalTo(HttpConstants.APPLICATION_XML_WITH_CHARSET_UTF_8));
-	}
+    @Test
+    public void testUrl() {
+        System.out.println("url");
+        Url url = Url.host("http:/test.com");
+        Request result = Request.GET().url(url);
 
-	@Test
-	public void testUrl() {
-		System.out.println("url");
-		Url url = Url.host("http:/test.com");
-		Request result = Request.GET().url(url);
+        assertThat(result.uri, equalTo(url.uri()));
+    }
 
-		assertThat(result.uri, equalTo(url.uri()));
-	}
+    @Test
+    public void testAddFileToUpload() {
 
-	@Test
-	public void testAddFileToUpload() {
+        System.out.println("addFileToUpload");
 
-		System.out.println("addFileToUpload");
+        File fileToUpload = new File(".");
+        Request request = Request.GET().addFileToUpload("fileParam", fileToUpload);
 
-		File fileToUpload = new File(".");
-		Request request = Request.GET().addFileToUpload("fileParam", fileToUpload);
+        assertThat(request.filesToUpload.size(), equalTo(1));
+        assertThat(request.filesToUpload.get("fileParam"), equalTo(fileToUpload));
 
-		assertThat(request.filesToUpload.size(), equalTo(1));
-		assertThat(request.filesToUpload.get("fileParam"), equalTo(fileToUpload));
+    }
 
-	}
+    @Test
+    public void testAddHeader() {
 
-	@Test
-	public void testAddHeader() {
+        Request request
+                = Request
+                .GET()
+                .addHeader("header1", "header1_value")
+                .addHeader("header2", "header2_value");
 
-		Request request
-						= Request
-						.GET()
-						.addHeader("header1", "header1_value")
-						.addHeader("header2", "header2_value");
+        assertThat(request.headers.get("header1"), equalTo("header1_value"));
+        assertThat(request.headers.get("header2"), equalTo("header2_value"));
+        assertThat(request.headers.get("header3"), equalTo(null));
 
-		assertThat(request.headers.get("header1"), equalTo("header1_value"));
-		assertThat(request.headers.get("header2"), equalTo("header2_value"));
-		assertThat(request.headers.get("header3"), equalTo(null));
+    }
 
-	}
+    @Test
+    public void testHeaders() {
 
-	@Test
-	public void testHeaders() {
+        Map<String, String> headers = Maps.newHashMap();
+        headers.put("header1", "header1_value");
+        headers.put("header2", "header2_value");
 
-		Map<String, String> headers = Maps.newHashMap();
-		headers.put("header1", "header1_value");
-		headers.put("header2", "header2_value");
+        Request request
+                = Request
+                .GET()
+                .headers(headers);
 
-		Request request
-						= Request
-						.GET()
-						.headers(headers);
+        assertThat(request.headers.get("header1"), equalTo("header1_value"));
+        assertThat(request.headers.get("header2"), equalTo("header2_value"));
+        assertThat(request.headers.get("header3"), equalTo(null));
 
-		assertThat(request.headers.get("header1"), equalTo("header1_value"));
-		assertThat(request.headers.get("header2"), equalTo("header2_value"));
-		assertThat(request.headers.get("header3"), equalTo(null));
+    }
 
-	}
+    /**
+     * Test of addFormParameter method, of class Request.
+     */
+    @Test
+    public void testAddFormParameter() {
+        Request request
+                = Request
+                .GET()
+                .addFormParameter("param1", "param1_value")
+                .addFormParameter("param2", "param2_value");
 
-	/**
-	 * Test of addFormParameter method, of class Request.
-	 */
-	@Test
-	public void testAddFormParameter() {
-		Request request
-						= Request
-						.GET()
-						.addFormParameter("param1", "param1_value")
-						.addFormParameter("param2", "param2_value");
+        assertThat(request.formParameters.get("param1"), equalTo("param1_value"));
+        assertThat(request.formParameters.get("param2"), equalTo("param2_value"));
+        assertThat(request.formParameters.get("param3"), equalTo(null));
+    }
 
-		assertThat(request.formParameters.get("param1"), equalTo("param1_value"));
-		assertThat(request.formParameters.get("param2"), equalTo("param2_value"));
-		assertThat(request.formParameters.get("param3"), equalTo(null));
-	}
+    /**
+     * Test of formParameters method, of class Request.
+     */
+    @Test
+    public void testFormParameters() {
 
-	/**
-	 * Test of formParameters method, of class Request.
-	 */
-	@Test
-	public void testFormParameters() {
+        Map<String, String> formParameters = Maps.newHashMap();
+        formParameters.put("param1", "param1_value");
+        formParameters.put("param2", "param2_value");
 
-		Map<String, String> formParameters = Maps.newHashMap();
-		formParameters.put("param1", "param1_value");
-		formParameters.put("param2", "param2_value");
+        Request request
+                = Request
+                .GET()
+                .formParameters(formParameters);
 
-		Request request
-						= Request
-						.GET()
-						.formParameters(formParameters);
+        assertThat(request.formParameters.get("param1"), equalTo("param1_value"));
+        assertThat(request.formParameters.get("param2"), equalTo("param2_value"));
+        assertThat(request.formParameters.get("param3"), equalTo(null));
+    }
 
-		assertThat(request.formParameters.get("param1"), equalTo("param1_value"));
-		assertThat(request.formParameters.get("param2"), equalTo("param2_value"));
-		assertThat(request.formParameters.get("param3"), equalTo(null));
-	}
+    @Test
+    public void testPayload() {
 
-	@Test
-	public void testPayload() {
+        Object payload = "funkyPayload";
+        Request request = Request.GET().payload(payload);
 
-		Object payload = "funkyPayload";
-		Request request = Request.GET().payload(payload);
+        assertThat(request.payload, equalTo(payload));
+    }
 
-		assertThat(request.payload, equalTo(payload));
-	}
+    @Test
+    public void testFollowRedirects() {
 
-	@Test
-	public void testFollowRedirects() {
+        Request request = Request.GET().followRedirects(true);
+        assertThat(request.followRedirects, equalTo(true));
 
-		Request request = Request.GET().followRedirects(true);
-		assertThat(request.followRedirects, equalTo(true));
-
-		request = Request.GET().followRedirects(false);
-		assertThat(request.followRedirects, equalTo(false));
-	}
+        request = Request.GET().followRedirects(false);
+        assertThat(request.followRedirects, equalTo(false));
+    }
 
 }

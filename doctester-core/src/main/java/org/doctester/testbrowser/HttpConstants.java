@@ -24,20 +24,20 @@ package org.doctester.testbrowser;
  */
 public interface HttpConstants {
 
-	String HEADER_ACCEPT = "Accept";
+    String HEADER_ACCEPT = "Accept";
 
-	String HEADER_CONTENT_TYPE = "Content-Type";
+    String HEADER_CONTENT_TYPE = "Content-Type";
 
-	String APPLICATION_JSON = "application/json";
-	String APPLICATION_JSON_WITH_CHARSET_UTF8 = "application/json; charset=utf-8";
+    String APPLICATION_JSON = "application/json";
+    String APPLICATION_JSON_WITH_CHARSET_UTF8 = "application/json; charset=utf-8";
 
-	String APPLICATION_XML = "application/xml";
-	String APPLICATION_XML_WITH_CHARSET_UTF_8 = "application/xml; charset=utf-8";
+    String APPLICATION_XML = "application/xml";
+    String APPLICATION_XML_WITH_CHARSET_UTF_8 = "application/xml; charset=utf-8";
 
-	String HEAD = "HEAD";
-	String GET = "GET";
-	String DELETE = "DELETE";
-	String POST = "POST";
-	String PUT = "PUT";
+    String HEAD = "HEAD";
+    String GET = "GET";
+    String DELETE = "DELETE";
+    String POST = "POST";
+    String PUT = "PUT";
 
 }

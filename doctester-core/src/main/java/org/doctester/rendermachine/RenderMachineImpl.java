@@ -44,455 +44,452 @@ import org.slf4j.LoggerFactory;
 
 public class RenderMachineImpl implements RenderMachine {
 
-	private final static Logger logger = LoggerFactory.getLogger(RenderMachineImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(RenderMachineImpl.class);
 
-	private final String BASE_DIR = "target/site/doctester";
+    private final String BASE_DIR = "target/site/doctester";
 
-	public final String CUSTOM_DOCTESTER_STYLESHEET_LOCATION_WITHOUT_FILENAME = "org/doctester";
+    public final String CUSTOM_DOCTESTER_STYLESHEET_LOCATION_WITHOUT_FILENAME = "org/doctester";
 
-	public final String CUSTOM_DOCTESTER_STYLESHEET_FILENAME = "custom_doctester_stylesheet.css";
+    public final String CUSTOM_DOCTESTER_STYLESHEET_FILENAME = "custom_doctester_stylesheet.css";
 
-	public final String CUSTOM_DOCTESTER_STYLESHEET_LOCATION
-					= CUSTOM_DOCTESTER_STYLESHEET_LOCATION_WITHOUT_FILENAME
-					+ "/"
-					+ CUSTOM_DOCTESTER_STYLESHEET_FILENAME;
+    public final String CUSTOM_DOCTESTER_STYLESHEET_LOCATION
+            = CUSTOM_DOCTESTER_STYLESHEET_LOCATION_WITHOUT_FILENAME
+            + "/"
+            + CUSTOM_DOCTESTER_STYLESHEET_FILENAME;
 
-	private final String INDEX_FILE_WITHOUT_SUFFIX = "index";
+    private final String INDEX_FILE_WITHOUT_SUFFIX = "index";
 
-	List<String> htmlDocument;
+    List<String> htmlDocument;
 
-	List<String> headerTitle;
-	List<String> headerId;
+    List<String> headerTitle;
+    List<String> headerId;
 
-	private TestBrowser testBrowser = null;
+    private TestBrowser testBrowser = null;
 
-	private String fileName = null;
+    private String fileName = null;
 
-	public RenderMachineImpl() {
-		headerTitle = Lists.newArrayList();
-		headerId = Lists.newArrayList();
-		htmlDocument = Lists.newArrayList();
+    public RenderMachineImpl() {
+        headerTitle = Lists.newArrayList();
+        headerId = Lists.newArrayList();
+        htmlDocument = Lists.newArrayList();
 
-	}
+    }
 
-	@Override
-	public void say(String textAsParagraph) {
+    @Override
+    public void say(String textAsParagraph) {
 
-		htmlDocument.add("<p>");
-		htmlDocument.add(textAsParagraph);
-		htmlDocument.add("</p>");
+        htmlDocument.add("<p>");
+        htmlDocument.add(textAsParagraph);
+        htmlDocument.add("</p>");
 
-	}
+    }
 
-	@Override
-	public void sayNextSection(String textAsH1) {
+    @Override
+    public void sayNextSection(String textAsH1) {
 
-		headerTitle.add(textAsH1);
+        headerTitle.add(textAsH1);
 
-		String h1WithId = "<h1 id=\"%s\">";
-		String textAsH1Id = convertTextToId(textAsH1);
+        String h1WithId = "<h1 id=\"%s\">";
+        String textAsH1Id = convertTextToId(textAsH1);
 
-		htmlDocument.add(String.format(h1WithId, textAsH1Id));
-		htmlDocument.add(textAsH1);
-		htmlDocument.add("</h1>");
+        htmlDocument.add(String.format(h1WithId, textAsH1Id));
+        htmlDocument.add(textAsH1);
+        htmlDocument.add("</h1>");
 
-	}
+    }
 
-	public String convertTextToId(String textAsH1) {
+    public String convertTextToId(String textAsH1) {
 
-		String textAsH1Converted = textAsH1.toLowerCase();
-		textAsH1Converted = textAsH1Converted.replaceAll("\\W", "");
+        String textAsH1Converted = textAsH1.toLowerCase();
+        textAsH1Converted = textAsH1Converted.replaceAll("\\W", "");
 
-		return textAsH1Converted;
+        return textAsH1Converted;
 
-	}
+    }
 
-	@Override
-	public List<Cookie> sayAndGetCookies() {
-		List<Cookie> cookies = testBrowser.getCookies();
+    @Override
+    public List<Cookie> sayAndGetCookies() {
+        List<Cookie> cookies = testBrowser.getCookies();
 
-		htmlDocument.add("<p>");
+        htmlDocument.add("<p>");
 
-		for (Cookie cookie : cookies) {
+        for (Cookie cookie : cookies) {
 
-			htmlDocument.add("<b>Cookies</b><br/>");
-			printCookie(cookie);
+            htmlDocument.add("<b>Cookies</b><br/>");
+            printCookie(cookie);
 
-		}
+        }
 
-		htmlDocument.add("</p>");
+        htmlDocument.add("</p>");
 
-		return cookies;
-	}
+        return cookies;
+    }
 
-	@Override
-	public Cookie sayAndGetCookieWithName(String name) {
+    @Override
+    public Cookie sayAndGetCookieWithName(String name) {
 
-		Cookie cookie = testBrowser.getCookieWithName(name);
-		htmlDocument.add("<b>Cookie</b><br/>");
-		printCookie(cookie);
+        Cookie cookie = testBrowser.getCookieWithName(name);
+        htmlDocument.add("<b>Cookie</b><br/>");
+        printCookie(cookie);
 
-		return cookie;
+        return cookie;
 
-	}
+    }
 
-	@Override
-	public Response sayAndMakeRequest(Request httpRequest) {
+    @Override
+    public Response sayAndMakeRequest(Request httpRequest) {
 
-		Response httpResponse = testBrowser.makeRequest(httpRequest);
+        Response httpResponse = testBrowser.makeRequest(httpRequest);
 
-		printHttpRequestAndHttpResponse(httpRequest, httpResponse);
+        printHttpRequestAndHttpResponse(httpRequest, httpResponse);
 
-		return httpResponse;
+        return httpResponse;
 
-	}
+    }
 
-	@Override
-	public <T> void sayAndAssertThat(String message,
-					T actual,
-					Matcher<? super T> matcher) {
+    @Override
+    public <T> void sayAndAssertThat(String message,
+            T actual,
+            Matcher<? super T> matcher) {
 
-		sayAndAssertThat(message, "", actual, matcher);
+        sayAndAssertThat(message, "", actual, matcher);
 
-	}
+    }
 
-	@Override
-	public <T> void sayAndAssertThat(String message,
-					String reason,
-					T actual,
-					Matcher<? super T> matcher) {
+    @Override
+    public <T> void sayAndAssertThat(String message,
+            String reason,
+            T actual,
+            Matcher<? super T> matcher) {
 
-		try {
-			
-			Assert.assertThat(reason, actual, matcher);
-			
-			htmlDocument.add("<div class=\"alert alert-success\">");
-			htmlDocument.add(message);
-			htmlDocument.add("</div>");
-			
-		} catch (AssertionError assertionError) {
-		
-			htmlDocument.add("<div class=\"alert alert-danger\">");
-			htmlDocument.add(convertStackTraceIntoHtml(assertionError));
-			htmlDocument.add("</div>");
-		
-			throw assertionError;
-		}	
+        try {
 
-  }
+            Assert.assertThat(reason, actual, matcher);
 
-	@Override
-	public void sayRaw(String rawHtml) {
-		htmlDocument.add(rawHtml);
+            htmlDocument.add("<div class=\"alert alert-success\">");
+            htmlDocument.add(message);
+            htmlDocument.add("</div>");
 
-	}
+        } catch (AssertionError assertionError) {
 
-	@Override
-	public void setTestBrowser(TestBrowser testBrowser) {
-		this.testBrowser = testBrowser;
-	}
+            htmlDocument.add("<div class=\"alert alert-danger\">");
+            htmlDocument.add(convertStackTraceIntoHtml(assertionError));
+            htmlDocument.add("</div>");
 
-	private void printCookie(Cookie cookie) {
+            throw assertionError;
+        }
 
-		htmlDocument.add("Name: " + cookie.getName() + "<br/>");
-		htmlDocument.add("Path: " + cookie.getPath() + "<br/>");
-		htmlDocument.add("Domain: " + cookie.getDomain() + "<br/>");
-		htmlDocument.add("Value: " + cookie.getValue() + "<br/>");
+    }
 
-	}
+    @Override
+    public void sayRaw(String rawHtml) {
+        htmlDocument.add(rawHtml);
 
-	@Override
-	public void finishAndWriteOut() {
+    }
 
-		copyAllAssetsLikeJQueryAndBootstrapFromResourcesToDoctesterOutputDirectory();
+    @Override
+    public void setTestBrowser(TestBrowser testBrowser) {
+        this.testBrowser = testBrowser;
+    }
 
-		copyCustomUserSuppliedCssIfItExists();
+    private void printCookie(Cookie cookie) {
 
-		doCreateHtmlPageforThisDoctest();
-		doCreateIndexPage();
+        htmlDocument.add("Name: " + cookie.getName() + "<br/>");
+        htmlDocument.add("Path: " + cookie.getPath() + "<br/>");
+        htmlDocument.add("Domain: " + cookie.getDomain() + "<br/>");
+        htmlDocument.add("Value: " + cookie.getValue() + "<br/>");
 
-	}
-	
-	
+    }
 
-	@Override
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+    @Override
+    public void finishAndWriteOut() {
 
-	}
+        copyAllAssetsLikeJQueryAndBootstrapFromResourcesToDoctesterOutputDirectory();
 
-	private void doCreateHtmlPageforThisDoctest() {
+        copyCustomUserSuppliedCssIfItExists();
 
-		List<String> finalHtmlDocument = Lists.newArrayList();
+        doCreateHtmlPageforThisDoctest();
+        doCreateIndexPage();
 
-		finalHtmlDocument.add(RenderMachineHtml.HTML_BEGIN);
-		finalHtmlDocument.add(String.format(RenderMachineHtml.HTML_HEAD, fileName));
-		finalHtmlDocument.add(RenderMachineHtml.BODY_BEGIN);
+    }
 
-		String headerFormattedWithTitle = String.format(
-						RenderMachineHtml.BOOTSTRAP_HEADER,
-						fileName);
+    @Override
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
 
-		finalHtmlDocument.add(headerFormattedWithTitle);
+    }
 
-		finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_CONTAINER_BEGIN);
-		finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_LEFT_NAVBAR_BEGIN);
+    private void doCreateHtmlPageforThisDoctest() {
 
-		for (String string : headerTitle) {
+        List<String> finalHtmlDocument = Lists.newArrayList();
 
-			String elementToAdd = String.format(
-							RenderMachineHtml.BOOTSTRAP_LEFT_NAVBAR_ELEMENT,
-							convertTextToId(string),
-							string);
+        finalHtmlDocument.add(RenderMachineHtml.HTML_BEGIN);
+        finalHtmlDocument.add(String.format(RenderMachineHtml.HTML_HEAD, fileName));
+        finalHtmlDocument.add(RenderMachineHtml.BODY_BEGIN);
 
-			finalHtmlDocument.add(elementToAdd);
+        String headerFormattedWithTitle = String.format(
+                RenderMachineHtml.BOOTSTRAP_HEADER,
+                fileName);
 
-		}
+        finalHtmlDocument.add(headerFormattedWithTitle);
 
-		finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_LEFT_NAVBAR_END);
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_CONTAINER_BEGIN);
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_LEFT_NAVBAR_BEGIN);
 
-		finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_RIGHT_CONTENT_BEGIN);
+        for (String string : headerTitle) {
 
-		for (String string : htmlDocument) {
-			finalHtmlDocument.add(string);
-		}
+            String elementToAdd = String.format(
+                    RenderMachineHtml.BOOTSTRAP_LEFT_NAVBAR_ELEMENT,
+                    convertTextToId(string),
+                    string);
 
-		finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_RIGHT_CONTENT_END);
-		finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_CONTAINER_END);
-		finalHtmlDocument.add(RenderMachineHtml.BODY_END);
-		finalHtmlDocument.add(RenderMachineHtml.HTML_END);
+            finalHtmlDocument.add(elementToAdd);
 
-		writeOutListOfHtmlStringsIntoFile(finalHtmlDocument, fileName);
+        }
 
-	}
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_LEFT_NAVBAR_END);
 
-	private void doCreateIndexPage() {
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_RIGHT_CONTENT_BEGIN);
 
-		File[] files = collectAllDoctestsToCreateIndexFile(BASE_DIR);
+        for (String string : htmlDocument) {
+            finalHtmlDocument.add(string);
+        }
 
-		List<String> finalHtmlDocument = Lists.newArrayList();
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_RIGHT_CONTENT_END);
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_CONTAINER_END);
+        finalHtmlDocument.add(RenderMachineHtml.BODY_END);
+        finalHtmlDocument.add(RenderMachineHtml.HTML_END);
 
-		finalHtmlDocument.add(RenderMachineHtml.HTML_BEGIN);
-		finalHtmlDocument.add(String.format(RenderMachineHtml.HTML_HEAD, INDEX_FILE_WITHOUT_SUFFIX));
-		finalHtmlDocument.add(RenderMachineHtml.BODY_BEGIN);
+        writeOutListOfHtmlStringsIntoFile(finalHtmlDocument, fileName);
 
-		String headerFormattedWithTitle = String.format(
-						RenderMachineHtml.BOOTSTRAP_HEADER,
-						INDEX_FILE_WITHOUT_SUFFIX);
+    }
 
-		finalHtmlDocument.add(headerFormattedWithTitle);
+    private void doCreateIndexPage() {
 
-		finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_CONTAINER_BEGIN);
-		finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_LEFT_NAVBAR_EMPTY);
+        File[] files = collectAllDoctestsToCreateIndexFile(BASE_DIR);
 
-		finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_RIGHT_CONTENT_BEGIN);
+        List<String> finalHtmlDocument = Lists.newArrayList();
 
-		for (File file : files) {
+        finalHtmlDocument.add(RenderMachineHtml.HTML_BEGIN);
+        finalHtmlDocument.add(String.format(RenderMachineHtml.HTML_HEAD, INDEX_FILE_WITHOUT_SUFFIX));
+        finalHtmlDocument.add(RenderMachineHtml.BODY_BEGIN);
 
-			String link = String.format("<a href=\"%s\">%s</a>", file.getName(), file.getName());
+        String headerFormattedWithTitle = String.format(
+                RenderMachineHtml.BOOTSTRAP_HEADER,
+                INDEX_FILE_WITHOUT_SUFFIX);
 
-			finalHtmlDocument.add(link);
-			finalHtmlDocument.add(RenderMachineHtml.HTML_NEWLINE);
-		}
+        finalHtmlDocument.add(headerFormattedWithTitle);
 
-		finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_RIGHT_CONTENT_END);
-		finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_CONTAINER_END);
-		finalHtmlDocument.add(RenderMachineHtml.BODY_END);
-		finalHtmlDocument.add(RenderMachineHtml.HTML_END);
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_CONTAINER_BEGIN);
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_LEFT_NAVBAR_EMPTY);
 
-		writeOutListOfHtmlStringsIntoFile(finalHtmlDocument, INDEX_FILE_WITHOUT_SUFFIX);
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_RIGHT_CONTENT_BEGIN);
 
-	}
+        for (File file : files) {
 
-	private File[] collectAllDoctestsToCreateIndexFile(String baseDirectoryForCollectingDoctesterHtmlFiles) {
+            String link = String.format("<a href=\"%s\">%s</a>", file.getName(), file.getName());
 
-		File[] files = new File(baseDirectoryForCollectingDoctesterHtmlFiles).listFiles(new FileFilter() {
+            finalHtmlDocument.add(link);
+            finalHtmlDocument.add(RenderMachineHtml.HTML_NEWLINE);
+        }
 
-			@Override
-			public boolean accept(File pathname) {
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_RIGHT_CONTENT_END);
+        finalHtmlDocument.add(RenderMachineHtml.BOOTSTRAP_CONTAINER_END);
+        finalHtmlDocument.add(RenderMachineHtml.BODY_END);
+        finalHtmlDocument.add(RenderMachineHtml.HTML_END);
 
-				if (!pathname.getName().endsWith(".html")) {
-					return false;
-				} else if (pathname.getName().equals(INDEX_FILE_WITHOUT_SUFFIX + ".html")) {
-					return false;
-				} else {
-					return true;
-				}
+        writeOutListOfHtmlStringsIntoFile(finalHtmlDocument, INDEX_FILE_WITHOUT_SUFFIX);
 
-			}
-		});
+    }
 
-		return files;
+    private File[] collectAllDoctestsToCreateIndexFile(String baseDirectoryForCollectingDoctesterHtmlFiles) {
 
-	}
+        File[] files = new File(baseDirectoryForCollectingDoctesterHtmlFiles).listFiles(new FileFilter() {
 
-	private void writeOutListOfHtmlStringsIntoFile(
-					List<String> finalHtmlDocument,
-					String fileNameWithoutSuffix) {
+            @Override
+            public boolean accept(File pathname) {
 
-		String completeHtmlOutput = Joiner.on("\n").join(finalHtmlDocument);
+                if (!pathname.getName().endsWith(".html")) {
+                    return false;
+                } else if (pathname.getName().equals(INDEX_FILE_WITHOUT_SUFFIX + ".html")) {
+                    return false;
+                } else {
+                    return true;
+                }
 
-		try {
+            }
+        });
 
-			Files.write(
-							completeHtmlOutput,
-							new File(
-											BASE_DIR
-											+ File.separator
-											+ fileNameWithoutSuffix + ".html"),
-							Charsets.UTF_8);
+        return files;
 
-		} catch (IOException e) {
+    }
 
-			logger.error("An error ocurred while writing out html to file", e);
+    private void writeOutListOfHtmlStringsIntoFile(
+            List<String> finalHtmlDocument,
+            String fileNameWithoutSuffix) {
 
-		}
+        String completeHtmlOutput = Joiner.on("\n").join(finalHtmlDocument);
 
-	}
+        try {
 
-	private void printHttpRequestAndHttpResponse(Request httpRequest, Response response) {
+            Files.write(
+                    completeHtmlOutput,
+                    new File(
+                            BASE_DIR
+                            + File.separator
+                            + fileNameWithoutSuffix + ".html"),
+                    Charsets.UTF_8);
 
-		htmlDocument.add("<div class=\"panel panel-default\">");
-		htmlDocument.add("<div class=\"panel-body\">");
+        } catch (IOException e) {
 
-		htmlDocument.add("<div class=\"panel panel-info\">");
+            logger.error("An error ocurred while writing out html to file", e);
 
-		htmlDocument.add("<div class=\"panel-heading\">");
-		htmlDocument.add("<h3 class=\"panel-title\">Http Request</h3>");
-		htmlDocument.add("</div>");
+        }
 
-		htmlDocument.add("<div class=\"panel-body\">");
-		htmlDocument.add("<dl class=\"dl-horizontal\">");
-		htmlDocument.add("<dt>Type</dt><dd>" + httpRequest.httpRequestType + "</dd>");
-		htmlDocument.add("<dt>Url</dt><dd>" + httpRequest.uri.toString() + "</dd>");
-		if (httpRequest.formParameters != null) {
-			htmlDocument.add("<dt>Parameters</dt><dd>" + httpRequest.formParameters.toString() + "</dd>");
-		}
+    }
 
-		htmlDocument.addAll(getHtmlFormattedHeaders(httpRequest.headers));
+    private void printHttpRequestAndHttpResponse(Request httpRequest, Response response) {
 
-		htmlDocument.add("</dl>");
+        htmlDocument.add("<div class=\"panel panel-default\">");
+        htmlDocument.add("<div class=\"panel-body\">");
 
-		htmlDocument.add("</div>");
-		htmlDocument.add("</div>");
+        htmlDocument.add("<div class=\"panel panel-info\">");
 
-		htmlDocument.add("<div class=\"panel panel-info\">");
+        htmlDocument.add("<div class=\"panel-heading\">");
+        htmlDocument.add("<h3 class=\"panel-title\">Http Request</h3>");
+        htmlDocument.add("</div>");
 
-		htmlDocument.add("<div class=\"panel-heading\">");
-		htmlDocument.add("<h3 class=\"panel-title\">Http Response</h3>");
-		htmlDocument.add("</div>");
+        htmlDocument.add("<div class=\"panel-body\">");
+        htmlDocument.add("<dl class=\"dl-horizontal\">");
+        htmlDocument.add("<dt>Type</dt><dd>" + httpRequest.httpRequestType + "</dd>");
+        htmlDocument.add("<dt>Url</dt><dd>" + httpRequest.uri.toString() + "</dd>");
+        if (httpRequest.formParameters != null) {
+            htmlDocument.add("<dt>Parameters</dt><dd>" + httpRequest.formParameters.toString() + "</dd>");
+        }
 
-		htmlDocument.add("<div class=\"panel-body\">");
-		htmlDocument.add("<dl class=\"dl-horizontal\">");
-		htmlDocument.add("<dt>Status</dt><dd>" + response.httpStatus + "</dd>");
+        htmlDocument.addAll(getHtmlFormattedHeaders(httpRequest.headers));
 
-		htmlDocument.addAll(getHtmlFormattedHeaders(response.headers));
+        htmlDocument.add("</dl>");
 
-		if (response.payload == null) {
-			htmlDocument.add("<dt>Content</dt><dd>No Body content.</dd>");
-		} else {
-			htmlDocument.add("<dt>Content</dt><dd><div class=\"http-response-body\"><pre>" + HtmlEscapers.htmlEscaper().escape(response.payloadAsPrettyString()) + "</pre></div></dd>");
-		}
+        htmlDocument.add("</div>");
+        htmlDocument.add("</div>");
 
-		htmlDocument.add("</dl>");
-		htmlDocument.add("</div>");
+        htmlDocument.add("<div class=\"panel panel-info\">");
 
-		htmlDocument.add("</div>");
+        htmlDocument.add("<div class=\"panel-heading\">");
+        htmlDocument.add("<h3 class=\"panel-title\">Http Response</h3>");
+        htmlDocument.add("</div>");
 
-		htmlDocument.add("</div>");
-		htmlDocument.add("</div>");
+        htmlDocument.add("<div class=\"panel-body\">");
+        htmlDocument.add("<dl class=\"dl-horizontal\">");
+        htmlDocument.add("<dt>Status</dt><dd>" + response.httpStatus + "</dd>");
 
-	}
+        htmlDocument.addAll(getHtmlFormattedHeaders(response.headers));
 
-	private List<String> getHtmlFormattedHeaders(Map<String, String> headers) {
+        if (response.payload == null) {
+            htmlDocument.add("<dt>Content</dt><dd>No Body content.</dd>");
+        } else {
+            htmlDocument.add("<dt>Content</dt><dd><div class=\"http-response-body\"><pre>" + HtmlEscapers.htmlEscaper().escape(response.payloadAsPrettyString()) + "</pre></div></dd>");
+        }
 
-		List<String> htmlStuff = Lists.newArrayList();
+        htmlDocument.add("</dl>");
+        htmlDocument.add("</div>");
 
-		if (!headers.isEmpty()) {
+        htmlDocument.add("</div>");
 
-			htmlStuff.add("<dt>Header</dt>");
-			htmlStuff.add("<dd>");
+        htmlDocument.add("</div>");
+        htmlDocument.add("</div>");
 
-			htmlStuff.add("<div class=\"panel-body\">");
-			htmlStuff.add("<dl class=\"dl-horizontal\">");
+    }
 
-			for (Entry<String, String> header : headers.entrySet()) {
+    private List<String> getHtmlFormattedHeaders(Map<String, String> headers) {
 
-				htmlStuff.add("<dt>" + header.getKey() + "</dt>");
-				htmlStuff.add("<dd><div class=\"http-response-body\">" + header.getValue() + "</div></dd>");
+        List<String> htmlStuff = Lists.newArrayList();
 
-			}
+        if (!headers.isEmpty()) {
 
-			htmlStuff.add("</dl>");
-			htmlStuff.add("</div>");
-			htmlStuff.add("</dd>");
+            htmlStuff.add("<dt>Header</dt>");
+            htmlStuff.add("<dd>");
 
-		}
+            htmlStuff.add("<div class=\"panel-body\">");
+            htmlStuff.add("<dl class=\"dl-horizontal\">");
 
-		return htmlStuff;
+            for (Entry<String, String> header : headers.entrySet()) {
 
-	}
+                htmlStuff.add("<dt>" + header.getKey() + "</dt>");
+                htmlStuff.add("<dd><div class=\"http-response-body\">" + header.getValue() + "</div></dd>");
 
-	private void copyResourceIfItExists(String resource, String targetFileForResource) {
+            }
 
-		try {
-			URL url = this.getClass().getClassLoader().getResource(
-					resource);
-			
-			if (url == null) {
-				logger.info("Did not find resource {}.", resource);
-				return;
-			}
+            htmlStuff.add("</dl>");
+            htmlStuff.add("</div>");
+            htmlStuff.add("</dd>");
 
-			File targetFile = new File(targetFileForResource);
+        }
 
-			Files.createParentDirs(targetFile);
+        return htmlStuff;
 
-			Resources.copy(url, new FileOutputStream(targetFile));
+    }
 
-		} catch (IOException ex) {
-			logger.error("Something went wrong copying resource {}", resource, ex);
-		}
+    private void copyResourceIfItExists(String resource, String targetFileForResource) {
 
-	}
-	
-	public void copyAllAssetsLikeJQueryAndBootstrapFromResourcesToDoctesterOutputDirectory() {
-	
-		for (String resource : RenderMachineHtml.RESOURCES_TO_COPY) {
-			copyResourceIfItExists(resource, BASE_DIR + File.separator + resource);
-		}
+        try {
+            URL url = this.getClass().getClassLoader().getResource(
+                    resource);
 
-		copyCustomUserSuppliedCssIfItExists();
-	
-	}
-	
-	public void copyCustomUserSuppliedCssIfItExists() {
-		
-		String baseDirWithCustomCssFileName = BASE_DIR
-						+ File.separator
-						+ CUSTOM_DOCTESTER_STYLESHEET_FILENAME;
+            if (url == null) {
+                logger.info("Did not find resource {}.", resource);
+                return;
+            }
 
-		copyResourceIfItExists(
-				CUSTOM_DOCTESTER_STYLESHEET_LOCATION,
-				baseDirWithCustomCssFileName);
-	
-	}
+            File targetFile = new File(targetFileForResource);
 
-	public static String convertStackTraceIntoHtml(Throwable throwable) {
-		
-		StringWriter sw = new StringWriter();
-		
-		throwable.printStackTrace(new PrintWriter(sw));
-		
-		String exceptionAsStringRaw = sw.toString();
-		
-		
-		String exceptionAsStringHtmlEscaped 
-						= HtmlEscapers.htmlEscaper().escape(exceptionAsStringRaw);
-		exceptionAsStringHtmlEscaped = exceptionAsStringHtmlEscaped.replaceAll("\n", "<br/>");
-		
-		return exceptionAsStringHtmlEscaped;
-	
-	}
+            Files.createParentDirs(targetFile);
+
+            Resources.copy(url, new FileOutputStream(targetFile));
+
+        } catch (IOException ex) {
+            logger.error("Something went wrong copying resource {}", resource, ex);
+        }
+
+    }
+
+    public void copyAllAssetsLikeJQueryAndBootstrapFromResourcesToDoctesterOutputDirectory() {
+
+        for (String resource : RenderMachineHtml.RESOURCES_TO_COPY) {
+            copyResourceIfItExists(resource, BASE_DIR + File.separator + resource);
+        }
+
+        copyCustomUserSuppliedCssIfItExists();
+
+    }
+
+    public void copyCustomUserSuppliedCssIfItExists() {
+
+        String baseDirWithCustomCssFileName = BASE_DIR
+                + File.separator
+                + CUSTOM_DOCTESTER_STYLESHEET_FILENAME;
+
+        copyResourceIfItExists(
+                CUSTOM_DOCTESTER_STYLESHEET_LOCATION,
+                baseDirWithCustomCssFileName);
+
+    }
+
+    public static String convertStackTraceIntoHtml(Throwable throwable) {
+
+        StringWriter sw = new StringWriter();
+
+        throwable.printStackTrace(new PrintWriter(sw));
+
+        String exceptionAsStringRaw = sw.toString();
+
+        String exceptionAsStringHtmlEscaped
+                = HtmlEscapers.htmlEscaper().escape(exceptionAsStringRaw);
+        exceptionAsStringHtmlEscaped = exceptionAsStringHtmlEscaped.replaceAll("\n", "<br/>");
+
+        return exceptionAsStringHtmlEscaped;
+
+    }
 
 }

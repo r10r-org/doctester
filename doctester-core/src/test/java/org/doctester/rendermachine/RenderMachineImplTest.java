@@ -19,31 +19,32 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RenderMachineImplTest {
-	@Mock
-	TestBrowser testBrowser;
 
-	RenderMachineImpl renderMachine;
+    @Mock
+    TestBrowser testBrowser;
 
-	@Before
-	public void setupTest() {
-		renderMachine = new RenderMachineImpl();
-		renderMachine.setTestBrowser(testBrowser);
-	}
+    RenderMachineImpl renderMachine;
 
-	@Test
-	public void testThatFormParametersArePrintedWhenPresent() {
-		Map formParameters = ImmutableMap.of("param1", "value1", "param2", "value2");
-		Request requestWithoutParameters = Request.POST().url(Url.host("host"));
-		Request requestWithParameters = Request.POST().url(Url.host("host")).formParameters(formParameters);
+    @Before
+    public void setupTest() {
+        renderMachine = new RenderMachineImpl();
+        renderMachine.setTestBrowser(testBrowser);
+    }
 
-		when(testBrowser.makeRequest(requestWithoutParameters)).thenReturn(new Response(ImmutableMap.of("header", "header"), 200, "payload"));
-		when(testBrowser.makeRequest(requestWithParameters)).thenReturn(new Response(ImmutableMap.of("header", "header"), 200, "payload"));
+    @Test
+    public void testThatFormParametersArePrintedWhenPresent() {
+        Map formParameters = ImmutableMap.of("param1", "value1", "param2", "value2");
+        Request requestWithoutParameters = Request.POST().url(Url.host("host"));
+        Request requestWithParameters = Request.POST().url(Url.host("host")).formParameters(formParameters);
 
-		renderMachine.sayAndMakeRequest(requestWithoutParameters);
-		assertFalse(renderMachine.htmlDocument.contains("<dt>Parameters</dt><dd>" + formParameters.toString() + "</dd>"));
-		assertFalse(renderMachine.htmlDocument.contains("<dt>Parameters</dt><dd></dd>"));
+        when(testBrowser.makeRequest(requestWithoutParameters)).thenReturn(new Response(ImmutableMap.of("header", "header"), 200, "payload"));
+        when(testBrowser.makeRequest(requestWithParameters)).thenReturn(new Response(ImmutableMap.of("header", "header"), 200, "payload"));
 
-		renderMachine.sayAndMakeRequest(requestWithParameters);
-		assertTrue(renderMachine.htmlDocument.contains("<dt>Parameters</dt><dd>" + formParameters.toString() + "</dd>"));
-	}
+        renderMachine.sayAndMakeRequest(requestWithoutParameters);
+        assertFalse(renderMachine.htmlDocument.contains("<dt>Parameters</dt><dd>" + formParameters.toString() + "</dd>"));
+        assertFalse(renderMachine.htmlDocument.contains("<dt>Parameters</dt><dd></dd>"));
+
+        renderMachine.sayAndMakeRequest(requestWithParameters);
+        assertTrue(renderMachine.htmlDocument.contains("<dt>Parameters</dt><dd>" + formParameters.toString() + "</dd>"));
+    }
 }

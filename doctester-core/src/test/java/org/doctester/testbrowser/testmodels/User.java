@@ -17,19 +17,19 @@ package org.doctester.testbrowser.testmodels;
 
 public class User {
 
-	public Long id;
-	public String username;
-	public String password;
-	public String fullname;
-	public boolean isAdmin;
+    public Long id;
+    public String username;
+    public String password;
+    public String fullname;
+    public boolean isAdmin;
 
-	public User() {
-	}
+    public User() {
+    }
 
-	public User(String username, String password, String fullname) {
-		this.username = username;
-		this.password = password;
-		this.fullname = fullname;
-	}
+    public User(String username, String password, String fullname) {
+        this.username = username;
+        this.password = password;
+        this.fullname = fullname;
+    }
 
 }
