@@ -1,4 +1,4 @@
-Version x.x.x
+Version 1.1.6
 =============
 
  * 2014-12-31 Print form parameters in report when sayAndMakeRequest(Request)
