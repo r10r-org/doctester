@@ -1,6 +1,7 @@
 Version x.x.x
 =============
 
+ * 2014-12-31 Print form parameters in report when sayAndMakeRequest(Request)
  * 2014-12-30 Disabled Javadoc lint checks. (ra)
 
 Version 1.1.5
