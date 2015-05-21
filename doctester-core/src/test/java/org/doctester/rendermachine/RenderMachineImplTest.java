@@ -61,7 +61,8 @@ public class RenderMachineImplTest {
         renderMachine.sayAndMakeRequest(requestWithJsonPayload);
 
         String prettyPrintJson = requestWithJsonPayload.payloadAsPrettyString();
-        assertTrue(prettyPrintJson.startsWith("{") || prettyPrintJson.startsWith("["));
+        assertTrue(prettyPrintJson.startsWith("{"));
+        assertTrue(prettyPrintJson.contains("\"jsonPayloadTester\""));
         assertTrue(renderMachine.htmlDocument.contains(
                 "<dt>Content</dt><dd><div class=\"http-body\"><pre>"
                         + HtmlEscapers.htmlEscaper().escape(prettyPrintJson)
