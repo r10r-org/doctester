@@ -370,7 +370,7 @@ public class RenderMachineImpl implements RenderMachine {
             htmlDocument.add("<dt>Parameters</dt><dd>" + httpRequest.formParameters.toString() + "</dd>");
         } else if (httpRequest.payload != null) {
             htmlDocument.add("<dt>Content</dt><dd><div class=\"http-request-body\"><pre>" + HtmlEscapers.htmlEscaper().escape(httpRequest.payloadAsPrettyString()) + "</pre></div></dd>");
-		}
+        }
 
         htmlDocument.add("</dl>");
 
