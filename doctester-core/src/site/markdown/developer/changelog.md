@@ -1,3 +1,7 @@
+Version 1.1.7
+=============
+ * 2015-05-22 Print pretty-printed payload (JSON/XML) in report when sayAndMakeRequest(Request) 
+
 Version 1.1.6
 =============
 
