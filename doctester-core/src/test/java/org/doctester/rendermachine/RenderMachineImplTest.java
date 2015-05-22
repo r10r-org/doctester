@@ -64,7 +64,7 @@ public class RenderMachineImplTest {
         assertTrue(prettyPrintJson.startsWith("{"));
         assertTrue(prettyPrintJson.contains("\"jsonPayloadTester\""));
         assertTrue(renderMachine.htmlDocument.contains(
-                "<dt>Content</dt><dd><div class=\"http-body\"><pre>"
+                "<dt>Content</dt><dd><div class=\"http-request-body\"><pre>"
                         + HtmlEscapers.htmlEscaper().escape(prettyPrintJson)
                         + "</pre></div></dd>")
         );
@@ -84,7 +84,7 @@ public class RenderMachineImplTest {
         assertTrue(prettyPrintXml.startsWith("<"));
         assertTrue(prettyPrintXml.contains("<username>xmlPayloadTester</username>"));
         assertTrue(renderMachine.htmlDocument.contains(
-                "<dt>Content</dt><dd><div class=\"http-body\"><pre>"
+                "<dt>Content</dt><dd><div class=\"http-request-body\"><pre>"
                         + HtmlEscapers.htmlEscaper().escape(prettyPrintXml)
                         + "</pre></div></dd>")
         );

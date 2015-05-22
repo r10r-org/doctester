@@ -369,7 +369,7 @@ public class RenderMachineImpl implements RenderMachine {
         if (httpRequest.formParameters != null) {
             htmlDocument.add("<dt>Parameters</dt><dd>" + httpRequest.formParameters.toString() + "</dd>");
         } else if (httpRequest.payload != null) {
-            htmlDocument.add("<dt>Content</dt><dd><div class=\"http-body\"><pre>" + HtmlEscapers.htmlEscaper().escape(httpRequest.payloadAsPrettyString()) + "</pre></div></dd>");
+            htmlDocument.add("<dt>Content</dt><dd><div class=\"http-request-body\"><pre>" + HtmlEscapers.htmlEscaper().escape(httpRequest.payloadAsPrettyString()) + "</pre></div></dd>");
 		}
 
         htmlDocument.add("</dl>");
@@ -392,7 +392,7 @@ public class RenderMachineImpl implements RenderMachine {
         if (response.payload == null) {
             htmlDocument.add("<dt>Content</dt><dd>No Body content.</dd>");
         } else {
-            htmlDocument.add("<dt>Content</dt><dd><div class=\"http-body\"><pre>" + HtmlEscapers.htmlEscaper().escape(response.payloadAsPrettyString()) + "</pre></div></dd>");
+            htmlDocument.add("<dt>Content</dt><dd><div class=\"http-response-body\"><pre>" + HtmlEscapers.htmlEscaper().escape(response.payloadAsPrettyString()) + "</pre></div></dd>");
         }
 
         htmlDocument.add("</dl>");
@@ -420,7 +420,7 @@ public class RenderMachineImpl implements RenderMachine {
             for (Entry<String, String> header : headers.entrySet()) {
 
                 htmlStuff.add("<dt>" + header.getKey() + "</dt>");
-                htmlStuff.add("<dd><div class=\"http-body\">" + header.getValue() + "</div></dd>");
+                htmlStuff.add("<dd><div class=\"http-response-body\">" + header.getValue() + "</div></dd>");
 
             }
 
