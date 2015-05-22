@@ -69,4 +69,24 @@ public class RenderMachineImplTest {
                         + "</pre></div></dd>")
         );
     }
+
+    @Test
+    public void testThatXmlPayloadIsPrinted() {
+        User user = new User("xmlPayloadTester", "test456", "XML Payload Tester");
+        Request requestWithXmlPayload = Request.POST().url(Url.host("host")).contentTypeApplicationXml().payload(user);
+
+        when(testBrowser.makeRequest(requestWithXmlPayload)).thenReturn(new Response(ImmutableMap.of("header", "header"), 200, "payload"));
+
+        renderMachine.sayAndMakeRequest(requestWithXmlPayload);
+
+        String prettyPrintXml = requestWithXmlPayload.payloadAsPrettyString();
+        System.err.println(prettyPrintXml);
+        assertTrue(prettyPrintXml.startsWith("<"));
+        assertTrue(prettyPrintXml.contains("<username>xmlPayloadTester</username>"));
+        assertTrue(renderMachine.htmlDocument.contains(
+                "<dt>Content</dt><dd><div class=\"http-body\"><pre>"
+                        + HtmlEscapers.htmlEscaper().escape(prettyPrintXml)
+                        + "</pre></div></dd>")
+        );
+    }
 }
