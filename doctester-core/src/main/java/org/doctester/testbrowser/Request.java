@@ -300,11 +300,10 @@ public class Request {
         return this;
     }
 
-
     /**
      *
      * @return The payload of this request as String. It tries to determine the
-     * content and format the content in a pretty way. Currently works for json.
+     * content and format the content in a pretty way. Currently works for json and xml;
      *
      */
     public String payloadAsPrettyString() {

@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import java.io.IOException;
-import java.util.logging.Level;
 
 /**
  *
@@ -193,7 +192,7 @@ public class Response {
      * The payload of this request de-serialized into the specified
      * TypeReference. The payload must be Json.
      *
-     * @param typeReference The TypeReference that should be used to de-serialze
+     * @param typeReference The TypeReference that should be used to de-serialize
      * the payload.
      * @return An instance of clazz filled with data from the payload.
      */
