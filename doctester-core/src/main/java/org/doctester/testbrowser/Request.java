@@ -20,6 +20,8 @@ import java.net.URI;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
+import java.io.IOException;
+import org.slf4j.LoggerFactory;
 
 /**
  * This represents a Request we can pass then to the TestBrowser.
@@ -28,6 +30,8 @@ import com.google.common.collect.Maps;
  *
  */
 public class Request {
+
+    private final org.slf4j.Logger logger = LoggerFactory.getLogger(Response.class);
 
     public String httpRequestType;
 
@@ -294,6 +298,23 @@ public class Request {
     public Request followRedirects(boolean followRedirects) {
         this.followRedirects = followRedirects;
         return this;
+    }
+
+    /**
+     *
+     * @return The payload of this request as String. It tries to determine the
+     * content and format the content in a pretty way. Currently works for json and xml;
+     *
+     */
+    public String payloadAsPrettyString() {
+
+        try {
+            return PayloadUtils.prettyPrintRequestPayload(payload, headers);
+        } catch (IOException ex) {
+            logger.error("Something went wrong when pretty printing request payload: " + ex.toString());
+            return "Error pretty printing the payload.";
+        }
+
     }
 
 }

@@ -15,7 +15,6 @@
  */
 package org.doctester.testbrowser;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -26,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import java.io.IOException;
-import java.util.logging.Level;
 
 /**
  *
@@ -87,15 +85,12 @@ public class Response {
      */
     public String payloadAsPrettyString() {
 
-        if (isContentTypeApplicationJson(headers)) {
-
-            return getPrettyFormattedJson(payload);
-
-        } else {
-
-            return payload;
+        try {
+            return PayloadUtils.prettyPrintResponsePayload(payload, headers);
+        } catch (IOException ex) {
+            logger.error("Something went wrong when pretty printing response payload: " + ex.toString());
+            return "Error pretty printing the payload.";
         }
-
     }
 
     /**
@@ -112,9 +107,9 @@ public class Response {
 
         T parsedBody = null;
 
-        if (isContentTypeApplicationXml(headers)) {
+        if (PayloadUtils.isContentTypeApplicationXml(headers)) {
             parsedBody = payloadXmlAs(clazz);
-        } else if (isContentTypeApplicationJson(headers)) {
+        } else if (PayloadUtils.isContentTypeApplicationJson(headers)) {
             parsedBody = payloadJsonAs(clazz);
         } else {
             logger.error("Could neither find application/json or application/xml content type in response. Returning null.");
@@ -197,7 +192,7 @@ public class Response {
      * The payload of this request de-serialized into the specified
      * TypeReference. The payload must be Json.
      *
-     * @param typeReference The TypeReference that should be used to de-serialze
+     * @param typeReference The TypeReference that should be used to de-serialize
      * the payload.
      * @return An instance of clazz filled with data from the payload.
      */
@@ -212,61 +207,6 @@ public class Response {
         }
 
         return parsedBody;
-    }
-
-    private boolean isContentTypeApplicationJson(Map<String, String> headers) {
-
-        String contentType = headers.get(HttpConstants.HEADER_CONTENT_TYPE);
-
-        if (contentType == null) {
-            return false;
-        }
-
-        if (contentType != null
-                && contentType.contains(HttpConstants.APPLICATION_JSON)) {
-
-            return true;
-
-        } else {
-            return false;
-        }
-
-    }
-
-    private boolean isContentTypeApplicationXml(Map<String, String> headers) {
-
-        String contentType = headers.get(HttpConstants.HEADER_CONTENT_TYPE);
-
-        if (contentType != null
-                && contentType.contains(HttpConstants.APPLICATION_XML)) {
-
-            return true;
-
-        } else {
-            return false;
-        }
-
-    }
-
-    private String getPrettyFormattedJson(String stringToFormatAsPrettyJson) {
-        String formattedJsonString;
-
-        try {
-            Object json = objectMapper.readValue(stringToFormatAsPrettyJson, Object.class);
-
-            formattedJsonString = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json);
-
-        } catch (IOException ex) {
-
-            logger.error("Error formatting Content-Type application/json. "
-                    + "Something is strange. Either this is no json, or the header is wrong. "
-                    + "Returning unformatted string", ex);
-            formattedJsonString = stringToFormatAsPrettyJson;
-
-        }
-
-        return formattedJsonString;
-
     }
 
 }

@@ -63,11 +63,11 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			
+
                         <!-- DEACTIVATED TEMPORARILY UNTIL
                              SUPPORT FOR FINBUGS 3.0.0 IS THERE...
                              WHY?
-                             BECAUSE findbugs-maven-plugin 2.5.4 IS 
+                             BECAUSE findbugs-maven-plugin 2.5.4 IS
                              NOT COMPATIBLE WITH JAVA 1.8.
                              http://stackoverflow.com/questions/17259201/findbugs-in-eclipse-arrayindexoutofbounds-exception-when-running
 			<plugin>
@@ -92,7 +92,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
-			
+
 		</plugins>
 
 		<resources>
@@ -191,6 +191,12 @@
 			<version>${jackson.version}</version>
 		</dependency>
 
+		<!-- Woodstox XML processor for Jackson XML -->
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>woodstox-core-asl</artifactId>
+			<version>4.1.4</version>
+		</dependency>
 
 		<!-- We use slf4j for logging -->
 		<dependency>
@@ -198,14 +204,14 @@
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.6</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.7.6</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
@@ -223,5 +229,5 @@
 		</site>
 
 	</distributionManagement>
-		
+
 </project>

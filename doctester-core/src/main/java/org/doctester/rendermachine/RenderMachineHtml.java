@@ -44,7 +44,7 @@ public interface RenderMachineHtml {
             + "    padding-top: 100px;\n"
             + "    padding-bottom: 20px;\n"
             + "  }\n"
-            + "  div.http-response-body {\n"
+            + "  div.http-response-body, div.http-request-body {\n"
             + "    max-height:200px;\n"
             + "    overflow:auto;\n"
             + "  }\n"
