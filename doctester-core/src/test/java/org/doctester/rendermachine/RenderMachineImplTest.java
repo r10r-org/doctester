@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Map;
-import org.doctester.testbrowser.testmodels.Article;
 import org.doctester.testbrowser.testmodels.User;
 
 import static org.junit.Assert.assertFalse;
@@ -80,7 +79,6 @@ public class RenderMachineImplTest {
         renderMachine.sayAndMakeRequest(requestWithXmlPayload);
 
         String prettyPrintXml = requestWithXmlPayload.payloadAsPrettyString();
-        System.err.println(prettyPrintXml);
         assertTrue(prettyPrintXml.startsWith("<"));
         assertTrue(prettyPrintXml.contains("<username>xmlPayloadTester</username>"));
         assertTrue(renderMachine.htmlDocument.contains(
