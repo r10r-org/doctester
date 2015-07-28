@@ -312,7 +312,7 @@ public class Request {
             return PayloadUtils.prettyPrintRequestPayload(payload, headers);
         } catch (IOException ex) {
             logger.error("Something went wrong when pretty printing request payload: " + ex.toString());
-            return "Error pretty printing the payload.";
+            return "Error pretty printing the payload: \n" + ex.toString();
         }
 
     }
