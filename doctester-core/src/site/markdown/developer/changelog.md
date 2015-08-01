@@ -1,3 +1,8 @@
+Version 1.1.8
+=============
+
+ * 2015-08-01 Update of all libraries to new versions (metacity).
+
 Version 1.1.7
 =============
 
