@@ -39,5 +39,6 @@ public interface HttpConstants {
     String DELETE = "DELETE";
     String POST = "POST";
     String PUT = "PUT";
+    String PATCH = "PATCH";
 
 }

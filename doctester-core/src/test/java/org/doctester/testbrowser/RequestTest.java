@@ -16,19 +16,13 @@
 package org.doctester.testbrowser;
 
 import com.google.common.collect.Maps;
+import org.junit.Test;
+
 import java.io.File;
 import java.util.Map;
-import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.AfterClass;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  *
@@ -57,6 +51,13 @@ public class RequestTest {
 
         Request result = Request.POST();
         assertThat(result.httpRequestType, equalTo("POST"));
+    }
+
+    @Test
+    public void testPATCH() {
+
+        Request result = Request.PATCH();
+        assertThat(result.httpRequestType, equalTo("PATCH"));
     }
 
     @Test
