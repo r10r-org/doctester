@@ -126,6 +126,22 @@ public class Request {
 
     /**
      *
+     * Get a request to perform a Http PATCH request via the TestBrowser.
+     *
+     * @return A request configured for a Http PATCH request.
+     *
+     */
+    public static Request PATCH() {
+
+        Request httpRequest = new Request();
+        httpRequest.httpRequestType = HttpConstants.PATCH;
+
+        return httpRequest;
+
+    }
+
+    /**
+     *
      * Get a request to perform a Http DELETE request via the TestBrowser.
      *
      * @return A request configured for a DELETE request.

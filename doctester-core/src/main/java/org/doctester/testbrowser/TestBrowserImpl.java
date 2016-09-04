@@ -15,26 +15,17 @@
  */
 package org.doctester.testbrowser;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.management.RuntimeErrorException;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpVersion;
+import org.apache.http.ParseException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.*;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
@@ -49,12 +40,12 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import javax.management.RuntimeErrorException;
+import java.io.File;
 import java.io.IOException;
-import org.apache.http.ParseException;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import static org.doctester.testbrowser.HttpConstants.*;
 
@@ -105,9 +96,9 @@ public class TestBrowserImpl implements TestBrowser {
 
             httpResponse = makeHeadGetOrDeleteRequest(httpRequest);
 
-        } else if (Sets.newHashSet(POST, PUT).contains(httpRequest.httpRequestType)) {
+        } else if (Sets.newHashSet(POST, PUT, PATCH).contains(httpRequest.httpRequestType)) {
 
-            httpResponse = makePostOrPutRequest(httpRequest);
+            httpResponse = makePatchPostOrPutRequest(httpRequest);
 
         } else {
 
@@ -173,7 +164,7 @@ public class TestBrowserImpl implements TestBrowser {
         return response;
     }
 
-    private Response makePostOrPutRequest(Request httpRequest) {
+    private Response makePatchPostOrPutRequest(Request httpRequest) {
 
         org.apache.http.HttpResponse apacheHttpClientResponse;
         Response response = null;
@@ -185,7 +176,11 @@ public class TestBrowserImpl implements TestBrowser {
 
             HttpEntityEnclosingRequestBase apacheHttpRequest;
 
-            if (POST.equalsIgnoreCase(httpRequest.httpRequestType)) {
+            if (PATCH.equalsIgnoreCase(httpRequest.httpRequestType)) {
+
+                apacheHttpRequest = new HttpPatch(httpRequest.uri);
+
+            } else if (POST.equalsIgnoreCase(httpRequest.httpRequestType)) {
 
                 apacheHttpRequest = new HttpPost(httpRequest.uri);
 
@@ -290,7 +285,7 @@ public class TestBrowserImpl implements TestBrowser {
             apacheHttpRequest.releaseConnection();
 
         } catch (IOException e) {
-            logger.error("Fatal problem creating POST or PUT request in TestBrowser", e);
+            logger.error("Fatal problem creating PATCH, POST or PUT request in TestBrowser", e);
             throw new RuntimeException(e);
         }
 
