@@ -14,7 +14,7 @@ the specific language governing permissions and limitations under the License. -
     <parent>
         <groupId>org.r10r</groupId>
         <artifactId>doctester</artifactId>
-        <version>1.1.8-SNAPSHOT</version>
+        <version>1.1.9</version>
     </parent>
     
     <properties>
