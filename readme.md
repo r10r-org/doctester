@@ -1,10 +1,9 @@
 DocTester [![Build Status](https://api.travis-ci.org/r10r-org/doctester.svg)](https://travis-ci.org/r10r-org/doctester)
 =========
 
-DocTester is a Java Testing Framework. DocTester tests and generates documentation at the same time.
+DocTester is a Java Testing Framework. 
+DocTester tests and generates documentation at the same time.
 Built on top of JUnit. Works as simple drop-in for your build process.
-
-[![Build Status](https://buildhive.cloudbees.com/job/doctester/job/doctester/badge/icon)](https://buildhive.cloudbees.com/job/doctester/job/doctester/)
 
 ## An example says more than a thousand words.
 
@@ -29,8 +28,7 @@ public void testMyApi() {
 	say("Retrieving all articles of a user is a GET request to " + articlesUrl);
 
 	Response response = sayAndMakeRequest(
-		Request
-			GET().url(testServerUrl().path(("/api/articles.json"))));
+		Request.GET().url(testServerUrl().path(("/api/articles.json"))));
 
 	ArticlesDto articlesDto = response.payloadAsJson(ArticlesDto.class);
 
@@ -41,7 +39,7 @@ public void testMyApi() {
 
 This in turn generates the following output:
 
-![A screenshot of the generated html output](../images/doctester_example_output.png)
+![A screenshot of the generated html output](https://github.com/r10r-org/doctester/blob/master/img/doctester_example_output.png)
 
 
 By default the resulting html is generated into src/target/site/doctester/
@@ -50,7 +48,7 @@ By default the resulting html is generated into src/target/site/doctester/
 There is an integration test that uses all of doctester. Check out for a more
 comprehensive example:
 
-https://github.com/doctester/doctester/blob/master/doctester-integration-test/src/test/java/controllers/ApiControllerDocTest.java
+https://github.com/r10r-org/doctester/blob/master/doctester-integration-test/src/test/java/controllers/ApiControllerDocTest.java
 
 
 ## In-depth description of the problem we solve
@@ -101,19 +99,6 @@ doctest library. However, DocTester is quite different to the alternatives.
    setups and probably any test setup your throw it at.
 
 
-## Contact
-
-We welcome feedback. Don't hesitate to contact us! If you got ideas or find bugs
-please file an issue via our issue tracker!
-
-Your Team DocTester :)
-
-<a href="http://www.raphaelbauer.com">Raphael A. Bauer</a>, Stefan Weller (stefan.weller@zanox.com)
-
-
-
-
-
 Basic usage
 ===========
 
@@ -141,8 +126,7 @@ public class ApiControllerDocTest extends DocTester {
         say("Retrieving all articles of a user is a GET request to " + GET_ARTICLES_URL);
         
         Response response = sayAndMakeRequest(
-               Request
-                    .GET().url(testServerUrl().path((GET_ARTICLES_URL.replace("{username}", USER)))));
+               Request.GET().url(testServerUrl().path((GET_ARTICLES_URL.replace("{username}", USER)))));
         
         ArticlesDto articlesDto = response.payloadAs(ArticlesDto.class);
 
@@ -155,7 +139,7 @@ public class ApiControllerDocTest extends DocTester {
 
 This in turn generates the following documentation:
 
-![A screenshot of the generated html output](../images/doctester_example_output.png)
+![A screenshot of the generated html output](https://github.com/r10r-org/doctester/blob/master/img/doctester_example_output.png)
 
 
 ## What DocTester generates
@@ -262,7 +246,7 @@ Performing a **GET** request with query parameters:
 Response response = sayAndMakeRequest(
                Request
                     .GET().url(testServerUrl().path("/api/users")
-														.addQueryParameter("search", "Bob Mossley"));
+			.addQueryParameter("search", "Bob Mossley"));
 
 Users users = response.payloadAs(Users.class);
 </pre>
@@ -440,7 +424,7 @@ Contributing to DocTester is really simple. Well. There are some rules that you 
 
 - Make sure your feature is well tested.
 - Make sure your feature is well documented (Javadoc).
-- Make sure there is a tutorial inside the website (doctester-core/src/site/markdown).
+- Make sure documentation is updated
 - Make sure you are following the code style below.
 - Add your changes to changelog.md and your name to team.md.
 
@@ -473,12 +457,6 @@ Making a Doctester release
 - mvn release:prepare
 - mvn release:perform
 - Log into http://oss.sonatype.org and release the packages
-
-3) publish website
-
-- git checkout TAG
-- cd doctester-core
-- mvn site site:deploy
 
 And back to develop:
 
