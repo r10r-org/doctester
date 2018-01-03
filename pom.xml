@@ -14,14 +14,6 @@ the specific language governing permissions and limitations under the License. -
     <version>1.1.8-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <!-- Deploy to central maven using the oss-parent of sonatype -->
-    <!-- https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide -->
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
-
     <modules>
         <module>doctester-core</module>
         <module>doctester-integration-test</module>
@@ -48,6 +40,20 @@ the specific language governing permissions and limitations under the License. -
     </licenses>
 	
     <build>
+        <plugins>
+            <plugin>       
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+        </plugins>
+        
         <pluginManagement>
             <plugins>
                 <plugin>
