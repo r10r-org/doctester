@@ -193,7 +193,7 @@ public class Request {
      * Set the Uri of this request. Usually you may want to use testServerUrl()
      * from you Doctest and call toUri() at the end...
      *
-     * @param uri The Uri of this request.
+     * @param url The Url of this request.
      * @return This Request for chaining.
      */
     public Request url(Url url) {
