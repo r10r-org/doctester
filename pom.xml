@@ -7,136 +7,126 @@ OR CONDITIONS OF ANY KIND, either express or implied. See the License for
 the specific language governing permissions and limitations under the License. -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.doctester</groupId>
-	<artifactId>doctester</artifactId>
-	<version>1.1.8</version>
-	<packaging>pom</packaging>
+    <groupId>org.r10r</groupId>
+    <artifactId>doctester</artifactId>
+    <version>1.1.8</version>
+    <packaging>pom</packaging>
 
-	<!-- Deploy to central maven using the oss-parent of sonatype -->
-	<!-- https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide -->
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
-	</parent>
+    <!-- Deploy to central maven using the oss-parent of sonatype -->
+    <!-- https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide -->
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
 
-	<modules>
-		<module>doctester-core</module>
-		<module>doctester-integration-test</module>
-	</modules>
-
-
-	<scm>
-		<url>https://github.com/doctester/doctester</url>
-		<connection>scm:git://github.com/doctester/doctester.git</connection>
-		<developerConnection>scm:git:git@github.com:doctester/doctester.git</developerConnection>
-	</scm>
-
-	<issueManagement>
-		<system>GitHub</system>
-		<url>https://github.com/doctester/doctester/issues/</url>
-	</issueManagement>
-
-	<mailingLists>
-		<mailingList>
-			<name>Doctester Users</name>
-			<post>doctester@googlegroups.com</post>
-			<archive>http://groups.google.com/group/doctester</archive>
-		</mailingList>
-	</mailingLists>
+    <modules>
+        <module>doctester-core</module>
+        <module>doctester-integration-test</module>
+    </modules>
 
 
+    <scm>
+        <url>https://github.com/doctester/doctester</url>
+        <connection>scm:git://github.com/r10r-org/doctester.git</connection>
+        <developerConnection>scm:git:git@github.com:r10r-org/doctester.git</developerConnection>
+    </scm>
 
-	<licenses>
-		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/r10r-org/doctester/issues/</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 	
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
 					
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.1</version>
-					<configuration>
-						<source>1.7</source>
-						<target>1.7</target>
-					</configuration>
-				</plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                    <configuration>
+                        <source>1.7</source>
+                        <target>1.7</target>
+                    </configuration>
+                </plugin>
                                 
-                                <plugin>
-                                    <groupId>org.apache.maven.plugins</groupId>
-                                    <artifactId>maven-javadoc-plugin</artifactId>
-                                    <configuration>
-                                        <additionalparam>-Xdoclint:none</additionalparam>
-                                    </configuration>
-                                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <configuration>
+                        <additionalparam>-Xdoclint:none</additionalparam>
+                    </configuration>
+                </plugin>
 						
-			</plugins>
+            </plugins>
 			
-		</pluginManagement>
+        </pluginManagement>
 		
-	</build>
+    </build>
 
 
-	<profiles>
-		<!-- Do a license check by running : mvn -P license license:check -->
-		<!-- Update the license check by running : mvn -P license license:format -->
-		<profile>
-			<id>license</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.mycila.maven-license-plugin</groupId>
-						<artifactId>maven-license-plugin</artifactId>
-						<version>1.6.0</version>
-						<configuration>
-							<quiet>false</quiet>
-							<header>src/main/resources/license-header.txt</header>
-							<aggregate>true</aggregate>
-							<includes>
-								<include>**/src/**</include>
-								<include>**/pom.xml</include>
-							</includes>
-							<excludes>
-								<!-- ignore files produced during a build -->
-								<exclude>**/target/**</exclude>
-								<exclude>**/WEB-INF/classes/**</exclude>
-								<exclude>**/site/**</exclude>
-								<exclude>**/.DS_Store</exclude>
+    <profiles>
+        <!-- Do a license check by running : mvn -P license license:check -->
+        <!-- Update the license check by running : mvn -P license license:format -->
+        <profile>
+            <id>license</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.mycila.maven-license-plugin</groupId>
+                        <artifactId>maven-license-plugin</artifactId>
+                        <version>1.6.0</version>
+                        <configuration>
+                            <quiet>false</quiet>
+                            <header>src/main/resources/license-header.txt</header>
+                            <aggregate>true</aggregate>
+                            <includes>
+                                <include>**/src/**</include>
+                                <include>**/pom.xml</include>
+                            </includes>
+                            <excludes>
+                                <!-- ignore files produced during a build -->
+                                <exclude>**/target/**</exclude>
+                                <exclude>**/WEB-INF/classes/**</exclude>
+                                <exclude>**/site/**</exclude>
+                                <exclude>**/.DS_Store</exclude>
 
-								<!-- ignore binary files -->
-								<exclude>**/assets/**</exclude>
-								<exclude>**/views/**</exclude>
-							</excludes>
-							<useDefaultExcludes>false</useDefaultExcludes>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>check</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
+                                <!-- ignore binary files -->
+                                <exclude>**/assets/**</exclude>
+                                <exclude>**/views/**</exclude>
+                            </excludes>
+                            <useDefaultExcludes>false</useDefaultExcludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
 
-	</profiles>
+    </profiles>
 	
-	<properties>
-		<org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>
-		<org-netbeans-modules-editor-indent.CodeStyle.project.tab-size>4</org-netbeans-modules-editor-indent.CodeStyle.project.tab-size>
-		<org-netbeans-modules-editor-indent.CodeStyle.project.indent-shift-width>4</org-netbeans-modules-editor-indent.CodeStyle.project.indent-shift-width>
-		<org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.expand-tabs>false</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.expand-tabs>
-	</properties>
+    <properties>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>4</org-netbeans-modules-editor-indent.CodeStyle.project.spaces-per-tab>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.tab-size>4</org-netbeans-modules-editor-indent.CodeStyle.project.tab-size>
+        <org-netbeans-modules-editor-indent.CodeStyle.project.indent-shift-width>4</org-netbeans-modules-editor-indent.CodeStyle.project.indent-shift-width>
+        <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.expand-tabs>false</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.expand-tabs>
+    </properties>
 		
 </project>

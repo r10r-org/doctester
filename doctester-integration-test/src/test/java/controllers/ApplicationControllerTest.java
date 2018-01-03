@@ -21,8 +21,8 @@ import controllers.utils.NinjaTest;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import org.doctester.testbrowser.Request;
-import org.doctester.testbrowser.Response;
+import org.r10r.doctester.testbrowser.Request;
+import org.r10r.doctester.testbrowser.Response;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;

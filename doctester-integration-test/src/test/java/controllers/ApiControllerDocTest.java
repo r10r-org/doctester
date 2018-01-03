@@ -29,8 +29,8 @@ import models.Article;
 import models.ArticleDto;
 import models.ArticlesDto;
 
-import org.doctester.testbrowser.Request;
-import org.doctester.testbrowser.Response;
+import org.r10r.doctester.testbrowser.Request;
+import org.r10r.doctester.testbrowser.Response;
 import org.junit.Test;
 
 import com.google.common.collect.Maps;
