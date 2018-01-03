@@ -19,8 +19,8 @@ package controllers.utils;
 import ninja.utils.NinjaConstant;
 import ninja.utils.NinjaTestServer;
 
-import org.doctester.DocTester;
-import org.doctester.testbrowser.Url;
+import org.r10r.doctester.DocTester;
+import org.r10r.doctester.testbrowser.Url;
 import org.junit.After;
 import org.junit.Before;
 

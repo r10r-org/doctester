@@ -22,12 +22,12 @@ import ninja.utils.NinjaTestBrowser;
 import ninja.utils.NinjaTestServer;
 import org.apache.http.cookie.Cookie;
 
-import org.doctester.DocTester;
-import org.doctester.testbrowser.Request;
-import org.doctester.testbrowser.Response;
-import org.doctester.testbrowser.TestBrowser;
-import org.doctester.testbrowser.TestBrowserImpl;
-import org.doctester.testbrowser.Url;
+import org.r10r.doctester.DocTester;
+import org.r10r.doctester.testbrowser.Request;
+import org.r10r.doctester.testbrowser.Response;
+import org.r10r.doctester.testbrowser.TestBrowser;
+import org.r10r.doctester.testbrowser.TestBrowserImpl;
+import org.r10r.doctester.testbrowser.Url;
 import org.junit.After;
 import org.junit.Before;
 
