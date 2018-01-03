@@ -1,3 +1,8 @@
+Version 1.1.11
+=============
+
+ * 2018-01-03 Switch to new package structure of org.r10r.
+
 Version 1.1.8
 =============
 
